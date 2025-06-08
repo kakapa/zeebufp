@@ -20,6 +20,8 @@ class UserSeeder extends Seeder
                 'surname' => 'Pilane',
                 'mobile_number' => '0817825940',
                 'password' => \Hash::make('11111'),
+                'profiled_at' => now(),
+                'mobile_verified_at' => now(),
             ],
         ];
 

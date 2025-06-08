@@ -75,7 +75,16 @@ deploy.sh
 
 ---
 
-### 4. Set Up the Environment
+### 4. Install Dependencies
+
+```bash
+composer install
+npm install && npm run dev
+```
+
+---
+
+### 5. Set Up the Environment
 
 ```bash
 cp .env.example .env
@@ -87,19 +96,12 @@ Edit `.env` to match your configuration:
 -   Database connection settings
 -   Redis/Mail settings as needed
 
-Generate application key:
+Generate application key, run migrations, optimize:
 
 ```bash
 php artisan key:generate
-```
-
----
-
-### 5. Install Dependencies
-
-```bash
-composer install
-npm install && npm run dev
+php artisan migrate:refresh --seed
+php artisan optimize:clear
 ```
 
 ---

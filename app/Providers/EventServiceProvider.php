@@ -21,5 +21,7 @@ class EventServiceProvider extends ServiceProvider
     {
         // Observers
         \App\Models\User::observe(\App\Observers\UserObserver::class);
+        \App\Models\Package::observe(\App\Observers\PackageObserver::class);
+        \App\Models\Client::observe(\App\Observers\ClientObserver::class);
     }
 }

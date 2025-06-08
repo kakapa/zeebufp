@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PackageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\MustVerifyMobileNumber;
 use App\Http\Middleware\UpdateProfileOfNewlyRegisteredUser;
@@ -17,9 +19,29 @@ Route::name('guest')->group(function () {
 Route::middleware(['auth', MustVerifyMobileNumber::class, 'verified', UpdateProfileOfNewlyRegisteredUser::class])
     ->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'showDashboard'])->name('dashboard');
+
+        Route::get('/messages', [DashboardController::class, 'showMessages'])->name('messages');
     });
 
 Route::middleware('auth')->group(function () {
+    Route::get('/admin/settings', function () {
+        return inertia('Settings');
+    })->name('settings');
+
+    Route::get('/admin/users', function () {
+        return inertia('Admin/Users/Index');
+    })->name('users');
+    Route::get('/admin/roles', function () {
+        return inertia('Admin/Roles/Index');
+    })->name('roles');
+    Route::get('/admin/documents', function () {
+        return inertia('Admin/Documents/Index');
+    })->name('documents');
+
+    Route::resource('packages', PackageController::class);
+
+    Route::resource('clients', ClientController::class);
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

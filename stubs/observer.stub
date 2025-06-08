@@ -19,7 +19,12 @@ class {{ class }}
      */
     public function creating({{ model }} ${{ modelVariable }}): void
     {
-        //
+        // Random slug
+        do {
+            ${{ modelVariable }}->slug = \Str::upper(
+                sprintf('PKG%s', mt_rand(100, 999))
+            );
+        } while ({{ model }}::where('slug', ${{ modelVariable }}->slug)->exists());
     }
 
     /**

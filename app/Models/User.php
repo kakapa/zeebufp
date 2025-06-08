@@ -84,16 +84,6 @@ class User extends Authenticatable
     }
 
     /**
-     * User belongTo Level.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\Relation
-     */
-    public function level()
-    {
-        return $this->belongsTo(\App\Models\Level::class);
-    }
-
-    /**
      * User belongTo Occupation.
      *
      * @return \Illuminate\Database\Eloquent\Relations\Relation
@@ -101,25 +91,5 @@ class User extends Authenticatable
     public function occupation()
     {
         return $this->belongsTo(\App\Models\Occupation::class);
-    }
-
-    /**
-     * User belongTo Ward.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\Relation
-     */
-    public function ward()
-    {
-        return $this->belongsTo(\App\Models\Ward::class);
-    }
-
-    /**
-     * User belongTo Area.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\Relation
-     */
-    public function area()
-    {
-        return $this->belongsTo(\App\Models\Area::class);
     }
 }

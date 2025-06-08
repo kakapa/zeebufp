@@ -17,4 +17,9 @@ enum {{ class }}: string
             self::Item->value => 'Item',
         ];
     }
+
+    public function label(): string
+    {
+        return self::labels()[$this->value] ?? 'Unknown';
+    }
 }

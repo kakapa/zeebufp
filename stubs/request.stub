@@ -2,10 +2,14 @@
 
 namespace {{ namespace }};
 
-use App\Abstracts\CustomRequest;
+use App\Enums\GenderEnums;
+use App\Enums\UserStatusEnums;
+use App\Models\User;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
-class {{ class }} extends CustomRequest
+class {{ class }} extends FormRequest
 {
     /**
      * 1. Prepare the data for validation.
@@ -24,82 +28,71 @@ class {{ class }} extends CustomRequest
     }
 
     /**
-     * Get the store validation rules.
+     * 3. Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function createRules(): array
+    public function rules(): array
     {
         return [
-            '' => ['required', 'string', 'max:255', ''],
+            'fullnames' => ['required', 'string', 'max:255'],
+            'surname' => ['required', 'string', 'max:255'],
+            'mobile_number' => [
+                'required',
+                'string',
+                'min:10',
+                'max:10',
+                'regex:/(0)[0-9]{9}/',
+                Rule::unique(User::class, 'mobile_number')->ignore($this->user),
+            ],
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+                Rule::unique('users')->ignore($this->user),
+            ],
+            'gender' => ['required', new Enum(GenderEnums::class)],
+            'role' => ['nullable', 'exists:roles,slug'],
+            'country' => ['nullable', 'exists:countries,code'],
+            'status' => ['required', 'string', Rule::in(UserStatusEnums::values())],
+            'about' => ['nullable', 'min:1', 'max:1000'],
         ];
     }
 
     /**
-     * Get the update validation rules.
+     * 4. Post validation hook.
      */
-    public function updateRules(): array
+    protected function passedValidation(): void
     {
-        return [
-            '' => ['required', 'string', 'max:255', ''],
-        ];
+        // Get the current validated data
+        $validated = $this->validated();
+
+        // Handle password
+        if (!array_key_exists('password', $validated)) {
+            $validated['password'] = bcrypt('P@ssword123');
+        } else {
+            $validated['password'] = bcrypt($validated['password']);
+        }
+
+        // Handle role
+        if (array_key_exists('role', $validated)) {
+            $validated['role_id'] = \App\Models\Role::where('slug', $validated['role'])->value('id');
+        }
+
+        // Handle country
+        if (array_key_exists('country', $validated)) {
+            $validated['country_id'] = \App\Models\Country::where('code', $validated['country'])->value('id');
+        }
+
+        // Replace the validated data with our modified version
+        $this->replace($validated);
     }
 
     /**
-     * Get custom messages for validator errors.
+     * 5. Add this method to ensure your changes are included in validated data
      */
-    public function messages(): array
+    public function validated($key = null, $default = null)
     {
-        return [];
-    }
-
-    /**
-     * Get custom attributes for validator errors.
-     */
-    public function attributes(): array
-    {
-        return [];
-    }
-
-    /**
-     * Manipulate the validated data before storing and/or updating.
-     *
-     * @param  array<string, mixed>  $validated
-     */
-    protected function allData(array &$validated): void
-    {
-        //
-    }
-
-    /**
-     * Manipulate the validated data before storing.
-     *
-     * @param  array<string, mixed>  $validated
-     */
-    protected function createData(array &$validated): void
-    {
-        //
-    }
-
-    /**
-     * Manipulate the validated data before updating.
-     *
-     * @param  array<string, mixed>  $validated
-     */
-    protected function updateData(array &$validated): void
-    {
-        //
-    }
-
-    /**
-     * Get the validated data from the request.
-     *
-     * @param  string|int|array|null  $key
-     * @param  mixed  $default
-     * @return array<string, mixed>|mixed
-     */
-    public function validated($key = null, $default = null): mixed
-    {
-        // This function is for click reference only!
-        // Use `allData`, `createData` and `updateData`.
-        return parent::validated($key, $default);
+        return array_merge(parent::validated(), $this->all());
     }
 }
