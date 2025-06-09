@@ -5,6 +5,9 @@ namespace {{ namespace }};
 use {{ rootNamespace }}Http\Controllers\Controller;
 use {{ namespacedRequests }}
 use {{ namespacedModel }};
+use \App\Http\Resources\{{ model }}Resource;
+use App\Enums\{{ model }}StatusEnums;
+use Illuminate\Support\Facades\Cache;
 
 class {{ class }} extends Controller
 {

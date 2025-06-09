@@ -89,13 +89,13 @@
 
 <script setup>
 import { useForm } from "@inertiajs/vue3";
-import InputError from "@/Components/InputError.vue";
-import InputLabel from "@/Components/InputLabel.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
-import TextInput from "@/Components/TextInput.vue";
-import Checkbox from "@/Components/Checkbox.vue";
-import PrimaryLink from "@/Components/PrimaryLink.vue";
-import ApplicationLogo from "@/Components/ApplicationLogo.vue";
+import InputError from "@/Components/Ui/InputError.vue";
+import InputLabel from "@/Components/Ui/InputLabel.vue";
+import PrimaryButton from "@/Components/Ui/PrimaryButton.vue";
+import TextInput from "@/Components/Ui/TextInput.vue";
+import Checkbox from "@/Components/Ui/Checkbox.vue";
+import PrimaryLink from "@/Components/Ui/PrimaryLink.vue";
+import ApplicationLogo from "@/Components/Ui/ApplicationLogo.vue";
 
 defineProps({
   canResetPassword: {
@@ -107,8 +107,8 @@ defineProps({
 });
 
 const form = useForm({
-  mobile_number: "",
-  password: "",
+  mobile_number: "0817825940",
+  password: "11111",
   remember: false,
 });
 

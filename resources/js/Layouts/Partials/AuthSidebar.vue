@@ -32,13 +32,13 @@
               </Link>
             </li>
             <li class="sidebar-menu-item">
-              <Link href="/admin/documents" class="sidebar-menu-button">
+              <Link href="/documents" class="sidebar-menu-button">
                 <Database class="h-4 w-4" />
                 <span>Documents</span>
               </Link>
             </li>
             <li class="sidebar-menu-item">
-              <Link href="/admin/settings" class="sidebar-menu-button">
+              <Link href="/settings" class="sidebar-menu-button">
                 <Settings class="h-4 w-4" />
                 <span>Settings</span>
               </Link>
@@ -109,7 +109,7 @@ import {
   Database,
   HelpCircle,
 } from "lucide-vue-next";
-import ApplicationLogo from "@/Components/ApplicationLogo.vue";
+import ApplicationLogo from "@/Components/Ui/ApplicationLogo.vue";
 
 defineProps({
   additionalClasses: {

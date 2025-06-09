@@ -5,7 +5,7 @@
     :title="title || icon"
     type="button"
   >
-    <component :is="dynamicIcon" class="h-5 w-5" />
+    <component :is="dynamicIcon" class="h-4 w-4" />
   </button>
 </template>
 
@@ -38,8 +38,7 @@ const emit = defineEmits(["click"]);
 const dynamicIcon = computed(() => lucideIcons[props.icon]);
 
 const buttonClasses = computed(() => {
-  const base =
-    "p-1 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2";
+  const base = "p-2 border border-gray-300 rounded-md hover:bg-gray-50";
   const colorMap = {
     blue: "text-blue-600 hover:text-blue-900 focus:ring-blue-500",
     green: "text-green-600 hover:text-green-900 focus:ring-green-500",

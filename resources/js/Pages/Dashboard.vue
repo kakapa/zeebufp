@@ -61,7 +61,7 @@
 
         <div v-if="activeTab === 'clients'" class="space-y-4">
           <ClientManagement
-            :initialClients="clients"
+            :initial-clients="clients"
             :statuses="client_statuses"
             :genders="genders"
             :referralSources="sources"
@@ -70,22 +70,38 @@
         </div>
 
         <div v-if="activeTab === 'accounts'" class="space-y-4">
-          <AccountManagement />
+          <AccountManagement
+            :initial-accounts="accounts"
+            :statuses="account_statuses"
+            :packages="packages"
+            :clients="clients"
+          />
         </div>
 
         <div v-if="activeTab === 'packages'" class="space-y-4">
           <PackageManagement
             :packages="packages"
-            :statuses="packages_statuses"
+            :statuses="package_statuses"
           />
         </div>
 
         <div v-if="activeTab === 'contributions'" class="space-y-4">
-          <ContributionsTracking />
+          <ContributionsTracking
+            :initial-contributions="contributions"
+            :accounts="accounts"
+            :statuses="payment_statuses"
+            :method-options="payment_methods"
+            :type-options="payment_types"
+          />
         </div>
 
         <div v-if="activeTab === 'claims'" class="space-y-4">
-          <ClaimsProcessing />
+          <ClaimsProcessing
+            :initial-claims="claims"
+            :clients="clients"
+            :statuses="claim_statuses"
+            :type-options="claim_types"
+          />
         </div>
       </div>
     </div>
@@ -113,8 +129,18 @@ import {
 const props = defineProps({
   packages: Array,
   clients: Array,
-  packages_statuses: Object,
+  accounts: Array,
+  contributions: Array,
+  claims: Array,
+  package_statuses: Object,
   client_statuses: Object,
+  client_statuses: Object,
+  account_statuses: Object,
+  payment_statuses: Object,
+  payment_methods: Object,
+  payment_types: Object,
+  claim_statuses: Object,
+  claim_types: Object,
   sources: Object,
   genders: Object,
   titles: Object,

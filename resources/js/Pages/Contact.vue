@@ -268,7 +268,7 @@ import {
   MapIcon,
   ChevronDownIcon,
 } from "lucide-vue-next";
-import SecondaryHero from "@/Components/SecondaryHero.vue";
+import SecondaryHero from "@/Components/Ui/SecondaryHero.vue";
 
 const form = reactive({
   name: "",

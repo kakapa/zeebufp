@@ -140,11 +140,11 @@
 </template>
 
 <script setup>
-import InputError from "@/Components/InputError.vue";
-import InputLabel from "@/Components/InputLabel.vue";
-import Select from "@/Components/Select.vue";
-import TextAreaInput from "@/Components/TextAreaInput.vue";
-import TextInput from "@/Components/TextInput.vue";
+import InputError from "@/Components/Ui/InputError.vue";
+import InputLabel from "@/Components/Ui/InputLabel.vue";
+import Select from "@/Components/Ui/Select.vue";
+import TextAreaInput from "@/Components/Ui/TextAreaInput.vue";
+import TextInput from "@/Components/Ui/TextInput.vue";
 
 defineProps({
   form: {

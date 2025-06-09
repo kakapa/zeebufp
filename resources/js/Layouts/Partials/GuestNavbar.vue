@@ -1,131 +1,234 @@
 <template>
-  <nav class="bg-white shadow-md">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between h-20">
-        <div class="flex items-center">
+  <header
+    class="bg-white shadow-lg fixed w-full top-0 z-50 border-b border-gray-100"
+  >
+    <div class="container mx-auto px-4">
+      <!-- Top bar with contact info -->
+      <div
+        class="hidden md:flex justify-between items-center py-2 text-sm text-gray-600 border-b border-gray-100"
+      >
+        <div class="flex items-center space-x-6">
+          <span class="font-dancing text-lg text-brand-purple"
+            >Dignity without limits</span
+          >
+        </div>
+        <div class="flex items-center space-x-4">
+          <div class="flex items-center space-x-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="text-brand-orange"
+            >
+              <path
+                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+              ></path>
+            </svg>
+            <span class="font-semibold text-gray-800">083 653 2025</span>
+          </div>
+          <span class="text-brand-orange">|</span>
+          <span>24/7 Support Available</span>
+        </div>
+      </div>
+
+      <!-- Main navigation -->
+      <div class="flex items-center justify-between py-4">
+        <div class="flex items-center space-x-4">
           <Link href="/" class="flex-shrink-0 flex items-center">
             <ApplicationLogo class="h-14 w-auto" />
           </Link>
-          <div class="hidden md:ml-6 md:flex md:space-x-8">
-            <Link
-              href="/"
-              class="nav-link"
-              :class="{ 'nav-link-active': currentRoute === '/' }"
-              >Home</Link
-            >
-            <Link
-              href="/about"
-              class="nav-link"
-              :class="{ 'nav-link-active': currentRoute === '/about' }"
-            >
-              About Us</Link
-            >
-            <Link
-              href="/contact"
-              class="nav-link"
-              :class="{ 'nav-link-active': currentRoute === '/contact' }"
-              >Contact</Link
-            >
-            <Link
-              href="/resume"
-              class="nav-link"
-              :class="{ 'nav-link-active': currentRoute === '/resume' }"
-              >=> Resume</Link
-            >
-          </div>
         </div>
-        <div v-if="$page.props.auth.user" class="hidden md:flex items-center">
+
+        <nav class="hidden md:flex items-center space-x-8">
           <Link
-            href="/dashboard"
-            class="px-4 py-2 text-sm font-medium text-white bg-primary-500 rounded-md hover:bg-primary-600"
-          >
-            Dashboard</Link
-          >
-        </div>
-        <div v-else="$page.props.auth.user" class="hidden md:flex items-center">
-          <Link
-            href="/login"
-            class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-500 mr-2"
-          >
-            Login</Link
+            href="#home"
+            class="text-gray-700 hover:text-brand-purple transition-colors font-medium"
+            >Home</Link
           >
           <Link
-            href="/register"
-            class="px-4 py-2 text-sm font-medium text-white bg-primary-500 rounded-md hover:bg-primary-600"
+            href="#about"
+            class="text-gray-700 hover:text-brand-purple transition-colors font-medium"
+            >About Us</Link
           >
-            Register</Link
+          <Link
+            href="#services"
+            class="text-gray-700 hover:text-brand-purple transition-colors font-medium"
+            >Services</Link
           >
-        </div>
-        <div class="flex items-center md:hidden">
+          <Link
+            href="#packages"
+            class="text-gray-700 hover:text-brand-purple transition-colors font-medium"
+            >Funeral Cover</Link
+          >
+          <Link
+            href="#gallery"
+            class="text-gray-700 hover:text-brand-purple transition-colors font-medium"
+            >Gallery</Link
+          >
+          <Link
+            href="#contact"
+            class="text-gray-700 hover:text-brand-purple transition-colors font-medium"
+            >Contact</Link
+          >
+        </nav>
+
+        <div class="hidden md:flex items-center space-x-4">
           <button
-            @click="isOpen = !isOpen"
-            class="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-primary-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
+            class="bg-brand-gold hover:bg-yellow-600 text-white px-6 py-2 rounded-lg font-medium transition-colors"
           >
-            <span class="sr-only">Open main menu</span>
-            <MenuIcon v-if="!isOpen" class="block h-6 w-6" />
-            <XIcon v-else class="block h-6 w-6" />
+            Contact Us
           </button>
         </div>
-      </div>
-    </div>
 
-    <!-- Mobile menu -->
-    <div v-if="isOpen" class="md:hidden">
-      <div class="pt-2 pb-3 space-y-1">
-        <Link href="/" class="mobile-nav-link" @click="isOpen = false"
-          >Home</Link
-        >
-        <Link href="/about" class="mobile-nav-link" @click="isOpen = false"
-          >About Us</Link
-        >
-        <Link href="/contact" class="mobile-nav-link" @click="isOpen = false"
-          >Contact</Link
-        >
+        <button class="md:hidden p-2" @click="isMenuOpen = !isMenuOpen">
+          <svg
+            v-if="isMenuOpen"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+          <svg
+            v-else
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
       </div>
-      <div class="pt-4 pb-3 border-t border-gray-200">
-        <div v-if="$page.props.auth.user" class="flex items-center px-4">
-          <div class="flex-shrink-0">
-            <UserCircleIcon class="h-10 w-10 text-gray-400" />
-          </div>
-          <div class="ml-3">
-            <Link href="/dashboard">
-              <div class="text-base font-medium text-gray-800">Dashboard</div>
-            </Link>
-          </div>
-        </div>
-        <div v-else class="mt-3 space-y-1">
-          <Link href="/login" class="mobile-nav-link" @click="isOpen = false"
-            >Login</Link
+
+      <!-- Mobile menu -->
+      <div
+        v-if="isMenuOpen"
+        class="md:hidden pb-4 border-t border-gray-100 animate-fade-in"
+      >
+        <nav class="flex flex-col space-y-4 mt-4">
+          <Link
+            href="#home"
+            class="text-gray-700 hover:text-brand-purple transition-colors font-medium"
+            >Home</Link
           >
-          <Link href="/register" class="mobile-nav-link" @click="isOpen = false"
-            >Register</Link
+          <Link
+            href="#about"
+            class="text-gray-700 hover:text-brand-purple transition-colors font-medium"
+            >About Us</Link
           >
-        </div>
+          <Link
+            href="#services"
+            class="text-gray-700 hover:text-brand-purple transition-colors font-medium"
+            >Services</Link
+          >
+          <Link
+            href="#packages"
+            class="text-gray-700 hover:text-brand-purple transition-colors font-medium"
+            >Funeral Cover</Link
+          >
+          <Link
+            href="#gallery"
+            class="text-gray-700 hover:text-brand-purple transition-colors font-medium"
+            >Gallery</Link
+          >
+          <Link
+            href="#contact"
+            class="text-gray-700 hover:text-brand-purple transition-colors font-medium"
+            >Contact</Link
+          >
+          <div
+            class="flex items-center space-x-2 pt-4 border-t border-gray-100"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="text-brand-orange"
+            >
+              <path
+                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+              ></path>
+            </svg>
+            <span class="font-semibold text-gray-800">083 653 2025</span>
+          </div>
+          <button
+            class="bg-brand-gold hover:bg-yellow-600 text-white px-6 py-2 rounded-lg font-medium transition-colors w-full"
+          >
+            Contact Us
+          </button>
+        </nav>
       </div>
     </div>
-  </nav>
+  </header>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { Link } from "@inertiajs/vue3";
-import { MenuIcon, XIcon, UserCircleIcon } from "lucide-vue-next";
-import ApplicationLogo from "@/Components/ApplicationLogo.vue";
+import ApplicationLogo from "@/Components/Ui/ApplicationLogo.vue";
 
-const isOpen = ref(false);
-const currentRoute = computed(() => route.path);
+const isMenuOpen = ref(false);
 </script>
 
-<style scoped>
-.nav-link {
-  @apply inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-700 hover:text-primary-500 hover:border-primary-300;
+<style>
+/* Add any custom styles here */
+.font-dancing {
+  font-family: "Dancing Script", cursive;
 }
 
-.nav-link-active {
-  @apply border-primary-500 text-primary-600;
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
 }
 
-.mobile-nav-link {
-  @apply block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-700 hover:bg-gray-50 hover:border-primary-300 hover:text-primary-500;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Brand colors - adjust as needed */
+.text-brand-purple {
+  color: #6b46c1;
+}
+.text-brand-orange {
+  color: #dd6b20;
+}
+.bg-brand-gold {
+  background-color: #d69e2e;
+}
+.bg-brand-purple {
+  background-color: #6b46c1;
 }
 </style>

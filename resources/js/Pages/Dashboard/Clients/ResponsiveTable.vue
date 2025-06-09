@@ -8,9 +8,6 @@
       <TableHeaderCell responsive-class="hidden sm:table-cell"
         >ID Number</TableHeaderCell
       >
-      <TableHeaderCell responsive-class="hidden lg:table-cell"
-        >Address</TableHeaderCell
-      >
       <TableHeaderCell>Status</TableHeaderCell>
       <TableHeaderCell responsive-class="text-right">Actions</TableHeaderCell>
     </TableHeader>
@@ -45,12 +42,6 @@
                     client.id_number || "N/A"
                   }}</span>
                 </div>
-                <div class="text-sm">
-                  <span class="font-medium text-gray-500">Address:</span>
-                  <span class="text-gray-500 ml-1 truncate">{{
-                    client.address || "N/A"
-                  }}</span>
-                </div>
               </div>
             </div>
           </div>
@@ -74,19 +65,6 @@
           </div>
         </TableCell>
 
-        <TableCell responsive-class="hidden lg:table-cell">
-          <div class="text-sm text-gray-500 truncate">
-            {{ client.address || "N/A" }}
-          </div>
-          <div class="text-xs text-gray-400">
-            {{
-              client.referral_source
-                ? "Referred by: " + client.referralSourceLabel
-                : ""
-            }}
-          </div>
-        </TableCell>
-
         <TableCell>
           <span
             class="px-2 py-1 text-xs rounded-full"
@@ -102,13 +80,6 @@
               icon="Eye"
               color="blue"
               @click="showClientModal = true"
-            />
-            <!-- Client View Modal -->
-            <ClientView
-              :show="showClientModal"
-              :client="client"
-              @close="showClientModal = false"
-              @edit="handleEditClient"
             />
             <TableAction
               icon="Edit"

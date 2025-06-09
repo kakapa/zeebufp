@@ -167,12 +167,12 @@
 </template>
 
 <script setup>
-import InputError from "@/Components/InputError.vue";
-import InputLabel from "@/Components/InputLabel.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
-import PrimaryLink from "@/Components/PrimaryLink.vue";
-import TextInput from "@/Components/TextInput.vue";
-import ApplicationLogo from "@/Components/ApplicationLogo.vue";
+import InputError from "@/Components/Ui/InputError.vue";
+import InputLabel from "@/Components/Ui/InputLabel.vue";
+import PrimaryButton from "@/Components/Ui/PrimaryButton.vue";
+import PrimaryLink from "@/Components/Ui/PrimaryLink.vue";
+import TextInput from "@/Components/Ui/TextInput.vue";
+import ApplicationLogo from "@/Components/Ui/ApplicationLogo.vue";
 import { useForm } from "@inertiajs/vue3";
 
 const form = useForm({

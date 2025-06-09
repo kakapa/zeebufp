@@ -251,7 +251,7 @@ import {
   HandshakeIcon,
   LightbulbIcon,
 } from "lucide-vue-next";
-import SecondaryHero from "@/Components/SecondaryHero.vue";
+import SecondaryHero from "@/Components/Ui/SecondaryHero.vue";
 
 const leaders = ref([
   {

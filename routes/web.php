@@ -1,9 +1,12 @@
 <?php
 
+use App\Http\Controllers\AccountController;
+use App\Http\Controllers\ClaimController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PackageController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\MustVerifyMobileNumber;
 use App\Http\Middleware\UpdateProfileOfNewlyRegisteredUser;
@@ -24,23 +27,24 @@ Route::middleware(['auth', MustVerifyMobileNumber::class, 'verified', UpdateProf
     });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/admin/settings', function () {
+    Route::get('/settings', function () {
         return inertia('Settings');
     })->name('settings');
 
-    Route::get('/admin/users', function () {
-        return inertia('Admin/Users/Index');
-    })->name('users');
-    Route::get('/admin/roles', function () {
-        return inertia('Admin/Roles/Index');
-    })->name('roles');
-    Route::get('/admin/documents', function () {
-        return inertia('Admin/Documents/Index');
+    Route::get('/documents', function () {
+        return inertia('Documents/Index');
     })->name('documents');
 
     Route::resource('packages', PackageController::class);
 
     Route::resource('clients', ClientController::class);
+
+    Route::resource('payments', PaymentController::class);
+
+    Route::resource('claims', ClaimController::class);
+
+    Route::resource('accounts', AccountController::class);
+    Route::get('/accounts/{account}/pdf', [AccountController::class, 'downloadTerms'])->name('accounts.pdf');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

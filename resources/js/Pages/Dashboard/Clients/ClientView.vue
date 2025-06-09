@@ -175,8 +175,8 @@ import {
   Edit,
 } from "lucide-vue-next";
 import DialogModal from "@/Components/Ui/DialogModal.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
-import SecondaryButton from "@/Components/SecondaryButton.vue";
+import PrimaryButton from "@/Components/Ui/PrimaryButton.vue";
+import SecondaryButton from "@/Components/Ui/SecondaryButton.vue";
 
 const props = defineProps({
   show: {

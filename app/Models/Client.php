@@ -6,6 +6,7 @@ use App\Enums\ClientGenderEnums;
 use App\Enums\ClientSourceEnums;
 use App\Enums\ClientStatusEnums;
 use App\Enums\ClientTitleEnums;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -42,5 +43,19 @@ class Client extends Model
     public function getRouteKeyName()
     {
         return 'slug';
+    }
+
+    /**
+     * Get User's full name.
+     */
+    public function name(): Attribute
+    {
+        return Attribute::make(function (): string {
+            if ($this->surname) {
+                return sprintf('%s %s', $this->firstname, $this->surname);
+            }
+
+            return $this->firstname;
+        })->shouldCache();
     }
 }
