@@ -2,7 +2,7 @@
 
 set -e
 
-APP_DIR="/var/www/viltura"
+APP_DIR="/home/ubuntu/apps/zeebufp"
 cd "$APP_DIR" || exit
 
 echo "🚀 Pulling latest code..."
