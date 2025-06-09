@@ -20,7 +20,7 @@
         <TableCell>
           <div class="flex items-center">
             <div class="flex-shrink-0">
-              <DocumentIcon :type="document.type" class="h-10 w-10" />
+              <File class="h-10 w-10" />
             </div>
             <div class="ml-4">
               <div class="text-sm font-medium text-gray-900">
@@ -116,7 +116,7 @@ import {
   TableCell,
   TableAction,
 } from "@/Components/Table";
-import DocumentIcon from "@/Components/Icons/DocumentIcon.vue";
+import { File } from "lucide-vue-next";
 
 const props = defineProps({
   documents: {
