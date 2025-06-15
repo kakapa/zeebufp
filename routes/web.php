@@ -14,9 +14,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::name('guest')->group(function () {
     Route::get('/', [HomeController::class, 'showHome']);
-    Route::get('/about', [HomeController::class, 'showAbout']);
-    Route::get('/contact', [HomeController::class, 'showContact']);
-    Route::get('/resume', [HomeController::class, 'showResume']);
+    //Route::get('/about', [HomeController::class, 'showAbout']);
+    //Route::get('/contact', [HomeController::class, 'showContact']);
+    //Route::get('/resume', [HomeController::class, 'showResume']);
 });
 
 Route::middleware(['auth', MustVerifyMobileNumber::class, 'verified', UpdateProfileOfNewlyRegisteredUser::class])

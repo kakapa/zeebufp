@@ -16,7 +16,7 @@
         </p>
         <div class="mt-8 p-4 bg-purple-100 rounded-lg inline-block">
           <p class="text-purple-800 font-semibold">
-            Children under 18 are FREE under their parent's cover
+            Children under 18 are can only be under their parent's cover
           </p>
         </div>
       </div>
@@ -144,7 +144,7 @@
 <script setup>
 const packages = [
   {
-    name: "Basic",
+    name: "Single",
     price: "R49",
     description: "Essential funeral coverage for peace of mind",
     features: [
@@ -155,8 +155,8 @@ const packages = [
     ],
   },
   {
-    name: "Standard",
-    price: "R79",
+    name: "Basic",
+    price: "R200",
     description: "Comprehensive coverage for most families",
     features: [
       "Enhanced funeral service",
@@ -169,8 +169,8 @@ const packages = [
     popular: true,
   },
   {
-    name: "Premium",
-    price: "R129",
+    name: "Standard",
+    price: "R350",
     description: "Deluxe service with additional benefits",
     features: [
       "Deluxe funeral service",
@@ -184,8 +184,8 @@ const packages = [
     ],
   },
   {
-    name: "Executive",
-    price: "R199",
+    name: "Premium",
+    price: "R470",
     description: "Premium service with exclusive benefits",
     features: [
       "Executive funeral service",
@@ -200,8 +200,8 @@ const packages = [
     ],
   },
   {
-    name: "Extended Family Pack",
-    price: "R299",
+    name: "Executive",
+    price: "R550",
     description: "Comprehensive coverage for up to 15 family members",
     features: [
       "Covers up to 15 members",

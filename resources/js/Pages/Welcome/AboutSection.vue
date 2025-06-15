@@ -50,9 +50,9 @@
             </h2>
 
             <p class="text-lg sm:text-xl text-gray-600 leading-relaxed">
-              For years, we have provided professional, reliable caring, both
-              local and international transportation for both alive and our
-              beloved who have passed away. We are passionate about our work.
+              For years, we have provided professional, reliable caring, along
+              with transportation for both alive and our beloved who have passed
+              away. We are passionate about our work.
             </p>
 
             <p class="text-base sm:text-lg text-gray-600 leading-relaxed">
@@ -85,11 +85,9 @@
                 <span class="text-white font-bold text-lg sm:text-xl">✓</span>
               </div>
               <h4 class="font-semibold text-gray-900 text-base sm:text-lg">
-                Local & International
+                Transportation
               </h4>
-              <p class="text-xs sm:text-sm text-gray-600">
-                Transportation services
-              </p>
+              <p class="text-xs sm:text-sm text-gray-600">Luxury vehicles</p>
             </div>
 
             <div class="space-y-2">
@@ -99,7 +97,7 @@
                 <span class="text-white font-bold text-lg sm:text-xl">✓</span>
               </div>
               <h4 class="font-semibold text-gray-900 text-base sm:text-lg">
-                Affordable Plans
+                Affordable Packages
               </h4>
               <p class="text-xs sm:text-sm text-gray-600">
                 Starting from R49/month

@@ -91,7 +91,7 @@
     <h3>2. Eligibility</h3>
     <p>Applicants must be South African citizens or legal residents aged 18 and above.</p>
 
-    <h3>3. Subscription Plans</h3>
+    <h3>3. Subscription Packages</h3>
     <p>Subscribers must select from available packages and disclose all required personal and beneficiary details.</p>
 
     <h3>4. Payments</h3>

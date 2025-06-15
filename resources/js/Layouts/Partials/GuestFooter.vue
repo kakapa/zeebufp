@@ -15,7 +15,7 @@
           </p>
           <div class="flex items-center space-x-4 text-gray-300">
             <Phone />
-            <span class="font-semibold">083 653 2025</span>
+            <span class="font-semibold">083 876 7800</span>
           </div>
         </div>
 
@@ -72,14 +72,14 @@
         <div>
           <h3 class="text-lg font-semibold mb-4">Our Packages</h3>
           <ul class="space-y-2 text-gray-300">
-            <li>Basic - R49/month</li>
-            <li>Standard - R79/month</li>
-            <li>Premium - R129/month</li>
-            <li>Executive - R199/month</li>
-            <li>Extended Family - R299/month</li>
+            <li>Single - R49/month</li>
+            <li>Basic - R200/month</li>
+            <li>Standard - R350/month</li>
+            <li>Premium - R470/month</li>
+            <li>Executive - R550/month</li>
           </ul>
           <p class="text-sm text-gray-400 mt-4">
-            Children under 18 are FREE under parent's cover
+            Children under 18 are can only be under their parent's cover
           </p>
         </div>
       </div>

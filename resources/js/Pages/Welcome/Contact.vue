@@ -46,13 +46,13 @@
                   Emergency Contact
                 </h3>
                 <div class="text-2xl md:text-3xl font-bold mb-2">
-                  083 653 2025
+                  083 876 7800
                 </div>
                 <p class="text-white/90 mb-4">
                   Available 24 hours a day, 7 days a week
                 </p>
                 <a
-                  href="tel:0836532025"
+                  href="tel:0838767800"
                   class="inline-flex items-center justify-center bg-white text-purple-800 hover:bg-gray-100 px-6 py-3 rounded-lg font-medium transition-colors"
                 >
                   <svg
