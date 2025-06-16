@@ -41,6 +41,7 @@ class PackageController extends Controller
 
         // Clear the cache to ensure the new package is available
         Cache::forget('packages');
+        Cache::forget('mainActivePackages');
 
         return redirect()->route('dashboard')
             ->with('success', 'Package created successfully.')
@@ -74,6 +75,7 @@ class PackageController extends Controller
 
         // Clear the cache to ensure the new package is available
         Cache::forget('packages');
+        Cache::forget('mainActivePackages');
 
         return redirect()->route('dashboard')
             ->with('success', 'Package updated successfully.')
@@ -92,6 +94,7 @@ class PackageController extends Controller
 
         // Clear the cache to ensure the new package is available
         Cache::forget('packages');
+        Cache::forget('mainActivePackages');
 
         return redirect()->route('dashboard')
             ->with('success', 'Package deleted successfully.');

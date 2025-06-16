@@ -65,7 +65,6 @@ import InputError from "@/Components/Ui/InputError.vue";
 import InputLabel from "@/Components/Ui/InputLabel.vue";
 import NumberInput from "@/Components/Ui/NumberInput.vue";
 import SearchableSelect from "@/Components/Ui/SearchableSelect.vue";
-import Select from "@/Components/Ui/Select.vue";
 import TextAreaInput from "@/Components/Ui/TextAreaInput.vue";
 
 const props = defineProps({

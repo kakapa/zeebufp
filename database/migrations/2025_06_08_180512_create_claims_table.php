@@ -13,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('claims', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->unsignedBigInteger('client_id');
             $table->unsignedBigInteger('user_id')->nullable(); // Claim Officer
             $table->string('slug')->unique();

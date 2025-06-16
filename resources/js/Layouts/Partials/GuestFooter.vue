@@ -15,7 +15,7 @@
           </p>
           <div class="flex items-center space-x-4 text-gray-300">
             <Phone />
-            <span class="font-semibold">083 876 7800</span>
+            <span class="font-semibold">083 867 7800</span>
           </div>
         </div>
 
@@ -79,7 +79,7 @@
             <li>Executive - R550/month</li>
           </ul>
           <p class="text-sm text-gray-400 mt-4">
-            Children under 18 are can only be under their parent's cover
+            Add bus, car, cow, catering at extra monthly costs
           </p>
         </div>
       </div>

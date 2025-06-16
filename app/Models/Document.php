@@ -2,22 +2,29 @@
 
 namespace App\Models;
 
-use App\Enums\ClaimStatusEnums;
-use App\Enums\ClaimTypeEnums;
+use App\Enums\DocumentStatusEnums;
+use App\Enums\DocumentTypeEnums;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Claim extends Model
+class Document extends Model
 {
     use HasFactory, HasUuids;
 
     /**
-     * The attributes that are guarded from mass assignable.
+     * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-    protected $guarded = [];
+    protected $fillable = [
+        'name',
+        'mime',
+        'type',
+        'size',
+        'status',
+        'path'
+    ];
 
     /**
      * The attributes that should be cast.
@@ -27,9 +34,8 @@ class Claim extends Model
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
-        'submission_at' => 'date',
-        'type' => ClaimTypeEnums::class,
-        'status' => ClaimStatusEnums::class
+        'type' => DocumentTypeEnums::class,
+        'status' => DocumentStatusEnums::class,
     ];
 
     /**
@@ -39,26 +45,16 @@ class Claim extends Model
      */
     public function getRouteKeyName()
     {
-        return 'slug';
+        return 'id';
     }
 
     /**
-     * Claim belongsTo Client.
+     * Document morphTo Client, Account, Payment, Claim.
      *
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
-    public function client()
+    public function documentable()
     {
-        return $this->belongsTo(\App\Models\Client::class);
-    }
-
-    /**
-     * Claim belongsTo User.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\Relation
-     */
-    public function user()
-    {
-        return $this->belongsTo(\App\Models\User::class);
+        return $this->morphTo();
     }
 }

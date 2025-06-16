@@ -46,12 +46,12 @@ class Package extends Model
     }
 
     /**
-     * Package belongsToMany Client.
+     * Package hasMany Account.
      *
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
-    public function Package()
+    public function accounts()
     {
-        //return $this->belongsTo(\App\Models\Model::class);
+        return $this->hasMany(\App\Models\Account::class);
     }
 }

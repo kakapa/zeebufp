@@ -15,7 +15,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('payments', function (Blueprint $table) {
-            $table->ulid('id')->primary();
+            $table->uuid('id')->primary();
             $table->string('slug')->unique();  // Payment ID in frontend
             $table->uuid('account_id')->nullable();
             $table->uuid('claim_id')->nullable();

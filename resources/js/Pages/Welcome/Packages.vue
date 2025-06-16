@@ -14,11 +14,6 @@
           needs and budgets. All packages include our commitment to dignity and
           professional service.
         </p>
-        <div class="mt-8 p-4 bg-purple-100 rounded-lg inline-block">
-          <p class="text-purple-800 font-semibold">
-            Children under 18 are can only be under their parent's cover
-          </p>
-        </div>
       </div>
 
       <div class="flex space-x-6 overflow-x-auto scrollbar-hide pb-8 pt-8">
@@ -57,7 +52,7 @@
             <h3 class="text-2xl font-bold text-gray-800">{{ pkg.name }}</h3>
             <div class="mt-4">
               <span class="text-4xl font-bold text-purple-800">{{
-                pkg.price
+                pkg.monthlyContributionNoFloatString
               }}</span>
               <span class="text-gray-600">/month</span>
             </div>
@@ -66,7 +61,7 @@
 
           <ul class="space-y-3 my-6 text-left">
             <li
-              v-for="(feature, index) in pkg.features"
+              v-for="(feature, index) in pkg.featuresArray"
               :key="index"
               class="flex items-center"
             >
@@ -88,7 +83,7 @@
             </li>
           </ul>
 
-          <inertia-link
+          <Link
             href="#"
             class="block w-full text-center py-3 px-6 rounded-lg font-semibold text-white transition-colors duration-300"
             :class="
@@ -98,7 +93,7 @@
             "
           >
             Choose {{ pkg.name }}
-          </inertia-link>
+          </Link>
         </div>
       </div>
 
@@ -111,27 +106,25 @@
             <div>
               <h4 class="font-semibold text-gray-800 mb-2">Waiting Period</h4>
               <p class="text-gray-600">
-                3 months waiting period applies to all new policies
+                No waiting period if you immigrate to us T's and C's
               </p>
             </div>
             <div>
               <h4 class="font-semibold text-gray-800 mb-2">Age Coverage</h4>
-              <p class="text-gray-600">
-                Maximum age covered is 85 years old (85+ require own cover)
-              </p>
+              <p class="text-gray-600">We have no age limit for coverage</p>
             </div>
             <div>
               <h4 class="font-semibold text-gray-800 mb-2">
-                Immediate Benefits
+                Addtional services (with costs)
               </h4>
               <p class="text-gray-600">
-                R300 airtime and R1500 groceries payout after collection
+                Add bus, car, cow, catering at extra monthly costs
               </p>
             </div>
             <div>
               <h4 class="font-semibold text-gray-800 mb-2">Cash Back</h4>
               <p class="text-gray-600">
-                Cash back from principal members' plan after first 5 years
+                Cash back from principal members' plan of R5000
               </p>
             </div>
           </div>
@@ -142,79 +135,11 @@
 </template>
 
 <script setup>
-const packages = [
-  {
-    name: "Single",
-    price: "R49",
-    description: "Essential funeral coverage for peace of mind",
-    features: [
-      "Basic funeral service",
-      "Transportation included",
-      "Documentation assistance",
-      "Family support",
-    ],
-  },
-  {
-    name: "Basic",
-    price: "R200",
-    description: "Comprehensive coverage for most families",
-    features: [
-      "Enhanced funeral service",
-      "Premium transportation",
-      "Documentation assistance",
-      "Family support",
-      "Memorial service",
-      "Grief counseling",
-    ],
-    popular: true,
-  },
-  {
-    name: "Standard",
-    price: "R350",
-    description: "Deluxe service with additional benefits",
-    features: [
-      "Deluxe funeral service",
-      "Luxury transportation",
-      "Complete documentation",
-      "24/7 family support",
-      "Memorial service",
-      "Grief counseling",
-      "Catering services",
-      "Floral arrangements",
-    ],
-  },
-  {
-    name: "Premium",
-    price: "R470",
-    description: "Premium service with exclusive benefits",
-    features: [
-      "Executive funeral service",
-      "VIP transportation",
-      "Full documentation support",
-      "Dedicated family liaison",
-      "Premium memorial service",
-      "Extended grief counseling",
-      "Full catering services",
-      "Premium floral arrangements",
-      "Photography services",
-    ],
-  },
-  {
-    name: "Executive",
-    price: "R550",
-    description: "Comprehensive coverage for up to 15 family members",
-    features: [
-      "Covers up to 15 members",
-      "All Executive benefits",
-      "Multi-generational coverage",
-      "Priority booking",
-      "Annual health check support",
-      "Emergency assistance",
-      "Legal documentation help",
-      "Estate planning guidance",
-    ],
-  },
-];
+const props = defineProps({
+  packages: Array,
+});
+
+console.log(props.packages);
 </script>
 
 <style scoped>

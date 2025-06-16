@@ -34,7 +34,6 @@ return new class extends Migration
             $table->string('education_level')->nullable(); //ENUM:
             $table->boolean('disability')->default(false);
             $table->text('about')->nullable();
-            $table->string('source')->nullable(); //ENUM: How did you know about SANCO?
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('mobile_verified_at')->nullable();
             $table->timestamp('profiled_at')->nullable();

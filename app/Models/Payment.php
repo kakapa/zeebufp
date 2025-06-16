@@ -5,13 +5,13 @@ namespace App\Models;
 use App\Enums\PaymentMethodEnums;
 use App\Enums\PaymentStatusEnums;
 use App\Enums\PaymentTypeEnums;
-use Illuminate\Database\Eloquent\Concerns\HasUlids;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Payment extends Model
 {
-    use HasFactory, HasUlids;
+    use HasFactory, HasUuids;
 
     /**
      * The attributes that are guarded from mass assignable.

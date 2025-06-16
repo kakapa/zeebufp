@@ -22,17 +22,19 @@ class PackageResource extends JsonResource
             'contribution' => $this->contribution,
             'coverage' => $this->coverage,
             'features' => $this->features,
+            'notes' => $this->notes,
             'status' => $this->status,
             'main' => (bool) $this->main,
+            'popular' => (bool) $this->popular,
 
             // Ui labels and other mutated properties
             'id' => $this->slug,
             'featuresArray' => explode(', ', $this->features),
             'coverageAmountString' => sprintf('%s%.2f', 'R', $this->coverage),
             'monthlyContributionString' => sprintf('%s%.2f', 'R', $this->contribution),
-            'subscribers' => 0, // Placeholder for subscribers count, adjust as needed
+            'monthlyContributionNoFloatString' => sprintf('%s%s', 'R', number_format($this->contribution, 0)),
+            'subscribers' => $this->accounts()->count(),
             'statusLabel' => $this->status->label(),
-
         ];
     }
 }

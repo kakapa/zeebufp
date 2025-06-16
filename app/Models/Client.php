@@ -7,12 +7,13 @@ use App\Enums\ClientSourceEnums;
 use App\Enums\ClientStatusEnums;
 use App\Enums\ClientTitleEnums;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Client extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
 
     /**
      * The attributes that are guarded from mass assignable.

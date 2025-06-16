@@ -18,9 +18,11 @@ return new class extends Migration
             $table->text('description');
             $table->decimal('contribution', 10, 2);
             $table->decimal('coverage', 10, 2);
-            $table->string('features');
+            $table->text('features');
             $table->string('status')->default('active');
-            $table->boolean('main')->default(false); // Indicates if this is the main package
+            $table->text('notes')->nullable();
+            $table->boolean('main')->default(false); // Indicates main package
+            $table->boolean('popular')->default(false); // Indicates recommended package
         });
     }
 

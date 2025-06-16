@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ClaimController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PaymentController;
@@ -31,9 +32,7 @@ Route::middleware('auth')->group(function () {
         return inertia('Settings');
     })->name('settings');
 
-    Route::get('/documents', function () {
-        return inertia('Documents/Index');
-    })->name('documents');
+    Route::resource('documents', DocumentController::class);
 
     Route::resource('packages', PackageController::class);
 

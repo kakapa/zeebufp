@@ -46,10 +46,10 @@
       <!-- Call to Action -->
       <div class="text-center mt-12">
         <Link
-          href="/services"
+          href="#contact"
           class="bg-yellow-400 hover:bg-yellow-500 text-black px-8 py-3 rounded-lg font-semibold transition-colors duration-300"
         >
-          View Services
+          Talk to us
         </Link>
       </div>
     </div>
@@ -73,12 +73,6 @@ const services = [
     description: "Beautiful floral arrangements for your loved ones",
   },
   {
-    title: "Catering",
-    image:
-      "/images/service_catering.jpg?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    description: "Professional catering services for memorial gatherings",
-  },
-  {
     title: "Graveside Decor",
     image:
       "/images/service_decor.jpg?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
@@ -89,6 +83,12 @@ const services = [
     image:
       "/images/service_cars.jpg?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
     description: "Premium transportation for funeral services",
+  },
+  {
+    title: "Other Services",
+    image:
+      "/images/service_catering.jpg?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+    description: "We may offer addtional services according to your needs",
   },
 ];
 </script>

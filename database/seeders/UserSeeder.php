@@ -15,6 +15,7 @@ class UserSeeder extends Seeder
         $seeds = [
             [
                 'id'    => 1,
+                'role_id' => 4,
                 'fullnames' => 'Molotsi Paul',
                 'initials' => 'MP',
                 'surname' => 'Pilane',

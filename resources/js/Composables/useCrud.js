@@ -46,42 +46,39 @@ export default function useCrud(
       isEditing.value ? form.id : undefined
     );
 
-    form[method](url, {
-      preserveScroll: true,
-      onSuccess: (response) => {
-        const updatedOrNewItem =
-          response.props?.[singleResource] ||
-          response.data?.[singleResource] ||
-          response.data || // fallback
-          {};
-
-        if (isEditing.value) {
-          const index = itemsRef.value.findIndex((i) => i.id === form.id);
-          if (index !== -1) itemsRef.value[index] = updatedOrNewItem;
-        } else {
-          itemsRef.value.push(updatedOrNewItem);
-        }
-
-        toast.success(
-          `${
-            isEditing.value ? "Updated" : "Created"
-          } ${singleResource} successfully.`
-        );
-        resetForm();
-      },
-      onError: () => {
-        toast.error(
-          `Failed to ${
-            isEditing.value ? "update" : "create"
-          } ${singleResource}.`
-        );
-        // console.error(error);
-        console.error(`Error details: ${JSON.stringify(form.errors, null, 2)}`);
-      },
-      onFinish: () => {
-        loading.value = false;
-      },
-    });
+    // Only use headers if there's actually a file
+    if (form.file) {
+      form[method](url, {
+        preserveScroll: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        onSuccess: handleSuccess,
+        //onError: handleError,
+        onFinish: () => {
+          loading.value = false;
+        },
+      });
+    } else {
+      form[method](url, {
+        preserveScroll: true,
+        onSuccess: handleSuccess,
+        onError: () => {
+          toast.error(
+            `Failed to ${
+              isEditing.value ? "update" : "create"
+            } ${singleResource}.`
+          );
+          // console.error(error);
+          console.error(
+            `Error details: ${JSON.stringify(form.errors, null, 2)}`
+          );
+        },
+        onFinish: () => {
+          loading.value = false;
+        },
+      });
+    }
   };
 
   const handleDelete = (id) => {
@@ -98,6 +95,28 @@ export default function useCrud(
         toast.error(`Failed to delete ${singleResource}.`);
       },
     });
+  };
+
+  const handleSuccess = (response) => {
+    const updatedOrNewItem =
+      response.props?.[singleResource] ||
+      response.data?.[singleResource] ||
+      response.data || // fallback
+      {};
+
+    if (isEditing.value) {
+      const index = itemsRef.value.findIndex((i) => i.id === form.id);
+      if (index !== -1) itemsRef.value[index] = updatedOrNewItem;
+    } else {
+      itemsRef.value.push(updatedOrNewItem);
+    }
+
+    toast.success(
+      `${
+        isEditing.value ? "Updated" : "Created"
+      } ${singleResource} successfully.`
+    );
+    resetForm();
   };
 
   const resetForm = () => {

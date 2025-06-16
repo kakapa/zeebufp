@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Console\Application;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -22,32 +24,21 @@ class HomeController extends Controller
     public function showHome()
     {
         return Inertia::render('Welcome', [
-            'canLogin' => Route::has('login'),
-            'canRegister' => Route::has('register')
+            'mainActivePackages' => Cache::rememberForever('mainActivePackages', function () {
+                return \App\Http\Resources\PackageResource::collection(
+                    \App\Models\Package::where('main', true)
+                        ->where('status', 'active')
+                        ->get()
+                );
+            })
         ]);
     }
 
     /**
-     * Show about page
+     * Submit contact form
      */
-    public function showAbout()
+    public function submitContactForm(Request $request)
     {
-        return Inertia::render('About');
-    }
-
-    /**
-     * Show contact page
-     */
-    public function showContact()
-    {
-        return Inertia::render('Contact');
-    }
-
-    /**
-     * Show resume page
-     */
-    public function showResume()
-    {
-        return Inertia::render('Resume', ['name' => 'Molotsi Paul Pilane']);
+        return;
     }
 }

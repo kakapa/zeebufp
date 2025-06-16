@@ -13,7 +13,7 @@
       <ServicesSection />
 
       <!-- Packages Section -->
-      <Packages />
+      <Packages :packages="mainActivePackages" />
 
       <!-- Contact Section -->
       <Contact />
@@ -28,4 +28,8 @@ import AboutSection from "./Welcome/AboutSection.vue";
 import ServicesSection from "./Welcome/ServicesSection.vue";
 import Contact from "./Welcome/Contact.vue";
 import Packages from "./Welcome/Packages.vue";
+
+defineProps({
+  mainActivePackages: Array,
+});
 </script>

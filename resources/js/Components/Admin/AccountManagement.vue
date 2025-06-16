@@ -100,16 +100,6 @@ import SearchBox from "../Ui/SearchBox.vue";
 import AddButton from "../Ui/AddButton.vue";
 import DialogModal from "../Ui/DialogModal.vue";
 import useCrud from "@/Composables/useCrud";
-
-import {
-  Plus,
-  Eye,
-  CheckCircle,
-  XCircle,
-  Clock,
-  DollarSign,
-  Search,
-} from "lucide-vue-next";
 import StatsCard from "../Ui/StatsCard.vue";
 
 const props = defineProps({
@@ -146,7 +136,6 @@ const {
   form,
   isEditing,
   showDialog,
-  loading,
   handleEdit: handleEditAccount,
   handleSubmit: handleAddAccount,
   handleDelete: handleDeleteAccount,
