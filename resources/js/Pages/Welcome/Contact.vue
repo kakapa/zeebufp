@@ -190,13 +190,17 @@
                 >
                   Get In Touch
                 </h3>
-                <form class="space-y-4 md:space-y-6">
+                <form
+                  @submit.prevent="handleContactForm"
+                  class="space-y-4 md:space-y-6"
+                >
                   <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2"
                       >Name</label
                     >
                     <input
                       type="text"
+                      v-model="form.name"
                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                       placeholder="Your full name"
                     />
@@ -207,6 +211,7 @@
                     >
                     <input
                       type="tel"
+                      v-model="form.phone"
                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                       placeholder="Your phone number"
                     />
@@ -217,6 +222,7 @@
                     >
                     <input
                       type="email"
+                      v-model="form.email"
                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                       placeholder="Your email address"
                     />
@@ -227,12 +233,17 @@
                     >
                     <textarea
                       rows="4"
+                      v-model="form.message"
                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                       placeholder="How can we help you?"
                     ></textarea>
                   </div>
                   <button
                     type="submit"
+                    :class="{
+                      disabled: form.processing,
+                      'opacity-25': form.processing,
+                    }"
                     class="w-full bg-purple-800 hover:bg-purple-900 text-white px-6 py-3 rounded-lg font-medium transition-colors"
                   >
                     Send Message
@@ -315,3 +326,29 @@
     </div>
   </section>
 </template>
+
+<script setup>
+import { useForm } from "@inertiajs/vue3";
+import { useToast } from "vue-toast-notification";
+
+const form = useForm({
+  name: "",
+  phone: "",
+  email: "",
+  message: "",
+});
+
+const toast = useToast();
+
+const handleContactForm = () => {
+  form.post(route("contact"), {
+    preserveScroll: true,
+    onSuccess: () => {
+      toast.success("Message sent, thank you contacting us!", {
+        position: "top-right",
+      });
+      form.reset();
+    },
+  });
+};
+</script>

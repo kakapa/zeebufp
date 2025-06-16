@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\SubmitContactForm;
 use Illuminate\Console\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -39,6 +41,17 @@ class HomeController extends Controller
      */
     public function submitContactForm(Request $request)
     {
-        return;
+        // Validate
+        $validated = $request->validate([
+            'name' => 'required|string|min:1|max:60',
+            'phone' => 'required|string|min:10|max:10',
+            'email' => 'required|email|min:1|max:60',
+            'message' => 'required|string|min:1|max:300'
+        ]);
+
+        // Send email to admin
+        Mail::to($validated['email'])->send(new SubmitContactForm($validated));
+
+        return redirect()->back();
     }
 }

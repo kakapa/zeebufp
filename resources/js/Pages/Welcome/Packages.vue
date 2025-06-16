@@ -138,8 +138,6 @@
 const props = defineProps({
   packages: Array,
 });
-
-console.log(props.packages);
 </script>
 
 <style scoped>
