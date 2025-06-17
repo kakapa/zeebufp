@@ -78,4 +78,12 @@ class DashboardController extends Controller
     {
         return inertia('Messages');
     }
+
+    /**
+     * Show notifications page
+     */
+    public function showNotifications()
+    {
+        return inertia('Notifications');
+    }
 }

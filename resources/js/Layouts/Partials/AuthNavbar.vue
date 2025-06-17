@@ -7,7 +7,7 @@
         <!-- Mobile sidebar toggle button -->
         <button
           @click="$emit('toggle-sidebar')"
-          class="md:hidden p-1 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          class="md:hidden p-1 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500"
         >
           <Menu class="h-5 w-5 text-gray-600" />
         </button>
@@ -27,117 +27,15 @@
           <input
             type="search"
             placeholder="Search clients..."
-            class="border border-gray-300 rounded-md pl-8 sm:pl-10 pr-2 sm:pr-4 py-1.5 sm:py-2 w-full text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            class="border border-gray-300 rounded-md pl-8 sm:pl-10 pr-2 sm:pr-4 py-1.5 sm:py-2 w-full text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
           />
         </div>
       </div>
 
       <!-- Right side - Actions and user menu -->
       <div class="flex items-center gap-1 sm:gap-3">
-        <!-- Quick Actions Dropdown - Hidden on small screens -->
-        <div class="hidden lg:block relative">
-          <button
-            @click="toggleQuickActions"
-            class="flex items-center text-sm px-3 py-1.5 rounded-md hover:bg-gray-100"
-          >
-            Quick Actions
-            <ChevronDown class="ml-1 h-3 w-3" />
-          </button>
-
-          <!-- Quick Actions Dropdown Menu -->
-          <div
-            v-show="showQuickActions"
-            class="absolute top-full right-0 mt-1 w-64 bg-white rounded-md shadow-lg border border-gray-200 z-20"
-          >
-            <div class="p-2 space-y-1">
-              <Link
-                href="/admin/clients/create"
-                class="flex items-center w-full px-3 py-2 text-sm rounded hover:bg-gray-100"
-              >
-                <User class="mr-2 h-4 w-4" />
-                Add New Client
-              </Link>
-              <Link
-                href="/admin/messages/compose"
-                class="flex items-center w-full px-3 py-2 text-sm rounded hover:bg-gray-100"
-              >
-                <MessageCircle class="mr-2 h-4 w-4" />
-                Send Message
-              </Link>
-              <Link
-                href="/admin/reminders/create"
-                class="flex items-center w-full px-3 py-2 text-sm rounded hover:bg-gray-100"
-              >
-                <Bell class="mr-2 h-4 w-4" />
-                Create Reminder
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        <!-- Messages Dropdown -->
-        <div class="relative">
-          <button
-            @click="toggleMessages"
-            class="p-2 rounded-full hover:bg-gray-100 relative"
-          >
-            <MessageCircle class="h-6 w-6 sm:h-6 sm:w-6" />
-            <span
-              v-if="unreadMessages > 0"
-              class="absolute -top-0.5 -right-0.5 h-4 w-4 sm:h-5 sm:w-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center"
-            >
-              {{ unreadMessages }}
-            </span>
-          </button>
-
-          <!-- Messages Dropdown Menu -->
-          <div
-            v-show="showMessages"
-            class="absolute right-0 mt-2 w-72 sm:w-80 bg-white rounded-md shadow-lg border border-gray-200 z-20"
-          >
-            <div class="py-1">
-              <h3
-                class="px-4 py-2 text-sm font-medium border-b border-gray-200"
-              >
-                Messages ({{ unreadMessages }} unread)
-              </h3>
-              <div class="max-h-96 overflow-y-auto">
-                <div
-                  v-for="message in messages"
-                  :key="message.id"
-                  class="px-4 py-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
-                >
-                  <div class="flex justify-between items-start">
-                    <div class="flex-1 min-w-0">
-                      <p class="font-medium text-sm truncate">
-                        {{ message.sender }}
-                      </p>
-                      <p class="text-xs text-gray-600 mt-1 break-words">
-                        {{ message.message }}
-                      </p>
-                    </div>
-                    <span
-                      v-if="message.unread"
-                      class="w-2 h-2 bg-blue-600 rounded-full ml-2 mt-1 flex-shrink-0"
-                    ></span>
-                  </div>
-                  <span class="text-xs text-gray-500 mt-1 block">{{
-                    message.time
-                  }}</span>
-                </div>
-              </div>
-              <div class="px-4 py-2 border-t border-gray-200 text-center">
-                <Link
-                  href="/admin/messages"
-                  class="text-sm text-blue-600 hover:underline"
-                >
-                  View all messages
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-
+        <!-- Quick Actions Dropdown Here - Hidden on small screens -->
+        <!-- Messages Dropdown Here -->
         <!-- Notifications Dropdown -->
         <div class="relative">
           <button
@@ -178,14 +76,14 @@
                   }}</span>
                   <span
                     v-if="notification.unread"
-                    class="w-2 h-2 bg-blue-600 rounded-full ml-2 mt-1 flex-shrink-0"
+                    class="w-2 h-2 bg-primary-600 rounded-full ml-2 mt-1 flex-shrink-0"
                   ></span>
                 </div>
               </div>
               <div class="px-4 py-2 border-t border-gray-200 text-center">
                 <Link
-                  href="/admin/notifications"
-                  class="text-sm text-blue-600 hover:underline"
+                  href="/notifications"
+                  class="text-sm text-primary-600 hover:underline"
                 >
                   View all notifications
                 </Link>
@@ -226,7 +124,7 @@
               </h3>
               <div class="border-b border-gray-200">
                 <Link
-                  href="/admin/settings"
+                  href="/settings"
                   class="flex items-center px-4 py-2 text-sm hover:bg-gray-100"
                 >
                   <Settings class="mr-2 h-4 w-4" />
@@ -353,5 +251,5 @@ const messages = ref([
 
 // Computed unread counts
 const unreadNotifications = notifications.value.filter((n) => n.unread).length;
-const unreadMessages = messages.value.filter((m) => m.unread).length;
+//const unreadMessages = messages.value.filter((m) => m.unread).length;
 </script>

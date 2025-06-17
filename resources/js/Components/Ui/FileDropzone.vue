@@ -3,7 +3,7 @@
     class="border-2 border-dashed rounded-lg p-6 transition-all"
     :class="{
       'border-gray-300 bg-gray-50': !isDragging,
-      'border-blue-500 bg-blue-50': isDragging,
+      'border-primary-500 bg-primary-50': isDragging,
       'border-red-500 bg-red-50': error,
     }"
     @dragover.prevent="handleDragOver"
@@ -15,7 +15,7 @@
       <div class="mt-4 flex justify-center text-sm text-gray-600">
         <label
           for="file-upload"
-          class="relative cursor-pointer rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none"
+          class="relative cursor-pointer rounded-md font-medium text-primary-600 hover:text-primary-500 focus-within:outline-none"
         >
           <span>Upload a file</span>
           <input

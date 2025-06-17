@@ -2,16 +2,20 @@
   <AuthenticatedLayout>
     <Head title="Settings" />
 
-    <div class="min-h-screen bg-gray-50">
-      <div class="bg-white shadow-sm border-b">
-        <div class="container mx-auto px-4 py-4">
-          <div class="flex items-center justify-between">
-            <h1 class="text-2xl font-bold text-gray-900">Settings</h1>
-          </div>
+    <div class="container mx-auto px-4 py-8 space-y-6">
+      <!-- Header and Stats -->
+      <div
+        class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+      >
+        <div>
+          <h2 class="text-2xl font-bold">Settings</h2>
+          <p class="text-gray-600">
+            Manage personal information, system preferences, and credentials.
+          </p>
         </div>
       </div>
 
-      <div class="container mx-auto px-4 py-8">
+      <div class="container mx-auto">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <!-- Sidebar Navigation -->
           <div class="lg:col-span-1">
@@ -22,7 +26,8 @@
                     @click="activeTab = tab.id"
                     class="w-full px-4 py-3 text-left text-sm font-medium"
                     :class="{
-                      'bg-blue-50 text-blue-700': activeTab === tab.id,
+                      'bg-secondary-50 text-secondary-700':
+                        activeTab === tab.id,
                       'text-gray-700 hover:bg-gray-50': activeTab !== tab.id,
                     }"
                   >
@@ -65,7 +70,7 @@
                   </div>
                   <div>
                     <button
-                      class="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700"
+                      class="px-4 py-2 text-sm font-medium text-primary-600 hover:text-primary-700"
                     >
                       Upload new photo
                     </button>
@@ -88,7 +93,7 @@
                       id="name"
                       type="text"
                       v-model="profile.name"
-                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
                   </div>
                   <div>
@@ -101,7 +106,7 @@
                       id="email"
                       type="email"
                       v-model="profile.email"
-                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
                   </div>
                   <div>
@@ -114,7 +119,7 @@
                       id="phone"
                       type="tel"
                       v-model="profile.phone"
-                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
                   </div>
                   <div>
@@ -127,14 +132,14 @@
                       id="position"
                       type="text"
                       v-model="profile.position"
-                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
                   </div>
                 </div>
 
                 <div class="flex justify-end">
                   <button
-                    class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                    class="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
                   >
                     Save Changes
                   </button>
@@ -167,7 +172,7 @@
                         id="current_password"
                         type="password"
                         v-model="security.currentPassword"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                       />
                     </div>
                     <div>
@@ -180,7 +185,7 @@
                         id="new_password"
                         type="password"
                         v-model="security.newPassword"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                       />
                     </div>
                     <div>
@@ -193,7 +198,7 @@
                         id="confirm_password"
                         type="password"
                         v-model="security.confirmPassword"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                       />
                     </div>
                   </div>
@@ -216,7 +221,7 @@
                       "
                       class="relative inline-flex h-6 w-11 items-center rounded-full"
                       :class="{
-                        'bg-blue-600': security.twoFactorEnabled,
+                        'bg-primary-600': security.twoFactorEnabled,
                         'bg-gray-200': !security.twoFactorEnabled,
                       }"
                     >
@@ -236,7 +241,7 @@
 
                 <div class="flex justify-end">
                   <button
-                    class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                    class="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
                   >
                     Update Security
                   </button>
@@ -268,7 +273,7 @@
                       <select
                         id="timezone"
                         v-model="system.timezone"
-                        class="w-64 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        class="w-64 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                       >
                         <option value="UTC-5">Eastern Time (UTC-5)</option>
                         <option value="UTC-6">Central Time (UTC-6)</option>
@@ -285,7 +290,7 @@
                       <select
                         id="date_format"
                         v-model="system.dateFormat"
-                        class="w-64 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        class="w-64 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                       >
                         <option value="MM/DD/YYYY">MM/DD/YYYY</option>
                         <option value="DD/MM/YYYY">DD/MM/YYYY</option>
@@ -308,7 +313,7 @@
                         id="email_notifications"
                         type="checkbox"
                         v-model="system.emailNotifications"
-                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                       />
                     </div>
                     <div class="flex items-center justify-between">
@@ -321,7 +326,7 @@
                         id="sms_notifications"
                         type="checkbox"
                         v-model="system.smsNotifications"
-                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                       />
                     </div>
                     <div class="flex items-center justify-between">
@@ -334,7 +339,7 @@
                         id="push_notifications"
                         type="checkbox"
                         v-model="system.pushNotifications"
-                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                       />
                     </div>
                   </div>
@@ -342,7 +347,7 @@
 
                 <div class="flex justify-end">
                   <button
-                    class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                    class="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
                   >
                     Save Settings
                   </button>

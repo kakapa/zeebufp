@@ -15,16 +15,30 @@
         <div class="sidebar-group-content">
           <ul class="sidebar-menu">
             <li class="sidebar-menu-item">
-              <Link href="/dashboard" class="sidebar-menu-button">
+              <Link
+                href="/dashboard"
+                class="sidebar-menu-button"
+                :class="{
+                  'bg-secondary-100 text-secondary-600':
+                    $page.url === '/dashboard',
+                }"
+              >
                 <BarChart3 class="h-4 w-4" />
                 <span>Dashboard</span>
               </Link>
             </li>
 
             <li class="sidebar-menu-item">
-              <Link href="/messages" class="sidebar-menu-button">
-                <Mail class="h-4 w-4" />
-                <span>Messages</span>
+              <Link
+                href="/notifications"
+                class="sidebar-menu-button"
+                :class="{
+                  'bg-secondary-100 text-secondary-600':
+                    $page.url === '/notifications',
+                }"
+              >
+                <Bell class="h-4 w-4" />
+                <span>Notifications</span>
                 <span
                   class="ml-auto bg-red-500 text-white text-xs rounded-full px-2 py-1"
                   >5</span
@@ -32,13 +46,27 @@
               </Link>
             </li>
             <li class="sidebar-menu-item">
-              <Link href="/documents" class="sidebar-menu-button">
+              <Link
+                href="/documents"
+                class="sidebar-menu-button"
+                :class="{
+                  'bg-secondary-100 text-secondary-600':
+                    $page.url.startsWith('/documents'),
+                }"
+              >
                 <Database class="h-4 w-4" />
                 <span>Documents</span>
               </Link>
             </li>
             <li class="sidebar-menu-item">
-              <Link href="/settings" class="sidebar-menu-button">
+              <Link
+                href="/settings"
+                class="sidebar-menu-button"
+                :class="{
+                  'bg-secondary-100 text-secondary-600':
+                    $page.url.startsWith('/settings'),
+                }"
+              >
                 <Settings class="h-4 w-4" />
                 <span>Settings</span>
               </Link>
@@ -47,10 +75,17 @@
               class="sidebar-menu-item"
               v-if="$page.props.auth.user.role === 'admin'"
             >
-              <a href="/admin" class="sidebar-menu-button">
+              <Link
+                href="/admin"
+                class="sidebar-menu-button"
+                :class="{
+                  'bg-secondary-100 text-secondary-600':
+                    $page.url.startsWith('/admin'),
+                }"
+              >
                 <Shield class="h-4 w-4" />
                 <span>Admin Panel</span>
-              </a>
+              </Link>
             </li>
           </ul>
         </div>
@@ -63,7 +98,14 @@
         <div class="sidebar-group-content">
           <ul class="sidebar-menu">
             <li class="sidebar-menu-item">
-              <Link href="/admin/help" class="sidebar-menu-button">
+              <Link
+                href="/admin/help"
+                class="sidebar-menu-button"
+                :class="{
+                  'bg-secondary-100 text-secondary-600':
+                    $page.url === '/admin/help',
+                }"
+              >
                 <HelpCircle class="h-4 w-4" />
                 <span>Help & Support</span>
               </Link>
@@ -81,7 +123,7 @@
             href="/logout"
             method="post"
             as="button"
-            class="sidebar-menu-button w-full text-red-600 hover:text-red-700 hover:bg-red-50"
+            class="sidebar-menu-button w-full text-red-600 hover:text-red-700 hover:bg-red-50 focus:bg-red-50 focus:text-red-700"
           >
             <LogOut class="h-4 w-4" />
             <span>Logout</span>
@@ -96,20 +138,15 @@
 import { ref } from "vue";
 import {
   BarChart3,
-  Users,
-  Package,
-  DollarSign,
-  FileText,
   Settings,
-  ChevronRight,
   LogOut,
-  Mail,
-  UserCog,
   Shield,
   Database,
   HelpCircle,
+  Bell,
 } from "lucide-vue-next";
 import ApplicationLogo from "@/Components/Ui/ApplicationLogo.vue";
+import { Link } from "@inertiajs/vue3";
 
 defineProps({
   additionalClasses: {
@@ -176,7 +213,7 @@ const toggleExpand = (item) => {
 
 .sidebar-menu-button {
   @apply flex items-center gap-3 w-full px-3 py-2 text-sm font-medium rounded-md transition-colors;
-  @apply hover:bg-gray-100 text-gray-700 hover:text-gray-900;
+  @apply hover:bg-secondary-50 hover:text-secondary-600 focus:bg-secondary-50 focus:text-secondary-600;
 }
 
 .sidebar-menu-sub {
@@ -194,16 +231,5 @@ const toggleExpand = (item) => {
 
 .sidebar-separator {
   @apply border-t border-gray-200 my-2;
-}
-
-/* Active state for links */
-.router-link-active.sidebar-menu-button,
-.router-link-exact-active.sidebar-menu-button {
-  @apply bg-blue-50 text-blue-600;
-}
-
-.router-link-active.sidebar-menu-sub-button,
-.router-link-exact-active.sidebar-menu-sub-button {
-  @apply bg-gray-100 text-gray-900;
 }
 </style>

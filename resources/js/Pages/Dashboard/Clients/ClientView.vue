@@ -11,9 +11,9 @@
         <div class="flex items-start gap-6">
           <div class="flex-shrink-0">
             <div
-              class="h-24 w-24 rounded-full bg-blue-100 flex items-center justify-center"
+              class="h-24 w-24 rounded-full bg-primary-100 flex items-center justify-center"
             >
-              <span class="text-blue-600 text-3xl font-bold">
+              <span class="text-primary-600 text-3xl font-bold">
                 {{ client.initials }}
               </span>
             </div>

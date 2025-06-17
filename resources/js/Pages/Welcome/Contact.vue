@@ -341,7 +341,7 @@ const form = useForm({
 const toast = useToast();
 
 const handleContactForm = () => {
-  form.post(route("contact"), {
+  form.post("/contact", {
     preserveScroll: true,
     onSuccess: () => {
       toast.success("Message sent, thank you contacting us!", {

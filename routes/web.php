@@ -13,16 +13,18 @@ use App\Http\Middleware\MustVerifyMobileNumber;
 use App\Http\Middleware\UpdateProfileOfNewlyRegisteredUser;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('guest')->group(function () {
+Route::name('guest')->group(function () {
     Route::get('/', [HomeController::class, 'showHome']);
-    Route::post('/contact', [HomeController::class, 'submitContactForm'])->name('contact');
+    Route::post('/contact', [HomeController::class, 'submitContactForm']);
 });
 
 Route::middleware(['auth', MustVerifyMobileNumber::class, 'verified', UpdateProfileOfNewlyRegisteredUser::class])
     ->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'showDashboard'])->name('dashboard');
 
-        Route::get('/messages', [DashboardController::class, 'showMessages'])->name('messages');
+        Route::get('/notifications', [DashboardController::class, 'showNotifications'])->name('notifications');
+
+        //Route::get('/messages', [DashboardController::class, 'showMessages'])->name('messages');
     });
 
 Route::middleware('auth')->group(function () {

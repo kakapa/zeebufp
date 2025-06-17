@@ -72,7 +72,7 @@
         <div class="p-6 space-y-4">
           <!-- Pricing -->
           <div class="text-center p-4 bg-gray-50 rounded-lg">
-            <div class="text-3xl font-bold text-blue-600">
+            <div class="text-3xl font-bold text-primary-600">
               {{ pkg.monthlyContributionString }}
             </div>
             <div class="text-sm text-gray-600">per month</div>
@@ -83,13 +83,13 @@
 
           <!-- Subscribers -->
           <div
-            class="flex items-center justify-between p-3 bg-blue-50 rounded-lg"
+            class="flex items-center justify-between p-3 bg-secondary-50 rounded-lg"
           >
             <div class="flex items-center gap-2">
-              <Users class="h-4 w-4 text-blue-600" />
+              <Users class="h-4 w-4 text-secondary-600" />
               <span class="text-sm font-medium">Subscribers</span>
             </div>
-            <span class="text-lg font-bold text-blue-600">{{
+            <span class="text-lg font-bold text-secondary-600">{{
               pkg.subscribers
             }}</span>
           </div>
@@ -103,7 +103,7 @@
                 :key="index"
                 class="text-sm text-gray-600 flex items-center gap-2"
               >
-                <div class="w-1.5 h-1.5 bg-blue-600 rounded-full"></div>
+                <div class="w-1.5 h-1.5 bg-primary-600 rounded-full"></div>
                 {{ feature }}
               </li>
             </ul>

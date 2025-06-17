@@ -44,7 +44,7 @@
             :class="[
               'flex-1 py-3 px-4 text-sm font-medium flex items-center justify-center gap-2',
               activeTab === tab.value
-                ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-700'
+                ? 'bg-secondary-50 text-secondary-700 border-b-2 border-secondary-700'
                 : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50',
             ]"
           >

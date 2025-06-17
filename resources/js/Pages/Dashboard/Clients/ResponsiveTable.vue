@@ -18,9 +18,9 @@
           <div class="flex items-center">
             <div class="flex-shrink-0">
               <div
-                class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center"
+                class="h-10 w-10 rounded-full bg-primary-100 flex items-center justify-center"
               >
-                <span class="text-blue-600 font-medium">{{
+                <span class="text-primary-600 font-medium">{{
                   client.initials
                 }}</span>
               </div>

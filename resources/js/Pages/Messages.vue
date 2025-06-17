@@ -2,16 +2,20 @@
   <AuthenticatedLayout>
     <Head title="Messages" />
 
-    <div class="min-h-screen bg-gray-50">
-      <div class="bg-white shadow-sm border-b">
-        <div class="container mx-auto px-4 py-4">
-          <div class="flex items-center justify-between">
-            <h1 class="text-2xl font-bold text-gray-900">Messages</h1>
-          </div>
+    <div class="container mx-auto px-4 py-8 space-y-6">
+      <!-- Header and Stats -->
+      <div
+        class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+      >
+        <div>
+          <h2 class="text-2xl font-bold">Messages</h2>
+          <p class="text-gray-600">
+            Central hub for all system messages and notifications.
+          </p>
         </div>
       </div>
 
-      <div class="container mx-auto px-4 py-8">
+      <div class="container mx-auto">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <!-- Conversation List -->
           <div class="bg-white rounded-lg shadow overflow-hidden">
@@ -26,7 +30,7 @@
                 <input
                   type="text"
                   placeholder="Search messages..."
-                  class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
                 <Search class="h-4 w-4 text-gray-400 absolute left-3 top-3" />
               </div>
@@ -39,7 +43,7 @@
                 :key="conversation.id"
                 class="p-4 hover:bg-gray-50 cursor-pointer flex items-center space-x-3"
                 :class="{
-                  'bg-blue-50': activeConversation === conversation.id,
+                  'bg-secondary-50': activeConversation === conversation.id,
                 }"
                 @click="activeConversation = conversation.id"
               >
@@ -109,7 +113,7 @@
                   <div
                     class="max-w-xs lg:max-w-md px-4 py-2 rounded-lg"
                     :class="{
-                      'bg-blue-600 text-white': message.sender === 'admin',
+                      'bg-primary-600 text-white': message.sender === 'admin',
                       'bg-white border border-gray-200':
                         message.sender !== 'admin',
                     }"
@@ -118,7 +122,7 @@
                     <p
                       class="text-xs mt-1 text-right"
                       :class="{
-                        'text-blue-100': message.sender === 'admin',
+                        'text-primary-100': message.sender === 'admin',
                         'text-gray-500': message.sender !== 'admin',
                       }"
                     >
@@ -138,12 +142,12 @@
                     type="text"
                     v-model="newMessage"
                     placeholder="Type a message..."
-                    class="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500"
                     @keyup.enter="sendMessage"
                   />
                   <button
                     @click="sendMessage"
-                    class="p-2 rounded-full bg-blue-600 text-white hover:bg-blue-700"
+                    class="p-2 rounded-full bg-primary-600 text-white hover:bg-primary-700"
                   >
                     <Send class="h-5 w-5" />
                   </button>

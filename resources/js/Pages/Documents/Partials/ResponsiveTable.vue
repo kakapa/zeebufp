@@ -38,7 +38,7 @@
                 </div>
                 <div class="text-sm">
                   <span class="font-medium text-gray-500">Type:</span>
-                  <span class="text-blue-800 ml-1">{{ document.type }}</span>
+                  <span class="text-primary-800 ml-1">{{ document.type }}</span>
                 </div>
                 <div class="text-sm">
                   <span class="font-medium text-gray-500">Uploaded:</span>
@@ -60,7 +60,7 @@
 
         <TableCell responsive-class="hidden sm:table-cell">
           <span
-            class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800"
+            class="px-2 py-1 text-xs rounded-full bg-primary-100 text-primary-800"
           >
             {{ document.type }}
           </span>

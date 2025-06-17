@@ -15,7 +15,7 @@
     </template>
     <template v-else-if="type === 'Contract'">
       <svg
-        class="h-6 w-6 text-blue-500"
+        class="h-6 w-6 text-primary-500"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"

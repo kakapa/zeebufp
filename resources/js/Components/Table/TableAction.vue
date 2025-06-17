@@ -40,7 +40,7 @@ const dynamicIcon = computed(() => lucideIcons[props.icon]);
 const buttonClasses = computed(() => {
   const base = "p-2 border border-gray-300 rounded-md hover:bg-gray-50";
   const colorMap = {
-    blue: "text-blue-600 hover:text-blue-900 focus:ring-blue-500",
+    blue: "text-primary-600 hover:text-primary-900 focus:ring-primary-500",
     green: "text-green-600 hover:text-green-900 focus:ring-green-500",
     red: "text-red-600 hover:text-red-900 focus:ring-red-500",
     gray: "text-gray-600 hover:text-gray-900 focus:ring-gray-500",
