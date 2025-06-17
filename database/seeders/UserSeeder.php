@@ -16,9 +16,8 @@ class UserSeeder extends Seeder
             [
                 'id'    => 1,
                 'role_id' => 4,
-                'fullnames' => 'Molotsi Paul',
-                'initials' => 'MP',
-                'surname' => 'Pilane',
+                'firstname' => 'Molotsi',
+                'lastname' => 'Pilane',
                 'mobile_number' => '0817825940',
                 'password' => \Hash::make('11111'),
                 'profiled_at' => now(),

@@ -37,7 +37,7 @@ class StoreClientRequest extends FormRequest
             'firstname' => ['required', 'string', 'max:255'],
             'middlename' => ['nullable', 'string', 'max:255'],
             'title' => ['nullable', 'string', 'max:50', Rule::in(ClientTitleEnums::values())],
-            'surname' => ['required', 'string', 'max:255'],
+            'lastname' => ['required', 'string', 'max:255'],
             'email' => ['nullable', 'string', 'email', 'max:255', Rule::unique('clients', 'email')
                 ->ignore($this->route('client'))],
             'id_number' => ['nullable', 'string', 'max:20', Rule::unique('clients', 'id_number')

@@ -99,7 +99,7 @@ const filteredClaims = computed(() => {
   return props.claims.filter((claim) => {
     const searchFields = [
       claim.client?.firstname,
-      claim.client?.surname,
+      claim.client?.lastname,
       claim.client?.id_number,
       claim.type,
       claim.status,

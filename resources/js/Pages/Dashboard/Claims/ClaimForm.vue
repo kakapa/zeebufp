@@ -8,7 +8,7 @@
         v-model="form.client_id"
         :items="clients"
         item-key="id"
-        :item-value="(client) => `${client.firstname} ${client.surname}`"
+        :item-value="(client) => `${client.firstname} ${client.lastname}`"
         searchable
         required
       />

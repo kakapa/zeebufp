@@ -13,36 +13,37 @@
 
     <!-- Claim Statistics -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-      <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold">Total Claims</h3>
-        <div class="mt-2">
-          <div class="text-3xl font-bold">{{ claims.length }}</div>
-          <p class="text-sm text-gray-600">All claims</p>
-        </div>
-      </div>
-      <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold">Pending</h3>
-        <div class="mt-2">
-          <div class="text-3xl font-bold">{{ pendingClaimsCount }}</div>
-          <p class="text-sm text-gray-600">Awaiting processing</p>
-        </div>
-      </div>
-      <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold">This Month</h3>
-        <div class="mt-2">
-          <div class="text-3xl font-bold">{{ monthlyClaimsCount }}</div>
-          <p class="text-sm text-gray-600">Current month</p>
-        </div>
-      </div>
-      <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold">Total Value</h3>
-        <div class="mt-2">
-          <div class="text-3xl font-bold">
-            {{ formatCurrency(totalClaimsValue) }}
-          </div>
-          <p class="text-sm text-gray-600">All claims amount</p>
-        </div>
-      </div>
+      <StatsCard
+        label="Total Claims"
+        icon="Clock"
+        color="green"
+        :value="claims.length"
+        description="All claims"
+      />
+
+      <StatsCard
+        label="Pending"
+        icon="Clock"
+        color="green"
+        :value="pendingClaimsCount"
+        description="Awaiting processing"
+      />
+
+      <StatsCard
+        label="This Month"
+        icon="Clock"
+        color="green"
+        :value="monthlyClaimsCount"
+        description="Current month"
+      />
+
+      <StatsCard
+        label="Total Value"
+        icon="Clock"
+        color="green"
+        :value="totalClaimsValue"
+        description="All claims amount"
+      />
     </div>
 
     <!-- Filters -->
@@ -79,7 +80,7 @@
           v-model="filters.clientId"
           :items="clients"
           item-key="id"
-          :item-value="(client) => `${client.firstname} ${client.surname}`"
+          :item-value="(client) => `${client.firstname} ${client.lastname}`"
           searchable
           show-default-option
           default-option-text="All Clients"
@@ -152,6 +153,7 @@ import Select from "../Ui/Select.vue";
 import SearchableSelect from "../Ui/SearchableSelect.vue";
 import InputLabel from "../Ui/InputLabel.vue";
 import useCrud from "@/Composables/useCrud";
+import StatsCard from "../Ui/StatsCard.vue";
 
 const props = defineProps({
   initialClaims: {
@@ -251,7 +253,7 @@ const filteredClaims = computed(() => {
 // Helper to find client name
 const findClientName = (clientId) => {
   const client = props.clients.find((c) => c.id === clientId);
-  return client ? `${client.firstname} ${client.surname}` : "";
+  return client ? `${client.firstname} ${client.lastname}` : "";
 };
 
 // Format currency

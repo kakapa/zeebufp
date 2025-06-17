@@ -23,15 +23,9 @@ Route::middleware(['auth', MustVerifyMobileNumber::class, 'verified', UpdateProf
         Route::get('/dashboard', [DashboardController::class, 'showDashboard'])->name('dashboard');
 
         Route::get('/notifications', [DashboardController::class, 'showNotifications'])->name('notifications');
-
-        //Route::get('/messages', [DashboardController::class, 'showMessages'])->name('messages');
     });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/settings', function () {
-        return inertia('Settings');
-    })->name('settings');
-
     Route::resource('documents', DocumentController::class);
 
     Route::resource('packages', PackageController::class);
@@ -45,7 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('accounts', AccountController::class);
     Route::get('/accounts/{account}/pdf', [AccountController::class, 'downloadTerms'])->name('accounts.pdf');
 
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/settings', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });

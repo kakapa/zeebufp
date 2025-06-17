@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\EducationLevelEnums;
-use App\Enums\GenderEnums;
-use App\Enums\MaritalStatusEnums;
-use App\Enums\SourceEnums;
-use App\Enums\WorkStatusEnums;
-use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\Country;
 use App\Models\Occupation;
+use App\Enums\GenderEnums;
+use App\Enums\WorkStatusEnums;
+use App\Enums\EducationLevelEnums;
+use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -26,9 +24,8 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
-        return Inertia::render('Profile/Edit', [
+        return Inertia::render('Settings', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
-            'status' => session('status'),
             'countries' => Cache::remember('countries', now()->addMonth(), function () {
                 return Country::all()->pluck('name', 'code');
             }),
@@ -36,10 +33,8 @@ class ProfileController extends Controller
                 return Occupation::all()->pluck('label', 'slug');
             }),
             'genderItems' => GenderEnums::labels(),
-            'maritalStatusItems' => MaritalStatusEnums::labels(),
             'workStatusItems' => WorkStatusEnums::labels(),
             'educationLevelItems' => EducationLevelEnums::labels(),
-            'sourceItems' => SourceEnums::labels(),
         ]);
     }
 

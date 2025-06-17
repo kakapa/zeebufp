@@ -22,9 +22,8 @@ class ProfileUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'fullnames' => ['required', 'string', 'max:255'],
-            'surname' => ['required', 'string', 'max:255'],
-            'initials' => ['required', 'string', 'max:3'],
+            'firstname' => ['required', 'string', 'max:255'],
+            'lastname' => ['required', 'string', 'max:255'],
             'mobile_number' => [
                 'required',
                 'string',
@@ -33,13 +32,6 @@ class ProfileUpdateRequest extends FormRequest
                 'regex:/(0)[0-9]{9}/',
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
-            /* 'home_phone_number' => [
-                'nullable',
-                'string',
-                'min:10',
-                'max:10',
-                'regex:/(0)[0-9]{9}/',
-            ], */
             'email' => [
                 'nullable',
                 'string',
@@ -53,12 +45,8 @@ class ProfileUpdateRequest extends FormRequest
             'home_address' => ['required', 'string', 'max:255'],
             'gender' => ['required', new Enum(GenderEnums::class)],
             'occupation' => ['required', 'exists:occupations,slug'],
-            'marital_status' => ['required', new Enum(MaritalStatusEnums::class)],
             'work_status' => ['required', new Enum(WorkStatusEnums::class)],
             'education_level' => ['required', new Enum(EducationLevelEnums::class)],
-            'disability' => ['boolean'],
-            'about' => ['nullable', 'min:1', 'max:3000'],
-            'source' => ['required', new Enum(SourceEnums::class)]
         ];
     }
 }

@@ -13,27 +13,29 @@
 
     <!-- Client Statistics -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold">Total Clients</h3>
-        <div class="mt-2">
-          <div class="text-3xl font-bold">{{ clients.length }}</div>
-          <p class="text-sm text-gray-600">Registered clients</p>
-        </div>
-      </div>
-      <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold">Active Clients</h3>
-        <div class="mt-2">
-          <div class="text-3xl font-bold">{{ activeClientsCount }}</div>
-          <p class="text-sm text-gray-600">Currently active</p>
-        </div>
-      </div>
-      <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold">New This Month</h3>
-        <div class="mt-2">
-          <div class="text-3xl font-bold">{{ newClientsThisMonth }}</div>
-          <p class="text-sm text-gray-600">Recent signups</p>
-        </div>
-      </div>
+      <StatsCard
+        label="Total Clients"
+        icon="Clock"
+        color="green"
+        :value="clients.length"
+        description="Registered clients"
+      />
+
+      <StatsCard
+        label="Active Clients"
+        icon="Clock"
+        color="green"
+        :value="activeClientsCount"
+        description="Currently active"
+      />
+
+      <StatsCard
+        label="New This Month"
+        icon="Clock"
+        color="green"
+        :value="newClientsThisMonth"
+        description="Recent signups"
+      />
     </div>
 
     <!-- Search Box -->
@@ -97,6 +99,7 @@ import SearchBox from "../Ui/SearchBox.vue";
 import AddButton from "../Ui/AddButton.vue";
 import DialogModal from "../Ui/DialogModal.vue";
 import useCrud from "@/Composables/useCrud";
+import StatsCard from "../Ui/StatsCard.vue";
 
 const props = defineProps({
   initialClients: {
@@ -146,7 +149,7 @@ const {
   title: "",
   firstname: "",
   middlename: "",
-  surname: "",
+  lastname: "",
   email: "",
   id_number: "",
   gender: "",
@@ -163,7 +166,7 @@ const filteredClients = computed(() => {
   if (!term) return clients.value;
 
   return clients.value.filter((client) => {
-    const fullName = `${client.firstname} ${client.surname}`.toLowerCase();
+    const fullName = `${client.firstname} ${client.lastname}`.toLowerCase();
     return (
       fullName.includes(term) ||
       (client.email && client.email.toLowerCase().includes(term)) ||
@@ -179,7 +182,7 @@ onMounted(() => {
     title: "",
     firstname: "",
     middlename: "",
-    surname: "",
+    lastname: "",
     email: "",
     id_number: "",
     gender: "",

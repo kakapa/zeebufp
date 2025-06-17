@@ -158,7 +158,7 @@ const filteredAccounts = computed(() => {
   return accounts.value.filter((account) => {
     const client = props.clients.find((c) => c.id === account.client_id);
     const clientName = client
-      ? `${client.firstname} ${client.surname}`.toLowerCase()
+      ? `${client.firstname} ${client.lastname}`.toLowerCase()
       : "";
     const accountId = account.slug ? account.slug.toLowerCase() : "";
 

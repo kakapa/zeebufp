@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Claim;
 use App\Enums\ClaimStatusEnums;
 use App\Http\Requests\StoreClaimRequest;
-use App\Http\Requests\UpdateClaimRequest;
-use App\Models\Claim;
 use Illuminate\Support\Facades\Cache;
 use \App\Http\Resources\ClaimResource;
 
@@ -51,6 +50,7 @@ class ClaimController extends Controller
 
         // Clear the cache to ensure the new claim is available
         Cache::forget('claims');
+        Cache::forget('pendingClaimsCount');
 
         return redirect()->route('dashboard')
             ->with('success', 'Claim created successfully.')
@@ -84,6 +84,7 @@ class ClaimController extends Controller
 
         // Clear the cache to ensure the new claim is available
         Cache::forget('claims');
+        Cache::forget('pendingClaimsCount');
 
         return redirect()->route('dashboard')
             ->with('success', 'Claim updated successfully.')
@@ -102,6 +103,7 @@ class ClaimController extends Controller
 
         // Clear the cache to ensure the new claim is available
         Cache::forget('claims');
+        Cache::forget('pendingClaimsCount');
 
         return redirect()->route('dashboard')
             ->with('success', 'Claim deleted successfully.');

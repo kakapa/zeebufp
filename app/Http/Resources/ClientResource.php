@@ -21,7 +21,7 @@ class ClientResource extends JsonResource
             'title' => $this->title,
             'firstname' => $this->firstname,
             'middlename' => $this->middlename,
-            'surname' => $this->surname,
+            'lastname' => $this->lastname,
             'email' => $this->email,
             'id_number' => $this->id_number,
             'gender' => $this->gender,
@@ -57,7 +57,7 @@ class ClientResource extends JsonResource
             $this->title?->label(),
             $this->firstname,
             $this->middlename,
-            $this->surname
+            $this->lastname
         ]);
 
         return implode(' ', $parts);

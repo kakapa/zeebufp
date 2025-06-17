@@ -9,7 +9,7 @@
         class="w-full"
         :items="clients"
         item-key="slug"
-        :item-value="(cl) => `${cl.firstname} ${cl.surname} - ${cl.slug}`"
+        :item-value="(cl) => `${cl.firstname} ${cl.lastname} - ${cl.slug}`"
         searchable
       />
       <InputError class="mt-2" :message="form.errors.client_id" />

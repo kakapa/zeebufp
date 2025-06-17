@@ -7,7 +7,6 @@ use Spatie\LaravelPdf\Facades\Pdf;
 use Illuminate\Support\Facades\Cache;
 use App\Enums\AccountStatusEnums;
 use App\Http\Requests\StoreAccountRequest;
-use App\Http\Requests\UpdateAccountRequest;
 use App\Http\Resources\AccountResource;
 
 class AccountController extends Controller
@@ -52,6 +51,8 @@ class AccountController extends Controller
 
         // Clear the cache to ensure the new account is available
         Cache::forget('accounts');
+        Cache::forget('activeAccountsCount');
+        Cache::forget('monthlyContributionsSum');
 
         return redirect()->route('dashboard')
             ->with('success', 'Account created successfully.')
@@ -85,6 +86,8 @@ class AccountController extends Controller
 
         // Clear the cache to ensure the new account is available
         Cache::forget('accounts');
+        Cache::forget('activeAccountsCount');
+        Cache::forget('monthlyContributionsSum');
 
         return redirect()->route('dashboard')
             ->with('success', 'Account updated successfully.')
@@ -103,6 +106,8 @@ class AccountController extends Controller
 
         // Clear the cache to ensure the new account is available
         Cache::forget('accounts');
+        Cache::forget('activeAccountsCount');
+        Cache::forget('monthlyContributionsSum');
 
         return redirect()->route('dashboard')
             ->with('success', 'Account deleted successfully.');

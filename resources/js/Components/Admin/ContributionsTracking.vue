@@ -15,40 +15,37 @@
 
     <!-- Contribution Statistics -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-      <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold">Total Contributions</h3>
-        <div class="mt-2">
-          <div class="text-3xl font-bold">
-            {{ formatCurrency(totalContributions) }}
-          </div>
-          <p class="text-sm text-gray-600">All-time total</p>
-        </div>
-      </div>
-      <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold">Pending</h3>
-        <div class="mt-2">
-          <div class="text-3xl font-bold">{{ pendingContributionsCount }}</div>
-          <p class="text-sm text-gray-600">Awaiting payment</p>
-        </div>
-      </div>
-      <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold">This Month</h3>
-        <div class="mt-2">
-          <div class="text-3xl font-bold">
-            {{ formatCurrency(monthlyContributions) }}
-          </div>
-          <p class="text-sm text-gray-600">Current month total</p>
-        </div>
-      </div>
-      <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold">Average</h3>
-        <div class="mt-2">
-          <div class="text-3xl font-bold">
-            {{ formatCurrency(averageContribution) }}
-          </div>
-          <p class="text-sm text-gray-600">Per contribution</p>
-        </div>
-      </div>
+      <StatsCard
+        label="Total Contributions"
+        icon="Clock"
+        color="green"
+        :value="totalContributions"
+        description="All-time total"
+      />
+
+      <StatsCard
+        label="Pending"
+        icon="Clock"
+        color="green"
+        :value="pendingContributionsCount"
+        description="Awaiting payment"
+      />
+
+      <StatsCard
+        label="This Month"
+        icon="Clock"
+        color="green"
+        :value="monthlyContributions"
+        description="Current month total"
+      />
+
+      <StatsCard
+        label="Average"
+        icon="Clock"
+        color="green"
+        :value="averageContribution"
+        description="Per contribution"
+      />
     </div>
 
     <!-- Filters -->
@@ -157,6 +154,7 @@ import Select from "../Ui/Select.vue";
 import SearchableSelect from "../Ui/SearchableSelect.vue";
 import InputLabel from "../Ui/InputLabel.vue";
 import useCrud from "@/Composables/useCrud";
+import StatsCard from "../Ui/StatsCard.vue";
 
 const props = defineProps({
   initialContributions: {
@@ -306,7 +304,9 @@ const filteredContributions = computed(() => {
 // Helper to find account name
 const findAccountName = (accountId) => {
   const account = props.accounts.find((a) => a.id === accountId);
-  return account ? `${account.client.firstname} ${account.client.surname}` : "";
+  return account
+    ? `${account.client.firstname} ${account.client.lastname}`
+    : "";
 };
 
 // Format currency

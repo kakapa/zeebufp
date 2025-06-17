@@ -52,8 +52,8 @@ class Client extends Model
     public function name(): Attribute
     {
         return Attribute::make(function (): string {
-            if ($this->surname) {
-                return sprintf('%s %s', $this->firstname, $this->surname);
+            if ($this->lastname) {
+                return sprintf('%s %s', $this->firstname, $this->lastname);
             }
 
             return $this->firstname;

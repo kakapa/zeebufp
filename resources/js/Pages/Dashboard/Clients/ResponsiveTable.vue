@@ -130,7 +130,7 @@ const filteredClients = computed(() => {
     .filter((client) => {
       const searchFields = [
         client.firstname,
-        client.surname,
+        client.lastname,
         client.middlename,
         client.email,
         client.id_number,
@@ -150,13 +150,13 @@ const filteredClients = computed(() => {
 });
 
 const getInitials = (client) => {
-  return `${client.firstname.charAt(0)}${client.surname.charAt(
+  return `${client.firstname.charAt(0)}${client.lastname.charAt(
     0
   )}`.toUpperCase();
 };
 
 const getFullName = (client) => {
-  const parts = [client.titleLabel, client.firstname, client.surname].filter(
+  const parts = [client.titleLabel, client.firstname, client.lastname].filter(
     Boolean
   );
   return parts.join(" ");

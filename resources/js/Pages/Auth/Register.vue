@@ -21,19 +21,19 @@
       <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
         <form class="space-y-6" @submit.prevent="submit">
           <div>
-            <InputLabel for="fullnames" value="Full Names" />
+            <InputLabel for="firstname" value="Full Names" />
 
             <TextInput
-              id="fullnames"
+              id="firstname"
               type="text"
               class="mt-1 block w-full"
-              v-model="form.fullnames"
+              v-model="form.firstname"
               required
               autofocus
-              autocomplete="fullnames"
+              autocomplete="firstname"
             />
 
-            <InputError class="mt-2" :message="form.errors.fullnames" />
+            <InputError class="mt-2" :message="form.errors.firstname" />
           </div>
 
           <div>
@@ -52,18 +52,18 @@
           </div>
 
           <div>
-            <InputLabel for="surname" value="Surname" />
+            <InputLabel for="lastname" value="Surname" />
 
             <TextInput
-              id="surname"
+              id="lastname"
               type="text"
               class="mt-1 block w-full"
-              v-model="form.surname"
+              v-model="form.lastname"
               required
-              autocomplete="surname"
+              autocomplete="lastname"
             />
 
-            <InputError class="mt-2" :message="form.errors.surname" />
+            <InputError class="mt-2" :message="form.errors.lastname" />
           </div>
 
           <div>
@@ -176,9 +176,9 @@ import ApplicationLogo from "@/Components/Ui/ApplicationLogo.vue";
 import { useForm } from "@inertiajs/vue3";
 
 const form = useForm({
-  fullnames: "",
+  firstname: "",
   initials: "",
-  surname: "",
+  lastname: "",
   mobile_number: "",
   password: "",
   password_confirmation: "",

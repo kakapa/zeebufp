@@ -13,27 +13,29 @@
 
     <!-- Package Statistics -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold">Total Packages</h3>
-        <div class="mt-2">
-          <div class="text-3xl font-bold">{{ packages.length }}</div>
-          <p class="text-sm text-gray-600">Active packages</p>
-        </div>
-      </div>
-      <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold">Total Subscribers</h3>
-        <div class="mt-2">
-          <div class="text-3xl font-bold">{{ totalSubscribers }}</div>
-          <p class="text-sm text-gray-600">Across all packages</p>
-        </div>
-      </div>
-      <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold">Monthly Revenue</h3>
-        <div class="mt-2">
-          <div class="text-3xl font-bold">R{{ monthlyRevenue }}</div>
-          <p class="text-sm text-gray-600">Expected monthly</p>
-        </div>
-      </div>
+      <StatsCard
+        label="Total Packages"
+        icon="Clock"
+        color="green"
+        :value="packages.length"
+        description="Active packages"
+      />
+
+      <StatsCard
+        label="Total Subscribers"
+        icon="Clock"
+        color="green"
+        :value="totalSubscribers"
+        description="Across all packages"
+      />
+
+      <StatsCard
+        label="Monthly Revenue"
+        icon="Clock"
+        color="green"
+        :value="monthlyRevenue"
+        description="Expected monthly"
+      />
     </div>
 
     <!-- Packages Grid -->
@@ -155,6 +157,7 @@ import AddButton from "../Ui/AddButton.vue";
 import DialogModal from "../Ui/DialogModal.vue";
 import PackageForm from "@/Pages/Dashboard/Packages/PackageForm.vue";
 import useCrud from "@/Composables/useCrud";
+import StatsCard from "../Ui/StatsCard.vue";
 
 const props = defineProps({
   packages: {

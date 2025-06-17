@@ -17,23 +17,18 @@ return new class extends Migration
             $table->string('slug')->nullable();
             $table->unsignedBigInteger('country_id')->default(1); // South Africa (1)
             $table->unsignedBigInteger('role_id')->default(2); // Visitor (1)
-            $table->string('fullnames');
-            $table->char('initials', 3);
-            $table->string('surname');
+            $table->string('firstname');
+            $table->string('lastname');
             $table->string('mobile_number', 10)->unique();
             $table->string('pin', 5)->nullable();
             $table->string('email')->nullable();
             $table->string('id_number')->nullable();
             $table->string('status')->nullable()->default(UserStatusEnums::ACTIVE); //ENUM:
             $table->string('gender')->nullable(); //ENUM:
-            $table->string('marital_status')->nullable(); //ENUM:
             $table->string('work_status')->nullable(); //ENUM:
             $table->unsignedBigInteger('occupation_id')->nullable();
             $table->string('home_address')->nullable();
-            //$table->string('home_phone_number', 10)->nullable();
             $table->string('education_level')->nullable(); //ENUM:
-            $table->boolean('disability')->default(false);
-            $table->text('about')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('mobile_verified_at')->nullable();
             $table->timestamp('profiled_at')->nullable();

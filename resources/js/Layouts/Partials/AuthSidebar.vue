@@ -99,11 +99,10 @@
           <ul class="sidebar-menu">
             <li class="sidebar-menu-item">
               <Link
-                href="/admin/help"
+                href="/help"
                 class="sidebar-menu-button"
                 :class="{
-                  'bg-secondary-100 text-secondary-600':
-                    $page.url === '/admin/help',
+                  'bg-secondary-100 text-secondary-600': $page.url === '/help',
                 }"
               >
                 <HelpCircle class="h-4 w-4" />

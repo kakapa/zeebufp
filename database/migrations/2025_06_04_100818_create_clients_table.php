@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('firstname');
             $table->string('middlename')->nullable();
             $table->string('title')->nullable(); // e.g. ClientTitleEnums::MR used here
-            $table->string('surname');
+            $table->string('lastname');
             $table->string('email')->unique()->nullable();
             $table->string('id_number')->unique()->nullable(); // South African ID number
             $table->string('gender')->nullable(); // e.g. ClientGenderEnums::FEMALE used here

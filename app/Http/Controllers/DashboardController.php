@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\AccountStatusEnums;
+use App\Enums\ClaimStatusEnums;
 use App\Enums\PaymentTypeEnums;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Resources\PackageResource;
@@ -68,6 +70,23 @@ class DashboardController extends Controller
             'package' => session('package') ?? null,
             'client' => session('client') ?? null,
             'claim' => session('claim') ?? null,
+
+            // Stats
+            'activeAccountsCount' => Cache::rememberForever('activeAccountsCount', function () {
+                return \App\Models\Account::where('status', AccountStatusEnums::ACTIVE)->count();
+            }),
+            'pendingClaimsCount' => Cache::rememberForever('pendingClaimsCount', function () {
+                return \App\Models\Claim::where('status', ClaimStatusEnums::PENDING)->count();
+            }),
+            'monthlyContributionsSum' => Cache::rememberForever('monthlyContributionsSum', function () {
+                return sprintf(
+                    '%s%.2f',
+                    'R',
+                    \App\Models\Account::where('accounts.status', AccountStatusEnums::ACTIVE)
+                        ->join('packages', 'accounts.package_id', '=', 'packages.id')
+                        ->sum('packages.contribution')
+                );
+            }),
         ]);
     }
 

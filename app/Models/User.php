@@ -44,22 +44,31 @@ class User extends Authenticatable
             'profiled_at' =>  'datetime',
             'password' => 'hashed',
             'gender' => \App\Enums\GenderEnums::class,
-            'marital_status' => \App\Enums\MaritalStatusEnums::class,
             'work_status' => \App\Enums\WorkStatusEnums::class,
             'educational_level' => \App\Enums\EducationLevelEnums::class,
-            'source' => \App\Enums\SourceEnums::class,
             'status' => \App\Enums\UserStatusEnums::class
         ];
     }
 
     /**
      * Get User's name for dashboard
-     * Combine initials + surname
+     * Combine initials + lastname
      */
     public function name(): Attribute
     {
         return Attribute::make(function (): string {
-            return sprintf('%s %s', $this->initials, $this->surname);
+            return sprintf('%s %s', $this->initials, $this->lastname);
+        })->shouldCache();
+    }
+
+    /**
+     * Get User's initials for dashboard
+     * Combine substr of firstname + lastname
+     */
+    public function initials(): Attribute
+    {
+        return Attribute::make(function (): string {
+            return sprintf('%s%s', substr($this->firstname, 0, 1), substr($this->lastname, 0, 1));
         })->shouldCache();
     }
 

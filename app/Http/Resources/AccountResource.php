@@ -29,7 +29,7 @@ class AccountResource extends JsonResource
                 '%s %s %s',
                 $this->client->title->label(),
                 $this->client->firstname,
-                $this->client->surname
+                $this->client->lastname
             ),
             'clientId' => $this->client->slug,
             'packageName' => $this->package->name,

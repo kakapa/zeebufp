@@ -150,8 +150,8 @@ const getEntityOptions = (type) => {
 const getEntityLabel = (entity) => {
   if (!entity) return "";
 
-  if (entity.firstname && entity.surname) {
-    return `${entity.firstname} ${entity.surname}`;
+  if (entity.firstname && entity.lastname) {
+    return `${entity.firstname} ${entity.lastname}`;
   }
   if (entity.slug) {
     return entity.slug;

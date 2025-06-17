@@ -18,7 +18,7 @@ class ContactSeeder extends Seeder
                 'user_id' => 1,
                 'title' => 'Mr',
                 'name'  => 'John',
-                'surname'  => 'Doe',
+                'lastname'  => 'Doe',
                 'phone'  => '0147849000',
                 'email'  => 'john.doe@gmail.com',
             ],
