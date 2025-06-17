@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::name('guest')->group(function () {
     Route::get('/', [HomeController::class, 'showHome']);
+});
+
+Route::middleware('guest')->group(function () {
     Route::post('/contact', [HomeController::class, 'submitContactForm']);
 });
 
