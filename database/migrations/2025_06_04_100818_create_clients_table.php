@@ -15,17 +15,17 @@ return new class extends Migration
         Schema::create('clients', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('slug')->unique();
-            $table->string('firstname');
-            $table->string('middlename')->nullable();
+            $table->string('firstname', 60);
+            $table->string('middlename', 60)->nullable();
             $table->string('title')->nullable(); // e.g. ClientTitleEnums::MR used here
-            $table->string('lastname');
-            $table->string('email')->unique()->nullable();
-            $table->string('id_number')->unique()->nullable(); // South African ID number
+            $table->string('lastname', 60);
+            $table->string('email', 90)->unique()->nullable();
+            $table->string('id_number', 13)->unique()->nullable(); // South African ID number
             $table->string('gender')->nullable(); // e.g. ClientGenderEnums::FEMALE used here
-            $table->string('phone')->nullable();
-            $table->string('address')->nullable();
+            $table->string('phone', 15)->nullable();
+            $table->string('address', 200)->nullable();
             $table->string('status')->default(ClientStatusEnums::ACTIVE); // Assuming status can be 'active', 'inactive', etc.
-            $table->string('notes')->nullable(); // Additional notes about the client
+            $table->text('notes', 300)->nullable(); // Additional notes about the client
             $table->string('profile_picture')->nullable(); // URL or path to the client's profile picture
             $table->string('referral_source')->nullable(); // e.g. ClientSourceEnums::FRIEND used here
             $table->timestamps();

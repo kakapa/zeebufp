@@ -20,17 +20,19 @@
               v-model="form.firstname"
               required
               autocomplete="firstname"
+              placeholder="Enter your firstname"
             />
             <InputError class="mt-2" :message="form.errors.firstname" />
           </div>
           <div>
-            <InputLabel for="lastname" value="Surname" />
+            <InputLabel for="lastname" value="Lastname" />
             <TextInput
               id="lastname"
               type="text"
               v-model="form.lastname"
               required
               autocomplete="lastname"
+              placeholder="Enter your lastname"
             />
             <InputError class="mt-2" :message="form.errors.lastname" />
           </div>
@@ -40,7 +42,8 @@
               id="email"
               type="email"
               v-model="form.email"
-              autocomplete="username"
+              autocomplete="email"
+              placeholder="e.g. info@zeebundelwa.co.za"
             />
             <InputError class="mt-2" :message="form.errors.email" />
           </div>
@@ -52,6 +55,7 @@
               v-model="form.mobile_number"
               required
               autocomplete="mobile_number"
+              placeholder="e.g. 0711234321"
             />
             <InputError class="mt-2" :message="form.errors.mobile_number" />
           </div>
@@ -63,6 +67,7 @@
               v-model="form.id_number"
               required
               autocomplete="id_number"
+              placeholder="13 digits ID number"
             />
             <InputError class="mt-2" :message="form.errors.id_number" />
           </div>
@@ -126,6 +131,7 @@
             v-model="form.home_address"
             required
             autocomplete="home_address"
+            placeholder="Enter your home address"
           />
           <InputError class="mt-2" :message="form.errors.home_address" />
         </div>
@@ -225,8 +231,9 @@ const submit = () => {
   form.patch(route("profile.update"), {
     preserveScroll: true,
     onSuccess: () => {
-      toast.success("Personal info successfully updated!");
-      form.reset();
+      toast.success("Personal info successfully updated!", {
+        position: "top-right",
+      });
     },
   });
 };

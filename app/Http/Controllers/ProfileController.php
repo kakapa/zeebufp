@@ -74,9 +74,7 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
-        return !empty($request->user()->profiled_at)
-            ? Redirect::route('profile.edit')
-            : Redirect::route('dashboard');
+        return Redirect::route('profile.edit');
     }
 
     /**
@@ -98,5 +96,18 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    public function updateSettings(Request $request)
+    {
+        $data = $request->only(['email_me', 'sms_me', 'whatsapp_me', 'call_me']);
+
+        auth()->user()->update([
+            'settings' => json_encode([
+                'notifications' => $data
+            ])
+        ]);
+
+        return back()->with('success', 'Settings updated!');
     }
 }

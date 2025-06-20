@@ -22,6 +22,14 @@ class UserSeeder extends Seeder
                 'password' => \Hash::make('11111'),
                 'profiled_at' => now(),
                 'mobile_verified_at' => now(),
+                'settings' => json_encode([
+                    'notifications' => [
+                        'email_me' => true,
+                        'sms_me' => true,
+                        'whatsapp_me' => false,
+                        'call_me' => false,
+                    ]
+                ])
             ],
         ];
 

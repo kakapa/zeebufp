@@ -1,7 +1,7 @@
 <template>
   <div class="p-6 space-y-4">
     <div>
-      <InputLabel for="title" value="Title" />
+      <InputLabel for="title" value="Title *" />
       <Select
         id="title"
         label="Title"
@@ -13,25 +13,25 @@
       <InputError class="mt-2" :message="form.errors.title" />
     </div>
     <div>
-      <InputLabel for="firstname" value="First Name *" />
+      <InputLabel for="firstname" value="Firstname *" />
       <TextInput
         id="firstname"
         type="text"
         v-model="form.firstname"
         required
-        autocomplete="given-name"
-        placeholder="Enter first name"
+        autocomplete="firstname"
+        placeholder="Enter firstname"
       />
       <InputError class="mt-2" :message="form.errors.firstname" />
     </div>
     <div>
-      <InputLabel for="middlename" value="middle name" />
+      <InputLabel for="middlename" value="Middlename" />
       <TextInput
         id="middlename"
         type="text"
         v-model="form.middlename"
-        autocomplete="additional-name"
-        placeholder="Enter middle name"
+        autocomplete="middlename"
+        placeholder="Enter middlename (optional)"
       />
       <InputError class="mt-2" :message="form.errors.middlename" />
     </div>
@@ -42,8 +42,8 @@
         type="text"
         v-model="form.lastname"
         required
-        autocomplete="family-name"
-        placeholder="Enter lastname"
+        autocomplete="surname"
+        placeholder="Enter surname"
       />
       <InputError class="mt-2" :message="form.errors.lastname" />
     </div>
@@ -54,12 +54,12 @@
         type="email"
         v-model="form.email"
         autocomplete="email"
-        placeholder="Enter email address"
+        placeholder="Enter email (optional)"
       />
       <InputError class="mt-2" :message="form.errors.email" />
     </div>
     <div>
-      <InputLabel for="phone" value="Phone" />
+      <InputLabel for="phone" value="Phone *" />
       <TextInput
         id="phone"
         type="tel"
@@ -70,17 +70,17 @@
       <InputError class="mt-2" :message="form.errors.phone" />
     </div>
     <div>
-      <InputLabel for="id_number" value="ID Number" />
+      <InputLabel for="id_number" value="ID Number *" />
       <TextInput
         id="id_number"
         type="text"
         v-model="form.id_number"
-        placeholder="Enter South African ID"
+        placeholder="13-digits South African ID"
       />
       <InputError class="mt-2" :message="form.errors.id_number" />
     </div>
     <div>
-      <InputLabel for="gender" value="Gender" />
+      <InputLabel for="gender" value="Gender *" />
       <Select
         id="gender"
         label="Gender"
@@ -92,30 +92,18 @@
       <InputError class="mt-2" :message="form.errors.gender" />
     </div>
     <div>
-      <InputLabel for="address" value="Address" />
+      <InputLabel for="address" value="Physical Address *" />
       <TextInput
         id="address"
         type="text"
         v-model="form.address"
-        autocomplete="street-address"
-        placeholder="Enter physical address"
+        autocomplete="address"
+        placeholder="Enter street address"
       />
       <InputError class="mt-2" :message="form.errors.address" />
     </div>
     <div>
-      <InputLabel for="status" value="Status" />
-      <Select
-        id="status"
-        label="Status"
-        v-model="form.status"
-        class="w-full"
-        :items="statuses"
-        placeholder="Select status"
-      />
-      <InputError class="mt-2" :message="form.errors.status" />
-    </div>
-    <div>
-      <InputLabel for="referral_source" value="Referral Source" />
+      <InputLabel for="referral_source" value="Referral Source *" />
       <Select
         id="referral_source"
         label="Referral Source"
@@ -131,7 +119,7 @@
       <TextAreaInput
         id="notes"
         v-model="form.notes"
-        placeholder="Additional notes about the client"
+        placeholder="Additional notes about the client (optional)"
         rows="3"
       />
       <InputError class="mt-2" :message="form.errors.notes" />

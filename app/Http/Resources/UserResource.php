@@ -34,6 +34,8 @@ class UserResource extends JsonResource
             'occupation_label' => $this->occupation ? $this->occupation->label : null,
             'work_status' => $this->work_status,
             'education_level' => $this->education_level,
+            'settings' => $this->settings,
+            'settingsArray' => json_decode($this->settings),
             'email_verified_at' => $this->email_verified_at ? $this->email_verified_at->format('Y-m-d H:i:s') : null,
             'mobile_verified_at' => $this->mobile_verified_at ? $this->mobile_verified_at->format('Y-m-d H:i:s') : null,
             'profiled_at' => $this->profiled_at ? $this->profiled_at->format('Y-m-d H:i:s') : null,

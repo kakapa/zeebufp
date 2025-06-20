@@ -14,7 +14,7 @@
 <script setup>
 const model = defineModel({
   type: String,
-  required: false,
+  default: "",
 });
 
 defineProps({

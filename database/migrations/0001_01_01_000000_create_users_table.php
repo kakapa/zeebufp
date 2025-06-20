@@ -33,6 +33,7 @@ return new class extends Migration
             $table->timestamp('mobile_verified_at')->nullable();
             $table->timestamp('profiled_at')->nullable();
             $table->string('password');
+            $table->json('settings');
             $table->rememberToken();
             $table->timestamps();
         });

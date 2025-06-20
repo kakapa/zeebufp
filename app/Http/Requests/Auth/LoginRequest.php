@@ -28,7 +28,7 @@ class LoginRequest extends FormRequest
     {
         return [
             'mobile_number' => ['required', 'string', 'min:10', 'max:10', 'regex:/(0)[0-9]{9}/'],
-            'password' => ['required', 'string', 'numeric', 'min:10000', 'max:99999'],
+            'password' => ['required', 'string', 'digits:5'],
         ];
     }
 

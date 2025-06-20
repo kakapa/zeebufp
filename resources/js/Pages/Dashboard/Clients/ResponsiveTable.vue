@@ -76,11 +76,7 @@
 
         <TableCell responsive-class="text-right">
           <div class="flex items-center justify-end space-x-3">
-            <TableAction
-              icon="Eye"
-              color="blue"
-              @click="showClientModal = true"
-            />
+            <TableAction icon="Eye" color="blue" @click="viewClient(client)" />
             <TableAction
               icon="Edit"
               color="green"
@@ -96,10 +92,22 @@
       </TableRow>
     </TableBody>
   </BaseTable>
+
+  <DialogModal
+    :show="showClientModal"
+    title="Client Details"
+    description="This is the detailed view of the client."
+    modal-type="view"
+    @cancel="handleCloseModal"
+  >
+    <template #form>
+      <ClientView :client="selectedClient" :showClose="false" />
+    </template>
+  </DialogModal>
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { ref, computed } from "vue";
 import {
   BaseTable,
   TableHeader,
@@ -110,6 +118,7 @@ import {
   TableAction,
 } from "@/Components/Table";
 import ClientView from "./ClientView.vue";
+import DialogModal from "@/Components/Ui/DialogModal.vue";
 
 const props = defineProps({
   clients: {
@@ -123,6 +132,8 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["view", "edit", "delete"]);
+const selectedClient = ref({});
+const showClientModal = ref(false);
 
 const filteredClients = computed(() => {
   const term = props.filters.search?.toLowerCase() || "";
@@ -148,6 +159,16 @@ const filteredClients = computed(() => {
       full_name: getFullName(client),
     }));
 });
+
+const viewClient = (client) => {
+  selectedClient.value = client;
+  showClientModal.value = true;
+};
+
+const handleCloseModal = () => {
+  selectedClient.value = null;
+  showClientModal.value = false;
+};
 
 const getInitials = (client) => {
   return `${client.firstname.charAt(0)}${client.lastname.charAt(

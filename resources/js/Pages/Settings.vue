@@ -56,138 +56,10 @@
             />
 
             <!-- Security Settings -->
-            <div
-              v-if="activeTab === 'security'"
-              class="bg-white rounded-lg shadow overflow-hidden"
-            >
-              <div class="p-6 border-b">
-                <h2 class="text-lg font-semibold">Security Settings</h2>
-                <p class="text-sm text-gray-500">
-                  Update your password and enable two-factor authentication.
-                </p>
-              </div>
-              <div class="p-6 space-y-6">
-                <div>
-                  <h3 class="font-medium mb-4">Change Password</h3>
-                  <div class="space-y-4">
-                    <div>
-                      <label
-                        for="current_password"
-                        class="block text-sm font-medium text-gray-700 mb-1"
-                        >Current Password</label
-                      >
-                      <input
-                        id="current_password"
-                        type="password"
-                        v-model="security.currentPassword"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                      />
-                    </div>
-                    <div>
-                      <label
-                        for="new_password"
-                        class="block text-sm font-medium text-gray-700 mb-1"
-                        >New Password</label
-                      >
-                      <input
-                        id="new_password"
-                        type="password"
-                        v-model="security.newPassword"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                      />
-                    </div>
-                    <div>
-                      <label
-                        for="confirm_password"
-                        class="block text-sm font-medium text-gray-700 mb-1"
-                        >Confirm Password</label
-                      >
-                      <input
-                        id="confirm_password"
-                        type="password"
-                        v-model="security.confirmPassword"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div class="flex justify-end">
-                  <button
-                    class="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
-                  >
-                    Update Password
-                  </button>
-                </div>
-              </div>
-            </div>
+            <UpdatePasswordForm :activeTab="activeTab" />
 
             <!-- System Settings -->
-            <div
-              v-if="activeTab === 'system'"
-              class="bg-white rounded-lg shadow overflow-hidden"
-            >
-              <div class="p-6 border-b">
-                <h2 class="text-lg font-semibold">System Settings</h2>
-                <p class="text-sm text-gray-500">
-                  Configure system preferences and notification settings.
-                </p>
-              </div>
-              <div class="p-6 space-y-6">
-                <div>
-                  <h3 class="font-medium mb-4">Notification Preferences</h3>
-                  <div class="space-y-3">
-                    <div class="flex items-center justify-between">
-                      <label
-                        for="email_notifications"
-                        class="block text-sm font-medium text-gray-700"
-                        >Email Notifications</label
-                      >
-                      <input
-                        id="email_notifications"
-                        type="checkbox"
-                        v-model="system.emailNotifications"
-                        class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-                      />
-                    </div>
-                    <div class="flex items-center justify-between">
-                      <label
-                        for="sms_notifications"
-                        class="block text-sm font-medium text-gray-700"
-                        >SMS Notifications</label
-                      >
-                      <input
-                        id="sms_notifications"
-                        type="checkbox"
-                        v-model="system.smsNotifications"
-                        class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-                      />
-                    </div>
-                    <div class="flex items-center justify-between">
-                      <label
-                        for="push_notifications"
-                        class="block text-sm font-medium text-gray-700"
-                        >Push Notifications</label
-                      >
-                      <input
-                        id="push_notifications"
-                        type="checkbox"
-                        v-model="system.pushNotifications"
-                        class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div class="flex justify-end">
-                  <button
-                    class="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
-                  >
-                    Save Settings
-                  </button>
-                </div>
-              </div>
-            </div>
+            <UserSystemSettings :activeTab="activeTab" />
           </div>
         </div>
       </div>
@@ -198,8 +70,10 @@
 <script setup>
 import { ref } from "vue";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import UpdateProfileInformationForm from "@/Pages/Profile/Partials/UpdateProfileInformationForm.vue";
 import { User, Lock, Settings as SettingsIcon } from "lucide-vue-next";
+import UpdatePasswordForm from "./Profile/Partials/UpdatePasswordForm.vue";
+import UserSystemSettings from "./Profile/Partials/UserSystemSettings.vue";
+import UpdateProfileInformationForm from "./Profile/Partials/UpdateProfileInformationForm.vue";
 
 const activeTab = ref("profile");
 
@@ -237,20 +111,5 @@ defineProps({
   occupations: {
     type: Object,
   },
-});
-
-const security = ref({
-  currentPassword: "",
-  newPassword: "",
-  confirmPassword: "",
-  twoFactorEnabled: false,
-});
-
-const system = ref({
-  timezone: "UTC-5",
-  dateFormat: "MM/DD/YYYY",
-  emailNotifications: true,
-  smsNotifications: false,
-  pushNotifications: true,
 });
 </script>

@@ -42,6 +42,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('accounts', AccountController::class);
     Route::get('/accounts/{account}/pdf', [AccountController::class, 'downloadTerms'])->name('accounts.pdf');
 
+    Route::post('/settings/update', [ProfileController::class, 'updateSettings'])->name('settings.update');
     Route::get('/settings', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
