@@ -78,7 +78,7 @@ class DashboardController extends Controller
             'pendingClaimsCount' => Cache::rememberForever('pendingClaimsCount', function () {
                 return \App\Models\Claim::where('status', ClaimStatusEnums::PENDING)->count();
             }),
-            'monthlyContributionsSum' => Cache::rememberForever('monthlyContributionsSum', function () {
+            /* 'monthlyContributionsSum' => Cache::rememberForever('monthlyContributionsSum', function () {
                 return sprintf(
                     '%s%.2f',
                     'R',
@@ -86,7 +86,8 @@ class DashboardController extends Controller
                         ->join('packages', 'accounts.package_id', '=', 'packages.id')
                         ->sum('packages.contribution')
                 );
-            }),
+            }), */
+            'monthlyContributionsSum' => sprintf('%s%.2f','R', 0)
         ]);
     }
 

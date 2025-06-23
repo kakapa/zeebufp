@@ -1,0 +1,98 @@
+<?php
+
+namespace App\Http\Requests;
+
+use App\Enums\GenderEnums;
+use App\Enums\UserStatusEnums;
+use App\Models\User;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
+
+class StoreBeneficiaryRequest extends FormRequest
+{
+    /**
+     * 1. Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        //$this->merge(['key' => 'value']);
+    }
+
+    /**
+     * 2. Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * 3. Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+        return [
+            'firstname' => ['required', 'string', 'max:255'],
+            'lastname' => ['required', 'string', 'max:255'],
+            'mobile_number' => [
+                'required',
+                'string',
+                'min:10',
+                'max:10',
+                'regex:/(0)[0-9]{9}/',
+                Rule::unique(User::class, 'mobile_number')->ignore($this->user),
+            ],
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+                Rule::unique('users')->ignore($this->user),
+            ],
+            'gender' => ['required', new Enum(GenderEnums::class)],
+            'role' => ['nullable', 'exists:roles,slug'],
+            'country' => ['nullable', 'exists:countries,code'],
+            'status' => ['required', 'string', Rule::in(UserStatusEnums::values())],
+            'about' => ['nullable', 'min:1', 'max:1000'],
+        ];
+    }
+
+    /**
+     * 4. Post validation hook.
+     */
+    protected function passedValidation(): void
+    {
+        // Get the current validated data
+        $validated = $this->validated();
+
+        // Handle password
+        if (!array_key_exists('password', $validated)) {
+            $validated['password'] = bcrypt('P@ssword123');
+        } else {
+            $validated['password'] = bcrypt($validated['password']);
+        }
+
+        // Handle role
+        if (array_key_exists('role', $validated)) {
+            $validated['role_id'] = \App\Models\Role::where('slug', $validated['role'])->value('id');
+        }
+
+        // Handle country
+        if (array_key_exists('country', $validated)) {
+            $validated['country_id'] = \App\Models\Country::where('code', $validated['country'])->value('id');
+        }
+
+        // Replace the validated data with our modified version
+        $this->replace($validated);
+    }
+
+    /**
+     * 5. Add this method to ensure your changes are included in validated data
+     */
+    public function validated($key = null, $default = null)
+    {
+        return array_merge(parent::validated(), $this->all());
+    }
+}

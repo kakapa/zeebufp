@@ -49,6 +49,9 @@ class AccountController extends Controller
     {
         $account = Account::create($request->validated());
 
+        // Attach package_id to $account
+        $account->packages()->attach($request->only('package_id'));
+
         // Clear the cache to ensure the new account is available
         Cache::forget('accounts');
         Cache::forget('activeAccountsCount');

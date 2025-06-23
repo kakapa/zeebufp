@@ -3,13 +3,13 @@
 namespace App\Models;
 
 use App\Enums\AccountStatusEnums;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Account extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory, HasUlids;
 
     /**
      * The attributes that are mass assignable.
@@ -18,10 +18,9 @@ class Account extends Model
      */
     protected $fillable = [
         'client_id',
-        'package_id',
         'payday',
-        'package_id',
         'status',
+        'total_contribution_amount',
         'total_coverage_amount',
         'last_payment_at',
         'next_payment_at',
@@ -62,12 +61,12 @@ class Account extends Model
     }
 
     /**
-     * Account belongsTo Package.
+     * Account belongsToMany Package.
      *
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
-    public function package()
+    public function packages()
     {
-        return $this->belongsTo(\App\Models\Package::class);
+        return $this->belongsToMany(\App\Models\Package::class);
     }
 }

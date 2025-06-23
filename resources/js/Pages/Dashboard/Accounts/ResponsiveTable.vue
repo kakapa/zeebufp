@@ -57,18 +57,17 @@
             <TableAction
               icon="Eye"
               color="blue"
-              @click="$emit('view', account)"
+              @click="viewAccount(account)"
             />
-            <button
-              @click="downloadPdf(account.id)"
-              class="p-2 border border-gray-300 rounded-md hover:bg-gray-50"
-            >
-              <FileText class="h-4 w-4" />
-            </button>
             <TableAction
               icon="Edit"
               color="green"
               @click="$emit('edit', account)"
+            />
+            <TableAction
+              icon="UserPlus"
+              color="blue"
+              @click="$emit('createBeneficiary', account)"
             />
             <TableAction
               icon="Trash2"
@@ -80,10 +79,22 @@
       </TableRow>
     </TableBody>
   </BaseTable>
+
+  <DialogModal
+    :show="showAccountModal"
+    title="Account Details"
+    description="This is the detailed view of the account."
+    modal-type="view"
+    @cancel="handleCloseModal"
+  >
+    <template #form>
+      <AccountView :account="selectedAccount" :showClose="false" />
+    </template>
+  </DialogModal>
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import {
   BaseTable,
   TableHeader,
@@ -94,6 +105,8 @@ import {
   TableAction,
 } from "@/Components/Table";
 import { FileText } from "lucide-vue-next";
+import DialogModal from "@/Components/Ui/DialogModal.vue";
+import AccountView from "./AccountView.vue";
 
 const props = defineProps({
   accounts: {
@@ -106,7 +119,9 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["view", "edit", "delete"]);
+const emit = defineEmits(["view", "edit", "delete", "createBeneficiary"]);
+const selectedAccount = ref({});
+const showAccountModal = ref(false);
 
 const filteredAccounts = computed(() => {
   const term = props.filters.search?.toLowerCase() || "";
@@ -135,8 +150,13 @@ const statusClass = (status) => {
   );
 };
 
-const downloadPdf = (id) => {
-  const url = route("accounts.pdf", id);
-  window.open(url, "_blank");
+const viewAccount = (account) => {
+  selectedAccount.value = account;
+  showAccountModal.value = true;
+};
+
+const handleCloseModal = () => {
+  selectedAccount.value = null;
+  showAccountModal.value = false;
 };
 </script>

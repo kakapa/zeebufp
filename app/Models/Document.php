@@ -4,13 +4,13 @@ namespace App\Models;
 
 use App\Enums\DocumentStatusEnums;
 use App\Enums\DocumentTypeEnums;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Document extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory, HasUlids;
 
     /**
      * The attributes that are mass assignable.

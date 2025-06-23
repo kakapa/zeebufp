@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Enums\BeneficiaryRelationshipEnums;
+use App\Enums\ClientGenderEnums;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Package extends Model
+class Beneficiary extends Model
 {
     use HasFactory, HasUlids;
 
@@ -18,23 +20,16 @@ class Package extends Model
     protected $guarded = [];
 
     /**
-     * Indicates if the model should be timestamped.
+     * The attributes that should be cast.
      *
-     * @var bool
+     * @var array<string, string>
      */
-    public $timestamps = false;
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'status' => \App\Enums\PackageStatusEnums::class,
-        ];
-    }
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'gender' => ClientGenderEnums::class,
+        'relationship' => BeneficiaryRelationshipEnums::class,
+    ];
 
     /**
      * Get the route key for the model.
@@ -47,12 +42,12 @@ class Package extends Model
     }
 
     /**
-     * Package belongsToMany Account.
+     * Beneficiary belongsTo Account.
      *
      * @return \Illuminate\Database\Eloquent\Relations\Relation
      */
-    public function accounts()
+    public function account()
     {
-        return $this->belongsToMany(\App\Models\Account::class);
+        return $this->belongsTo(\App\Models\Account::class);
     }
 }

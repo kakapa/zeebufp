@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('documents', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->ulid('id')->primary();
             $table->string('name');
             $table->string('type'); // ENUM
             $table->string('status'); // ENUM
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->timestamps();
 
             // Polymorphic relationship columns
-            $table->uuid('documentable_id')->nullable();
+            $table->ulid('documentable_id')->nullable();
             $table->string('documentable_type')->nullable();
 
             // Index for better performance

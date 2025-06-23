@@ -62,6 +62,7 @@
             :accounts="filteredAccounts"
             @delete="handleDeleteAccount"
             @edit="handleEditAccount"
+            @create-beneficiary="handleCreateBeneficiary"
           />
         </div>
       </div>
@@ -175,6 +176,10 @@ const formatCurrency = (value) => {
     style: "currency",
     currency: "ZAR",
   }).format(value);
+};
+
+const handleCreateBeneficiary = (account) => {
+  console.log(account);
 };
 
 onMounted(() => {

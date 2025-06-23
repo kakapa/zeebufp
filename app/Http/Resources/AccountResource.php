@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Beneficiary;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -16,7 +17,7 @@ class AccountResource extends JsonResource
     {
         return [
             'slug' => $this->slug,
-            'client_id' => $this->client_id,
+            'client_id' => $this->client->slug,
             'payday' => $this->payday,
             'status' => $this->status,
             'total_coverage_amount' => $this->total_coverage_amount,
@@ -25,17 +26,23 @@ class AccountResource extends JsonResource
 
             // Computed properties
             'id' => $this->slug,
+            'mainPackage' => new PackageResource($this->packages()->where('main',true)->first()),
+            'package_id' => $this->packages()->where('main',true)->first()->slug,
             'clientName' => sprintf(
                 '%s %s %s',
                 $this->client->title->label(),
                 $this->client->firstname,
                 $this->client->lastname
             ),
-            'clientId' => $this->client->slug,
-            'packageName' => $this->package->name,
+            'clientPhone' => $this->client->phone,
+            'statusLabel' => $this->status->label(),
             'totalCoverageAmountString' => sprintf('%s%.2f', 'R', $this->total_coverage_amount),
             'lastPaymentAt' => $this->last_payment_at ? $this->last_payment_at->format('Y-m-d') : null,
             'nextPaymentAt' => $this->next_payment_at ? $this->next_payment_at->format('Y-m-d') : null,
+
+            // Arrays
+            'beneficiaries' => BeneficiaryResource::collection(Beneficiary::where('account_id',$this->id)->get()),
+            'additionalPackages' => PackageResource::collection($this->packages()->where('main',false)->get()),
         ];
     }
 }

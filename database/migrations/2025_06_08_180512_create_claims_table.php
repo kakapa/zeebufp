@@ -13,9 +13,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('claims', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->unsignedBigInteger('client_id');
-            $table->unsignedBigInteger('user_id')->nullable(); // Claim Officer
+            $table->ulid('id')->primary();
+            $table->ulid('client_id');
+            $table->ulid('user_id')->nullable(); // Claim Officer
             $table->string('slug')->unique();
             $table->decimal('amount')->default(0);
             $table->string('status')->default(ClaimStatusEnums::PENDING);

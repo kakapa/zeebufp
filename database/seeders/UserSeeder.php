@@ -14,7 +14,7 @@ class UserSeeder extends Seeder
     {
         $seeds = [
             [
-                'id'    => 1,
+                // 'id'    => 1,
                 'role_id' => 4,
                 'firstname' => 'Molotsi',
                 'lastname' => 'Pilane',

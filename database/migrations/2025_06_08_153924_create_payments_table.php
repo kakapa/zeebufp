@@ -15,10 +15,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('payments', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->ulid('id')->primary();
             $table->string('slug')->unique();  // Payment ID in frontend
-            $table->uuid('account_id')->nullable();
-            $table->uuid('claim_id')->nullable();
+            $table->ulid('account_id')->nullable();
+            $table->ulid('claim_id')->nullable();
             $table->decimal('amount', 13, 2);
             $table->date('pay_at')->nullable();
             $table->string('status')->default(PaymentStatusEnums::PENDING);

@@ -7,13 +7,13 @@ use App\Enums\ClientSourceEnums;
 use App\Enums\ClientStatusEnums;
 use App\Enums\ClientTitleEnums;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Client extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory, HasUlids;
 
     /**
      * The attributes that are guarded from mass assignable.
@@ -52,11 +52,16 @@ class Client extends Model
     public function name(): Attribute
     {
         return Attribute::make(function (): string {
-            if ($this->lastname) {
-                return sprintf('%s %s', $this->firstname, $this->lastname);
+            if ($this->middlename) {
+                return sprintf(
+                    '%s %s %s',
+                    $this->firstname,
+                    $this->middlename,
+                    $this->lastname
+                );
             }
 
-            return $this->firstname;
+            return sprintf('%s %s', $this->firstname, $this->lastname);
         })->shouldCache();
     }
 }

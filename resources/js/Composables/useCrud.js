@@ -67,7 +67,10 @@ export default function useCrud(
           toast.error(
             `Failed to ${
               isEditing.value ? "update" : "create"
-            } ${singleResource}.`
+            } ${singleResource}.`,
+            {
+              position: "top-right",
+            }
           );
           // console.error(error);
           console.error(
@@ -89,10 +92,14 @@ export default function useCrud(
       preserveScroll: true,
       onSuccess: () => {
         itemsRef.value = itemsRef.value.filter((item) => item.id !== id);
-        toast.success(`${singleResource} deleted successfully.`);
+        toast.success(`${singleResource} deleted successfully.`, {
+          position: "top-right",
+        });
       },
       onError: () => {
-        toast.error(`Failed to delete ${singleResource}.`);
+        toast.error(`Failed to delete ${singleResource}.`, {
+          position: "top-right",
+        });
       },
     });
   };
@@ -114,7 +121,10 @@ export default function useCrud(
     toast.success(
       `${
         isEditing.value ? "Updated" : "Created"
-      } ${singleResource} successfully.`
+      } ${singleResource} successfully.`,
+      {
+        position: "top-right",
+      }
     );
     resetForm();
   };

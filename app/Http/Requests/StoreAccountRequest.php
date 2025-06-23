@@ -57,7 +57,19 @@ class StoreAccountRequest extends FormRequest
 
         // Handle package
         if (array_key_exists('package_id', $validated)) {
-            $validated['package_id'] = \App\Models\Package::where('slug', $validated['package_id'])->value('id');
+            $package = \App\Models\Package::where('slug', $validated['package_id'])->first();
+            $validated['package_id'] = $package->id;
+
+            if($this->isMethod('post')) {
+                $validated['total_contribution_amount'] = $package->contribution;
+                $validated['total_coverage_amount'] = $package->coverage;
+            } elseif($this->isMethod('put') || $this->isMethod('patch')) {
+                $account = $this->route('account');
+
+                // TODO: Modify values along with any additional packages here
+                $validated['total_contribution_amount'] = $package->contribution;
+                $validated['total_coverage_amount'] = $package->coverage;
+            }
         }
 
         // Replace the validated data with our modified version

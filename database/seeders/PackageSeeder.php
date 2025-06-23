@@ -18,7 +18,6 @@ class PackageSeeder extends Seeder
 
         $seeds = [
             [
-                'id'    => 1,
                 'slug'  => 'PKG001',
                 'name' => 'Single Plan',
                 'description' => 'For members 25yrs & below ONLY',
@@ -31,7 +30,6 @@ class PackageSeeder extends Seeder
                 'popular' => false,
             ],
             [
-                'id'    => 2,
                 'slug'  => 'PKG002',
                 'name' => 'Basic Plan',
                 'description' => 'For member plus 4 other people',
@@ -44,7 +42,6 @@ class PackageSeeder extends Seeder
                 'popular' => true,
             ],
             [
-                'id'    => 3,
                 'slug'  => 'PKG003',
                 'name' => 'Standard Plan',
                 'description' => 'For member plus 9 other people',
@@ -57,7 +54,6 @@ class PackageSeeder extends Seeder
                 'popular' => false,
             ],
             [
-                'id'    => 4,
                 'slug'  => 'PKG004',
                 'name' => 'Premium Plan',
                 'description' => 'For member plus 14 other people',
@@ -70,7 +66,6 @@ class PackageSeeder extends Seeder
                 'popular' => false,
             ],
             [
-                'id'    => 5,
                 'slug'  => 'PKG005',
                 'name' => 'Executive Plan',
                 'description' => 'For member plus 4 other people',

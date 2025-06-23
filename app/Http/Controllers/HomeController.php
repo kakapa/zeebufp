@@ -3,12 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Mail\SubmitContactForm;
-use Illuminate\Console\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 class HomeController extends Controller
 {
@@ -25,7 +22,7 @@ class HomeController extends Controller
      */
     public function showHome()
     {
-        return Inertia::render('Welcome', [
+        return inertia('Welcome', [
             'mainActivePackages' => Cache::rememberForever('mainActivePackages', function () {
                 return \App\Http\Resources\PackageResource::collection(
                     \App\Models\Package::where('main', true)
