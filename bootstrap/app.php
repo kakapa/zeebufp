@@ -21,7 +21,6 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class,
-            \App\Http\Middleware\TrustProxies::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
