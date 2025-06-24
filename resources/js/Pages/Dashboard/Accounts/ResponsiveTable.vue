@@ -3,8 +3,8 @@
     <TableHeader>
       <TableHeaderCell>Package</TableHeaderCell>
       <TableHeaderCell>Client</TableHeaderCell>
-      <TableHeaderCell>Coverage</TableHeaderCell>
-      <TableHeaderCell>Payday</TableHeaderCell>
+      <TableHeaderCell>Monthly</TableHeaderCell>
+      <TableHeaderCell>Pay On</TableHeaderCell>
       <TableHeaderCell>Status</TableHeaderCell>
       <TableHeaderCell responsive-class="text-right">Actions</TableHeaderCell>
     </TableHeader>
@@ -13,7 +13,7 @@
       <TableRow v-for="account in filteredAccounts" :key="account.id">
         <TableCell>
           <div class="text-sm text-gray-900">
-            {{ account.packageName || "N/A" }}
+            {{ account.mainPackage.name || "N/A" }}
           </div>
           <div class="text-xs text-gray-500">ID: {{ account.slug }}</div>
         </TableCell>
@@ -27,7 +27,7 @@
 
         <TableCell>
           <div class="text-sm text-gray-900">
-            {{ account.totalCoverageAmountString }}
+            {{ account.totalContributionAmountString }}
           </div>
           <div class="text-xs text-gray-500">
             Next: {{ account.nextPaymentAt ?? "N/A" }}
@@ -48,7 +48,7 @@
             class="px-2 py-1 text-xs rounded-full"
             :class="statusClass(account.status)"
           >
-            {{ account.status }}
+            {{ account.statusLabel }}
           </span>
         </TableCell>
 

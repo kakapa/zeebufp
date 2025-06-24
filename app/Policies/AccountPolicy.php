@@ -24,7 +24,7 @@ class AccountPolicy
      */
     public function view(AuthedUser $authed_user, Account $account): bool|Response
     {
-        return $authed_user->id === $account->user_id;
+        return true;
     }
 
     /**
@@ -40,7 +40,7 @@ class AccountPolicy
      */
     public function update(AuthedUser $authed_user, Account $account): bool|Response
     {
-        return $authed_user->id === $account->user_id;
+        return true;
     }
 
     /**

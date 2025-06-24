@@ -40,9 +40,10 @@
                 <Bell class="h-4 w-4" />
                 <span>Notifications</span>
                 <span
-                  class="ml-auto bg-red-500 text-white text-xs rounded-full px-2 py-1"
-                  >5</span
+                  class="ml-auto bg-red-500 text-white text-xs rounded-full px-3 py-1"
                 >
+                  {{ $page.props.notifications.unread.length }}
+                </span>
               </Link>
             </li>
             <li class="sidebar-menu-item">
@@ -75,17 +76,10 @@
               class="sidebar-menu-item"
               v-if="$page.props.auth.user.role === 'admin'"
             >
-              <Link
-                href="/admin"
-                class="sidebar-menu-button"
-                :class="{
-                  'bg-secondary-100 text-secondary-600':
-                    $page.url.startsWith('/admin'),
-                }"
-              >
+              <a href="/admin" class="sidebar-menu-button" target="_blank">
                 <Shield class="h-4 w-4" />
                 <span>Admin Panel</span>
-              </Link>
+              </a>
             </li>
           </ul>
         </div>

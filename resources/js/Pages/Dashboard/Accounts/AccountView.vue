@@ -2,7 +2,7 @@
   <div class="p-2 space-y-4">
     <div class="flex flex-col gap-4">
       <InfoRow label="Account ID" :value="account.slug" />
-      <InfoRow label="Package" :value="account.packageName || 'N/A'" />
+      <InfoRow label="Package" :value="account.mainPackage.name || 'N/A'" />
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
@@ -36,6 +36,10 @@
         </div>
 
         <div>
+          <InfoRow
+            label="Total Monthly"
+            :value="account.totalContributionAmountString"
+          />
           <InfoRow
             label="Next Payment"
             :value="account.nextPaymentAt || 'N/A'"

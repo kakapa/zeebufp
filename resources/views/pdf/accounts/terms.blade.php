@@ -73,13 +73,13 @@
         <tbody>
             <tr>
                 <td><strong>Effective Date:</strong> {{ date('d M Y') }}</td>
-                <td><strong>Company:</strong> [Funeral Home Name]</td>
-                <td><strong>Registration No.:</strong> [Reg Number]</td>
+                <td><strong>Company:</strong> {{ setting('registered_name') }}</td>
+                <td><strong>Registration No.:</strong> {{ setting('registration_number') }}</td>
             </tr>
             <tr>
-                <td><strong>Address:</strong> [Your Address]</td>
-                <td><strong>Email:</strong> [your@email.com]</td>
-                <td><strong>Phone:</strong> [Your Contact Number]</td>
+                <td><strong>Address:</strong> {{ setting('main_address') }}</td>
+                <td><strong>Email:</strong> {{ setting('main_email') }}</td>
+                <td><strong>Phone:</strong> {{ setting('main_phone') }}</td>
             </tr>
         </tbody>
     </table>

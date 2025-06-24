@@ -42,6 +42,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('accounts', AccountController::class);
     Route::get('/accounts/{account}/pdf', [AccountController::class, 'downloadTerms'])->name('accounts.pdf');
 
+    Route::get('/accounts/{account}/approve', [AccountController::class, 'approve'])->name('accounts.approve');
+
     Route::post('/settings/update', [ProfileController::class, 'updateSettings'])->name('settings.update');
     Route::get('/settings', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

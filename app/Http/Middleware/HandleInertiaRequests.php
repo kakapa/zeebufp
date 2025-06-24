@@ -35,8 +35,9 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user() ? new UserResource($request->user()) : null,
             ],
-            'flash' => [
-                'message' => $request->session()->get('message')
+            'notifications' => [
+                'unread' => $request->user() ? $request->user()->unreadNotifications()->latest()->get() : [],
+                'all' => $request->user() ? $request->user()->notifications()->latest()->get() : [],
             ]
         ];
     }

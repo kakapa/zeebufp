@@ -28,4 +28,11 @@ enum AccountStatusEnums: string
     {
         return self::labels()[$this->value] ?? 'Unknown';
     }
+
+    public static function optionsArray(): array
+    {
+        return collect(self::cases())
+            ->mapWithKeys(fn (self $enum) => [$enum->value => $enum->name])
+            ->toArray();
+    }
 }

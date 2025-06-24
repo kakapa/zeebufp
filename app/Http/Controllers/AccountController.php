@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Enums\AccountStatusEnums;
 use App\Http\Requests\StoreAccountRequest;
 use App\Http\Resources\AccountResource;
+use App\Notifications\AccountApproved;
 
 class AccountController extends Controller
 {
@@ -127,5 +128,23 @@ class AccountController extends Controller
             ->format('A4')
             ->name(sprintf('%s_%s_funeral-terms.pdf', $account->slug, date('ymdhs')))
             ->download();
+    }
+
+    public function approve(Account $account)
+    {
+        $account->update(['status' => 'active']);
+
+        // Send notifications (sms to client, database to user)
+        $user = auth()->user();
+        $user->notify(new AccountApproved($account));
+
+        // TODO: Create admin activity
+
+        Cache::forget('accounts');
+        Cache::forget('activeAccountsCount');
+        Cache::forget('monthlyContributionsSum');
+
+        return redirect()->back()
+            ->with('success', 'Account approved successfully');
     }
 }

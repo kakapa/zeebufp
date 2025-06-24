@@ -47,7 +47,7 @@
               v-if="unreadNotifications > 0"
               class="absolute -top-0.5 -right-0.5 h-4 w-4 sm:h-5 sm:w-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center"
             >
-              {{ unreadNotifications }}
+              {{ $page.props.notifications.unread.length }}
             </span>
           </button>
 
@@ -60,7 +60,10 @@
               <h3
                 class="px-4 py-2 text-sm font-medium border-b border-gray-200"
               >
-                Notifications ({{ unreadNotifications }} unread)
+                Notifications ({{
+                  $page.props.notifications.unread.length
+                }}
+                unread)
               </h3>
               <div class="max-h-96 overflow-y-auto">
                 <div

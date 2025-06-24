@@ -21,6 +21,7 @@ class AccountResource extends JsonResource
             'payday' => $this->payday,
             'status' => $this->status,
             'total_coverage_amount' => $this->total_coverage_amount,
+            'total_contribution_amount' => $this->total_contribution_amount,
             'last_payment_at' => $this->last_payment_at,
             'next_payment_at' => $this->next_payment_at,
 
@@ -37,6 +38,7 @@ class AccountResource extends JsonResource
             'clientPhone' => $this->client->phone,
             'statusLabel' => $this->status->label(),
             'totalCoverageAmountString' => sprintf('%s%.2f', 'R', $this->total_coverage_amount),
+            'totalContributionAmountString' => sprintf('%s%.2f', 'R', $this->total_contribution_amount),
             'lastPaymentAt' => $this->last_payment_at ? $this->last_payment_at->format('Y-m-d') : null,
             'nextPaymentAt' => $this->next_payment_at ? $this->next_payment_at->format('Y-m-d') : null,
 
