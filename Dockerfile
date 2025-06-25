@@ -64,6 +64,7 @@ COPY package.json package-lock.json ./
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Install PHP dependencies
+COPY app/Helpers/helper.php app/Helpers/helper.php
 RUN composer install --no-dev --optimize-autoloader
 
 # Install Node dependencies
