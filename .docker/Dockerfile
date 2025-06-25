@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM php:8.3-apache
+FROM php:8.3-fpm
 
 # Non-interactive setup
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -63,33 +63,18 @@ RUN docker-php-ext-install \
     intl \
     zip
 
-# Enable Apache mod_rewrite
-RUN a2enmod rewrite
-
-# Copy Apache virtual host config
-COPY .docker/vhost.conf /etc/apache2/sites-available/000-default.conf
-
 # Set working directory
 WORKDIR /var/www/html
 
 # Trust the working directory for git
 RUN git config --global --add safe.directory /var/www/html
 
-# Copy dependency files early for layer caching
-COPY composer.json composer.lock ./
-COPY package.json package-lock.json ./
-COPY vite.config.js ./
-COPY app/Helpers/helper.php app/Helpers/helper.php
+# Copy the rest of your application
+COPY . .
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer \
     | php -- --install-dir=/usr/local/bin --filename=composer
-
-# Install PHP dependencies
-RUN composer install --no-dev --no-scripts --no-autoloader
-
-# Copy the rest of your application
-COPY . .
 
 # Run full install with scripts
 RUN composer install --no-dev --optimize-autoloader
@@ -100,15 +85,10 @@ RUN npm install --legacy-peer-deps \
     && npm cache clean --force
 
 # Set correct permissions
-RUN chown -R www-data:www-data \
-    /var/www/html/storage \
-    /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Copy Supervisor config
 COPY .docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Expose Apache
-EXPOSE 8083
-
-# Run Apache + Laravel queue via supervisor
-CMD ["/usr/bin/supervisord", "--nodaemon", "--configuration", "/etc/supervisor/conf.d/supervisord.conf"]
+# Run Laravel queue via supervisor
+CMD ["/usr/bin/supervisord"]
