@@ -3,35 +3,21 @@ FROM php:8.3-apache
 # Install system dependencies with non-interactive frontend
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
-    wget \
-    git \
-    curl \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip \
-    gnupg \
-    libicu-dev \
-    supervisor \
+    # Basic dependencies
+    wget git curl \
+    # PHP extension dependencies
+    libpng-dev libonig-dev libxml2-dev libicu-dev \
+    # libzip specific installation
+    cmake \
+    && apt-get install -y libzip-dev=1.9.2-1 \
     # Chrome dependencies
-    libnss3 \
-    libnspr4 \
-    libatk1.0-0 \
-    libatk-bridge2.0-0 \
-    libcups2 \
-    libdrm2 \
-    libxkbcommon0 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxfixes3 \
-    libxrandr2 \
-    libgbm1 \
-    libasound2 \
-    # Install Node.js
+    gnupg libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 \
+    libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 \
+    libxfixes3 libxrandr2 libgbm1 libasound2 \
+    # Node.js installation
     && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
-    # Install Chrome (modified GPG command)
+    # Chrome installation
     && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub > /tmp/googlekey.pub \
     && gpg --batch --yes --dearmor -o /usr/share/keyrings/googlechrome-linux-keyring.gpg /tmp/googlekey.pub \
     && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/googlechrome-linux-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
@@ -46,7 +32,8 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
 
 # Install PHP extensions (added zip extension)
-RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd intl zip
+RUN docker-php-ext-configure zip \
+    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd intl zip
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
