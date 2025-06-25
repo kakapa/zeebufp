@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM php:8.3-fpm
+FROM php:8.3-cli
 
 # Non-interactive setup
 ENV DEBIAN_FRONTEND=noninteractive \
@@ -92,3 +92,6 @@ COPY .docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Run Laravel queue via supervisor
 CMD ["/usr/bin/supervisord"]
+
+# Run Laravel dev server
+CMD php artisan serve --host=0.0.0.0 --port=8083
