@@ -72,6 +72,9 @@ COPY .docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 # Set working directory
 WORKDIR /var/www/html
 
+# Trust the working directory for git
+RUN git config --global --add safe.directory /var/www/html
+
 # Copy dependency files early for layer caching
 COPY composer.json composer.lock ./
 COPY package.json package-lock.json ./
@@ -85,13 +88,13 @@ RUN curl -sS https://getcomposer.org/installer \
 # Install PHP dependencies
 RUN composer install --no-dev --no-scripts --no-autoloader
 
+# Copy the rest of your application
+COPY . .
+
 # Install Node dependencies & build frontend
 RUN npm install --legacy-peer-deps \
     && npm run build || echo "⚠️ Build failed or skipped due to missing index.html, continuing..." \
     && npm cache clean --force
-
-# Copy the rest of your application
-COPY . .
 
 # Run full install with scripts
 RUN composer install --no-dev --optimize-autoloader
