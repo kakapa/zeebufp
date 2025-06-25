@@ -3,8 +3,9 @@
 set -e
 
 APP_NAME="zeebufp"
-APP_DIR="/home/ubuntu/apps/$APP_NAME"
-COMMIT_FILE=".last-deploy-commit"
+BASE_DIR="/home/ubuntu/apps"
+APP_DIR="$BASE_DIR/$APP_NAME"
+COMMIT_FILE="$APP_DIR/.last-deploy-commit"
 
 cd "$APP_DIR" || exit
 
@@ -27,6 +28,8 @@ if git diff --name-only "$LOCAL_COMMIT" "$REMOTE_COMMIT" | grep -E "Dockerfile|d
     REBUILD_NEEDED=true
 fi
 
+cd "$BASE_DIR" # Go to folder where docker-compose.yml is
+
 if [ "$REBUILD_NEEDED" = true ]; then
     echo "📦 Changes detected that require a rebuild..."
     docker-compose build "$APP_NAME"
@@ -37,7 +40,7 @@ else
 fi
 
 echo "🧬 Running Laravel tasks..."
-docker-compose exec "$APP_NAME" composer update
+docker-compose exec "$APP_NAME" composer install --no-dev --optimize-autoloader
 docker-compose exec "$APP_NAME" npm install
 docker-compose exec "$APP_NAME" npm run build
 docker-compose exec "$APP_NAME" php artisan migrate --force
@@ -49,7 +52,7 @@ docker-compose exec "$APP_NAME" php artisan config:cache
 docker-compose exec "$APP_NAME" php artisan route:cache
 docker-compose exec "$APP_NAME" php artisan view:cache
 
-# Tag this deployment version
+# Save deployed commit hash
 NEW_COMMIT=$(git rev-parse HEAD)
 echo "$NEW_COMMIT" > "$COMMIT_FILE"
 echo "📌 Deployed commit: $NEW_COMMIT"
