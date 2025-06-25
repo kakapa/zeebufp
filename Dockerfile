@@ -59,14 +59,13 @@ WORKDIR /var/www/html
 # Copy dependency files first for caching
 COPY composer.json composer.lock ./
 COPY package.json package-lock.json ./
+COPY app/Helpers/helper.php app/Helpers/helper.php
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Install PHP dependencies
-COPY composer.json composer.lock ./
-COPY app/Helpers/helper.php app/Helpers/helper.php
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --no-scripts --no-autoloader
 
 # Install Node dependencies
 RUN npm install && npm cache clean --force
@@ -76,6 +75,9 @@ COPY . .
 
 # Build assets (if needed)
 RUN npm run build
+
+# Run full install with scripts
+RUN composer install --no-dev --optimize-autoloader
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html/storage \
