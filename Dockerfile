@@ -91,13 +91,13 @@ RUN composer install --no-dev --no-scripts --no-autoloader
 # Copy the rest of your application
 COPY . .
 
+# Run full install with scripts
+RUN composer install --no-dev --optimize-autoloader
+
 # Install Node dependencies & build frontend
 RUN npm install --legacy-peer-deps \
     && npm run build || echo "⚠️ Build failed or skipped due to missing index.html, continuing..." \
     && npm cache clean --force
-
-# Run full install with scripts
-RUN composer install --no-dev --optimize-autoloader
 
 # Set correct permissions
 RUN chown -R www-data:www-data \
@@ -108,7 +108,7 @@ RUN chown -R www-data:www-data \
 COPY .docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Expose Apache
-EXPOSE 80
+EXPOSE 8083
 
 # Run Apache + Laravel queue via supervisor
 CMD ["/usr/bin/supervisord", "--nodaemon", "--configuration", "/etc/supervisor/conf.d/supervisord.conf"]
