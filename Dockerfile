@@ -1,6 +1,7 @@
 FROM php:8.3-apache
 
-# Install system dependencies (including zip development files)
+# Install system dependencies with non-interactive frontend
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
     wget \
     git \
@@ -13,7 +14,6 @@ RUN apt-get update && apt-get install -y \
     gnupg \
     libicu-dev \
     supervisor \
-    libzip-dev \
     # Chrome dependencies
     libnss3 \
     libnspr4 \
@@ -31,14 +31,15 @@ RUN apt-get update && apt-get install -y \
     # Install Node.js
     && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
-    # Install Chrome
-    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/googlechrome-linux-keyring.gpg \
+    # Install Chrome (modified GPG command)
+    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub > /tmp/googlekey.pub \
+    && gpg --batch --yes --dearmor -o /usr/share/keyrings/googlechrome-linux-keyring.gpg /tmp/googlekey.pub \
     && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/googlechrome-linux-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
     && apt-get update \
     && apt-get install -y google-chrome-stable \
     # Clean up
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* /tmp/googlekey.pub
 
 # Configure Puppeteer
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
