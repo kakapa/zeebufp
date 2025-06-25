@@ -16,9 +16,10 @@ class UserSeeder extends Seeder
             [
                 // 'id'    => 1,
                 'role_id' => 4,
-                'firstname' => 'Molotsi',
-                'lastname' => 'Pilane',
+                'firstname' => 'Zee',
+                'lastname' => 'Chiliza',
                 'mobile_number' => '0817825940',
+                'email' => 'admin@zeebundelwa.co.za',
                 'password' => \Hash::make('11111'),
                 'profiled_at' => now(),
                 'mobile_verified_at' => now(),
