@@ -45,9 +45,7 @@ class AccountResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('slug')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('client.name')
+                Tables\Columns\TextColumn::make('client.firstname')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('total_coverage_amount')
                     ->money('ZAR')
