@@ -1,6 +1,6 @@
 FROM php:8.3-apache
 
-# Install system dependencies (including wget first)
+# Install system dependencies (including zip development files)
 RUN apt-get update && apt-get install -y \
     wget \
     git \
@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y \
     gnupg \
     libicu-dev \
     supervisor \
+    libzip-dev \
     # Chrome dependencies
     libnss3 \
     libnspr4 \
@@ -43,8 +44,8 @@ RUN apt-get update && apt-get install -y \
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd intl
+# Install PHP extensions (added zip extension)
+RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd intl zip
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
