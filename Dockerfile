@@ -1,20 +1,25 @@
+# syntax=docker/dockerfile:1
 FROM php:8.3-apache
 
-# Install system dependencies with non-interactive frontend
+# avoid any interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y \
+
+# 1. Install system dependencies, Node.js, Supervisor, and Chrome dependencies
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
     wget \
+    gnupg2 \
+    ca-certificates \
     git \
     curl \
+    zip \
+    unzip \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
-    zip \
-    unzip \
-    gnupg \
     libicu-dev \
     supervisor \
-    # Chrome dependencies
+    # Chrome deps
     libnss3 \
     libnspr4 \
     libatk1.0-0 \
@@ -28,163 +33,68 @@ RUN apt-get update && apt-get install -y \
     libxrandr2 \
     libgbm1 \
     libasound2 \
-    # Install Node.js
     && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs \
-    # Install Chrome (modified GPG command)
-    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub > /tmp/googlekey.pub \
-    && gpg --batch --yes --dearmor -o /usr/share/keyrings/googlechrome-linux-keyring.gpg /tmp/googlekey.pub \
-    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/googlechrome-linux-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
-    && apt-get update \
-    && apt-get install -y google-chrome-stable \
-    # Clean up
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/googlekey.pub
-
-# Build libzip from source
-RUN apt-get update && apt-get install -y cmake \
-    && wget https://libzip.org/download/libzip-1.9.2.tar.gz \
-    && tar xf libzip-1.9.2.tar.gz \
-    && cd libzip-1.9.2 \
-    && mkdir build && cd build \
-    && cmake .. \
-    && make && make install \
-    && rm -rf /libzip-1.9.2*
-
-# Configure Puppeteer
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
-
-# Install PHP extensions (added zip extension)
-RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd intl zip
-
-# Enable Apache mod_rewrite
-RUN a2enmod rewrite
-
-# Copy Apache virtual host config
-COPY .docker/vhost.conf /etc/apache2/sites-available/000-default.conf
-
-# Set working directory
-WORKDIR /var/www/html
-
-# Copy dependency files first for caching
-COPY composer.json composer.lock ./
-COPY package.json package-lock.json ./
-COPY app/Helpers/helper.php app/Helpers/helper.php
-
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-# Install PHP dependencies
-RUN composer install --no-dev --no-scripts --no-autoloader
-
-# Install Node dependencies
-RUN npm install && npm cache clean --force
-
-# Copy remaining application files
-COPY . .
-
-# Build assets (if needed)
-RUN npm run build
-
-# Run full install with scripts
-RUN composer install --no-dev --optimize-autoloader
-
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage \
-    && chown -R www-data:www-data /var/www/html/bootstrap/cache
-
-# Copy supervisor config
-COPY .docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-# Expose port
-EXPOSE 80
-
-# Start services
-CMD ["/usr/bin/supervisord"]FROM php:8.3-apache
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    zip \
-    unzip \
-    gnupg \
-    libicu-dev \
-    supervisor \
-    # Chrome dependencies
-    libnss3 \
-    libnspr4 \
-    libatk1.0-0 \
-    libatk-bridge2.0-0 \
-    libcups2 \
-    libdrm2 \
-    libxkbcommon0 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxfixes3 \
-    libxrandr2 \
-    libgbm1 \
-    libasound2 \
-    # Install Node.js 20.x (LTS)
-    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs \
-    # Install Chrome
-    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/googlechrome-linux-keyring.gpg \
-    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/googlechrome-linux-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
-    && apt-get update \
-    && apt-get install -y google-chrome-stable \
-    # Clean up
+    && apt-get install -y --no-install-recommends nodejs \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Configure Puppeteer
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
+# 2. Install PHP extensions (including intl for Filament)
+RUN docker-php-ext-install \
+    pdo_mysql \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath \
+    gd \
+    intl \
+    zip
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd intl
+# 3. Install Google Chrome stable (non-interactive gpg key import)
+RUN wget -qO - https://dl-ssl.google.com/linux/linux_signing_key.pub \
+    | gpg --batch --yes --dearmor \
+    > /usr/share/keyrings/google-chrome-archive-keyring.gpg \
+    && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome-archive-keyring.gpg] \
+    http://dl.google.com/linux/chrome/deb/ stable main" \
+    > /etc/apt/sources.list.d/google-chrome.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+    google-chrome-stable \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Enable Apache mod_rewrite
+# 4. Configure Puppeteer environment variables
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
+
+# 5. Enable Apache mod_rewrite and set working directory
 RUN a2enmod rewrite
-
-# Copy Apache virtual host config
-COPY .docker/vhost.conf /etc/apache2/sites-available/000-default.conf
-
-# Set working directory
 WORKDIR /var/www/html
 
-# Copy dependency files first for caching
+# 6. Copy and install Composer dependencies (leverage cache)
 COPY composer.json composer.lock ./
+RUN curl -sS https://getcomposer.org/installer \
+    | php -- --install-dir=/usr/local/bin --filename=composer \
+    && composer install --no-dev --optimize-autoloader --no-interaction \
+    && rm -rf /root/.composer/cache
+
+# 7. Copy and install NPM dependencies & build assets
 COPY package.json package-lock.json ./
+RUN npm install \
+    && npm run build \
+    && npm cache clean --force
 
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
-
-# Install Node dependencies
-RUN npm install && npm cache clean --force
-
-# Copy remaining application files
+# 8. Copy the rest of your application
 COPY . .
 
-# Build assets (if needed)
-RUN npm run build
+# 9. Set permissions on storage & cache
+RUN chown -R www-data:www-data \
+    /var/www/html/storage \
+    /var/www/html/bootstrap/cache
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage \
-    && chown -R www-data:www-data /var/www/html/bootstrap/cache
-
-# Copy supervisor config
+# 10. Copy configuration files for Apache vhost and Supervisor
+COPY .docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 COPY .docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Expose port
+# 11. Expose port 80 & start Supervisor (which will run Apache + worker)
 EXPOSE 80
-
-# Start services
-CMD ["/usr/bin/supervisord"]
+CMD ["/usr/bin/supervisord", "--nodaemon", "--configuration", "/etc/supervisor/conf.d/supervisord.conf"]
