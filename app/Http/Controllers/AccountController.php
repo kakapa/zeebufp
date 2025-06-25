@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
-use Spatie\LaravelPdf\Facades\Pdf;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Cache;
 use App\Enums\AccountStatusEnums;
 use App\Http\Requests\StoreAccountRequest;
@@ -124,10 +124,8 @@ class AccountController extends Controller
             ['name' => 'John Doe Jr.', 'id' => '2005015009087', 'relationship' => 'Child', 'dob' => '2005-01-01', 'contact' => '0812345679'],
         ];
 
-        return Pdf::view('pdf.accounts.terms', ['beneficiaries' => $beneficiaries])
-            ->format('A4')
-            ->name(sprintf('%s_%s_funeral-terms.pdf', $account->slug, date('ymdhs')))
-            ->download();
+        $pdf = Pdf::loadView('pdf.accounts.terms', ['beneficiaries' => $beneficiaries]);
+        return $pdf->download(sprintf('%s_%s_funeral-terms.pdf', $account->slug, date('ymdhs')));
     }
 
     public function approve(Account $account)
