@@ -1,7 +1,8 @@
 FROM php:8.3-apache
 
-# Install system dependencies
+# Install system dependencies (including wget first)
 RUN apt-get update && apt-get install -y \
+    wget \
     git \
     curl \
     libpng-dev \
@@ -26,7 +27,7 @@ RUN apt-get update && apt-get install -y \
     libxrandr2 \
     libgbm1 \
     libasound2 \
-    # Install Node.js 20.x (LTS)
+    # Install Node.js
     && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
     # Install Chrome
