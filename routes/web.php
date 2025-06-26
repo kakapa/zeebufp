@@ -15,11 +15,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'showHome']);
 
-Route::get('/debug', function () {
-    \Log::debug('This is a debug test');
-    dd('This is a debug test.');
-});
-
 Route::middleware('guest')->group(function () {
     Route::post('/contact', [HomeController::class, 'submitContactForm']);
 });

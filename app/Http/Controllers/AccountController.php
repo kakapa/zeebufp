@@ -124,8 +124,13 @@ class AccountController extends Controller
             ['name' => 'John Doe Jr.', 'id' => '2005015009087', 'relationship' => 'Child', 'dob' => '2005-01-01', 'contact' => '0812345679'],
         ];
 
-        $pdf = Pdf::loadView('pdf.accounts.terms', ['beneficiaries' => $beneficiaries]);
-        return $pdf->download(sprintf('%s_%s_funeral-terms.pdf', $account->slug, date('ymdhs')));
+        try {
+            $pdf = Pdf::loadView('pdf.accounts.terms', ['beneficiaries' => $beneficiaries]);
+            return $pdf->download(sprintf('%s_%s_funeral-terms.pdf', $account->slug, date('ymdhs')));
+        } catch (\Exception $e) {
+            \Log::error('PDF generation failed: ' . $e->getMessage());
+            return redirect()->back()->withErrors(['error' => 'Failed to generate PDF.']);
+        }
     }
 
     public function approve(Account $account)
