@@ -40,17 +40,17 @@ else
 fi
 
 echo "🧬 Running Laravel tasks..."
-docker-compose exec "$APP_NAME" composer install --no-dev --optimize-autoloader
-docker-compose exec "$APP_NAME" npm install
-docker-compose exec "$APP_NAME" npm run build
-docker-compose exec "$APP_NAME" php artisan migrate --force
-docker-compose exec "$APP_NAME" php artisan storage:link
-docker-compose exec "$APP_NAME" php artisan config:clear
-docker-compose exec "$APP_NAME" php artisan route:clear
-docker-compose exec "$APP_NAME" php artisan view:clear
-docker-compose exec "$APP_NAME" php artisan config:cache
-docker-compose exec "$APP_NAME" php artisan route:cache
-docker-compose exec "$APP_NAME" php artisan view:cache
+docker-compose exec -T "$APP_NAME" composer install --no-dev --optimize-autoloader
+docker-compose exec -T "$APP_NAME" npm install
+docker-compose exec -T "$APP_NAME" npm run build
+docker-compose exec -T "$APP_NAME" php artisan migrate --force
+docker-compose exec -T "$APP_NAME" php artisan storage:link
+docker-compose exec -T "$APP_NAME" php artisan config:clear
+docker-compose exec -T "$APP_NAME" php artisan route:clear
+docker-compose exec -T "$APP_NAME" php artisan view:clear
+docker-compose exec -T "$APP_NAME" php artisan config:cache
+docker-compose exec -T "$APP_NAME" php artisan route:cache
+docker-compose exec -T "$APP_NAME" php artisan view:cache
 
 # Save deployed commit hash
 NEW_COMMIT=$(git rev-parse HEAD)
