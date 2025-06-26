@@ -13,8 +13,11 @@ use App\Http\Middleware\MustVerifyMobileNumber;
 use App\Http\Middleware\UpdateProfileOfNewlyRegisteredUser;
 use Illuminate\Support\Facades\Route;
 
-Route::name('guest')->group(function () {
-    Route::get('/', [HomeController::class, 'showHome']);
+Route::get('/', [HomeController::class, 'showHome']);
+
+Route::get('/debug', function () {
+    \Log::debug('This is a debug test');
+    dd('This is a debug test.');
 });
 
 Route::middleware('guest')->group(function () {
