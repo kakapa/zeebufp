@@ -40,17 +40,24 @@ else
 fi
 
 echo "🧬 Running Laravel tasks..."
-docker-compose exec -T "$APP_NAME" composer install --no-dev --optimize-autoloader
-docker-compose exec -T "$APP_NAME" npm install
-docker-compose exec -T "$APP_NAME" npm run build
-docker-compose exec -T "$APP_NAME" php artisan migrate --force
-docker-compose exec -T "$APP_NAME" php artisan storage:link
-docker-compose exec -T "$APP_NAME" php artisan config:clear
-docker-compose exec -T "$APP_NAME" php artisan route:clear
-docker-compose exec -T "$APP_NAME" php artisan view:clear
-docker-compose exec -T "$APP_NAME" php artisan config:cache
-docker-compose exec -T "$APP_NAME" php artisan route:cache
-docker-compose exec -T "$APP_NAME" php artisan view:cache
+
+if [ -n "$CI" ]; then
+  DOCKER_EXEC="docker-compose exec -T $APP_NAME"
+else
+  DOCKER_EXEC="docker-compose exec $APP_NAME"
+fi
+
+$DOCKER_EXEC composer install --no-dev --optimize-autoloader
+$DOCKER_EXEC npm install
+$DOCKER_EXEC npm run build
+$DOCKER_EXEC php artisan migrate --force
+$DOCKER_EXEC php artisan storage:link
+$DOCKER_EXEC php artisan config:clear
+$DOCKER_EXEC php artisan route:clear
+$DOCKER_EXEC php artisan view:clear
+$DOCKER_EXEC php artisan config:cache
+$DOCKER_EXEC php artisan route:cache
+$DOCKER_EXEC php artisan view:cache
 
 # Save deployed commit hash
 NEW_COMMIT=$(git rev-parse HEAD)
