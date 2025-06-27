@@ -63,6 +63,9 @@ RUN docker-php-ext-install \
     intl \
     zip
 
+# Install Redis extensions
+RUN pecl install redis && docker-php-ext-enable redis
+
 # Set working directory
 WORKDIR /var/www/html
 
