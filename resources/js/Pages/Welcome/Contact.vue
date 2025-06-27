@@ -46,13 +46,13 @@
                   Emergency Contact
                 </h3>
                 <div class="text-2xl md:text-3xl font-bold mb-2">
-                  083 867 7800
+                  {{ $page.props.settings.other_phone }}
                 </div>
                 <p class="text-white/90 mb-4">
                   Available 24 hours a day, 7 days a week
                 </p>
                 <a
-                  href="tel:+27838677800"
+                  :href="dialablePhoneNumber($page.props.settings.other_phone)"
                   class="inline-flex items-center justify-center bg-white text-purple-800 hover:bg-gray-100 px-6 py-3 rounded-lg font-medium transition-colors"
                 >
                   <svg
@@ -100,7 +100,9 @@
                   <h3 class="font-semibold mb-2 text-base md:text-lg">
                     Email Us
                   </h3>
-                  <p class="text-gray-600 text-sm">info@zeebundelwa.co.za</p>
+                  <p class="text-gray-600 text-sm">
+                    {{ $page.props.settings.main_email }}
+                  </p>
                 </div>
               </div>
 
@@ -119,15 +121,14 @@
                     class="h-8 w-8 text-purple-800 mx-auto mb-3"
                   >
                     <path
-                      d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"
+                      d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
                     ></path>
-                    <circle cx="12" cy="10" r="3"></circle>
                   </svg>
                   <h3 class="font-semibold mb-2 text-base md:text-lg">
-                    Visit Us
+                    Call Us
                   </h3>
                   <p class="text-gray-600 text-sm">
-                    Contact us for location details
+                    {{ $page.props.settings.main_phone }}
                   </p>
                 </div>
               </div>
@@ -251,75 +252,53 @@
                 </form>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
 
-            <!-- Social Media Card -->
-            <div class="bg-white rounded-lg shadow-md overflow-hidden">
-              <div class="p-6">
-                <h3
-                  class="text-purple-800 font-semibold text-lg md:text-xl mb-6"
-                >
-                  Follow Us
-                </h3>
-                <div class="flex flex-col sm:flex-row gap-3">
-                  <a
-                    href="#"
-                    class="flex-1 inline-flex items-center justify-center border border-gray-300 rounded-lg px-4 py-2 text-sm font-medium hover:bg-gray-50 transition-colors"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="h-4 w-4 mr-2"
-                    >
-                      <path
-                        d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
-                      ></path>
-                    </svg>
-                    Facebook
-                  </a>
-                  <a
-                    href="#"
-                    class="flex-1 inline-flex items-center justify-center border border-gray-300 rounded-lg px-4 py-2 text-sm font-medium hover:bg-gray-50 transition-colors"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="h-4 w-4 mr-2"
-                    >
-                      <rect
-                        x="2"
-                        y="2"
-                        width="20"
-                        height="20"
-                        rx="5"
-                        ry="5"
-                      ></rect>
-                      <path
-                        d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"
-                      ></path>
-                      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                    </svg>
-                    Instagram
-                  </a>
-                </div>
-                <p class="text-sm text-gray-600 mt-4">
-                  Stay connected with us for updates and community support
-                </p>
-              </div>
-            </div>
+      <!-- Full Width Map Section -->
+      <div class="mt-12 md:mt-16 w-full">
+        <div class="bg-white text-center p-6">
+          <h3 class="text-xl md:text-2xl font-semibold text-purple-800 mb-4">
+            Our Location
+          </h3>
+          <address class="not-italic text-gray-700 mb-6">
+            <p class="flex items-center justify-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 mr-2 text-purple-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+              <span>{{ $page.props.settings.main_address }}</span>
+            </p>
+          </address>
+
+          <!-- Full Width Google Map -->
+          <div class="w-full h-96 rounded-lg overflow-hidden shadow-lg">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1ddummy!2d0!3d0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMMKwMDAnMDAuMCJOIDDCwDAwJzAwLjAiRQ!5e0!3m2!1sen!2sza!4v1234567890123!5m2!1sen!2sza"
+              width="100%"
+              height="100%"
+              style="border: 0"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
           </div>
         </div>
       </div>
@@ -329,6 +308,7 @@
 
 <script setup>
 import { useForm } from "@inertiajs/vue3";
+import dialablePhoneNumber from "@/Composables/useUtils";
 import { useToast } from "vue-toast-notification";
 
 const form = useForm({

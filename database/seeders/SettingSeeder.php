@@ -75,8 +75,15 @@ class SettingSeeder extends Seeder
         [
             'type'      => Settings::STRING,
             'key'       => 'main_phone',
-            'value'     => '0836532025',
+            'value'     => '0320610097',
             'comment'   => 'The main phone of the business.',
+            'editable'  => true,
+        ],
+        [
+            'type'      => Settings::STRING,
+            'key'       => 'phone2',
+            'value'     => '0836532025',
+            'comment'   => 'The second phone of the business.',
             'editable'  => true,
         ],
         [

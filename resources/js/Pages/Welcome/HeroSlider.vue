@@ -124,7 +124,7 @@
             <!-- CTA Buttons -->
             <div class="flex flex-col sm:flex-row gap-4 pt-4">
               <a
-                href="tel:+27838677800"
+                :href="dialablePhoneNumber($page.props.settings.main_phone)"
                 class="inline-flex items-center justify-center bg-brand-gold hover:bg-yellow-600 text-black px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 rounded-lg"
               >
                 <svg
@@ -143,7 +143,7 @@
                     d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
                   ></path>
                 </svg>
-                Call 083 867 7800
+                Call {{ $page.props.settings.main_phone }}
               </a>
               <Link
                 href="#about"
@@ -158,7 +158,9 @@
               <p class="text-white/80 mb-2 font-dancing text-lg">
                 Need immediate assistance?
               </p>
-              <p class="text-3xl font-bold text-brand-gold">083 867 7800</p>
+              <p class="text-3xl font-bold text-brand-gold">
+                {{ $page.props.settings.main_phone }}
+              </p>
               <p class="text-white/70">Available 24 hours, 7 days a week</p>
             </div>
           </div>
@@ -227,6 +229,7 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import { Link } from "@inertiajs/vue3";
+import dialablePhoneNumber from "@/Composables/useUtils";
 
 const slides = [
   {

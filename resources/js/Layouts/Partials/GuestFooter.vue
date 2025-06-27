@@ -15,7 +15,9 @@
           </p>
           <div class="flex items-center space-x-4 text-gray-300">
             <Phone />
-            <span class="font-semibold">083 867 7800</span>
+            <span class="font-semibold">
+              {{ $page.props.settings.main_phone }}
+            </span>
           </div>
         </div>
 
@@ -99,7 +101,10 @@
                 d="M12 21C12 21 4 13.3636 4 8.90909C4 6.3496 6.1496 4.2 8.70909 4.2C10.0818 4.2 11.3636 4.92727 12 6.07273C12.6364 4.92727 13.9182 4.2 15.2909 4.2C17.8504 4.2 20 6.3496 20 8.90909C20 13.3636 12 21 12 21Z"
               />
             </svg>
-            <span>Made with care for our community</span>
+            <span>
+              Made with care by
+              <a href="http://makhee.com" target="_blank">Makhee Solutions</a>
+            </span>
           </div>
           <div class="text-gray-400 text-sm text-center md:text-right">
             © 2024 Zeebundelwa Funeral Home. All rights reserved.

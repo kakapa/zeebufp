@@ -30,6 +30,22 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        // Get all settings that should be shared with the frontend
+        $settings = \App\Models\Setting::where('editable', true)
+            ->get()
+            ->mapWithKeys(function ($setting) {
+                // Convert value based on type
+                $value = match ($setting->type) {
+                    'boolean' => (bool)$setting->value,
+                    'integer' => (int)$setting->value,
+                    'float' => (float)$setting->value,
+                    'json' => json_decode($setting->value, true),
+                    default => $setting->value,
+                };
+
+                return [$setting->key => $value];
+            });
+
         return [
             ...parent::share($request),
             'auth' => [
@@ -38,7 +54,8 @@ class HandleInertiaRequests extends Middleware
             'notifications' => [
                 'unread' => $request->user() ? $request->user()->unreadNotifications()->latest()->get() : [],
                 'all' => $request->user() ? $request->user()->notifications()->latest()->get() : [],
-            ]
+            ],
+            'settings' => $settings
         ];
     }
 }
