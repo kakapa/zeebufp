@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Account;
+use App\Models\Activity;
 
 class AccountObserver
 {
@@ -32,7 +33,14 @@ class AccountObserver
      */
     public function created(Account $account): void
     {
-        //
+        // Store the activity
+        Activity::create([
+            'user_id' => auth()->id(),
+            'activityable_id' => $account->id,
+            'activityable_type' => $account::class,
+            'new_record' => json_encode($account->getAttributes()),
+            'type' => 'created',
+        ]);
     }
 
     /**
@@ -56,7 +64,18 @@ class AccountObserver
      */
     public function updated(Account $account): void
     {
-        //
+        // Store old & new data before saving
+        $oldRecord = $account->getOriginal();
+        $newRecord = $account->getDirty();
+
+        Activity::create([
+            'user_id' => auth()->id(),
+            'activityable_id' => $account->id,
+            'activityable_type' => $account::class,
+            'old_record' => json_encode($oldRecord),
+            'new_record' => json_encode($newRecord),
+            'type' => 'updated',
+        ]);
     }
 
     /**
@@ -115,7 +134,14 @@ class AccountObserver
      */
     public function deleted(Account $account): void
     {
-        //
+        // Store the activity
+        Activity::create([
+            'user_id' => auth()->id(),
+            'activityable_id' => $account->id,
+            'activityable_type' => $account::class,
+            'old_record' => json_encode($account->getAttributes()),
+            'type' => 'deleted',
+        ]);
     }
 
     /**

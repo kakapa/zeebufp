@@ -64,4 +64,23 @@ class Client extends Model
             return sprintf('%s %s', $this->firstname, $this->lastname);
         })->shouldCache();
     }
+
+    /**
+     * Client hasMany Account.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\Relation
+     */
+    public function accounts()
+    {
+        return $this->hasMany(\App\Models\Account::class);
+    }
+
+    /**
+     * Summary of activities
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany<Activity, Account>
+     */
+    public function activities()
+    {
+        return $this->morphMany(\App\Models\Activity::class, 'activityable');
+    }
 }

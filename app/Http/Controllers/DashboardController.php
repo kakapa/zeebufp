@@ -90,20 +90,4 @@ class DashboardController extends Controller
             'monthlyContributionsSum' => sprintf('%s%.2f','R', 0)
         ]);
     }
-
-    /**
-     * Show messages page
-     */
-    public function showMessages()
-    {
-        return inertia('Messages');
-    }
-
-    /**
-     * Show notifications page
-     */
-    public function showNotifications()
-    {
-        return inertia('Notifications');
-    }
 }

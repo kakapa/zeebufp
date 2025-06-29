@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Models\Activity;
 use App\Models\Client;
 
 class ClientObserver
@@ -32,7 +33,14 @@ class ClientObserver
      */
     public function created(Client $client): void
     {
-        //
+        // Store the activity
+        Activity::create([
+            'user_id' => auth()->id(),
+            'activityable_id' => $client->id,
+            'activityable_type' => $client::class,
+            'new_record' => json_encode($client->getAttributes()),
+            'type' => 'created',
+        ]);
     }
 
     /**
@@ -56,7 +64,18 @@ class ClientObserver
      */
     public function updated(Client $client): void
     {
-        //
+        // Store old & new data before saving
+        $oldRecord = $client->getOriginal();
+        $newRecord = $client->getDirty();
+
+        Activity::create([
+            'user_id' => auth()->id(),
+            'activityable_id' => $client->id,
+            'activityable_type' => $client::class,
+            'old_record' => json_encode($oldRecord),
+            'new_record' => json_encode($newRecord),
+            'type' => 'updated',
+        ]);
     }
 
     /**
@@ -115,7 +134,14 @@ class ClientObserver
      */
     public function deleted(Client $client): void
     {
-        //
+        // Store the activity
+        Activity::create([
+            'user_id' => auth()->id(),
+            'activityable_id' => $client->id,
+            'activityable_type' => $client::class,
+            'old_record' => json_encode($client->getAttributes()),
+            'type' => 'deleted',
+        ]);
     }
 
     /**

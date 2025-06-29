@@ -69,4 +69,13 @@ class Account extends Model
     {
         return $this->belongsToMany(\App\Models\Package::class);
     }
+
+    /**
+     * Summary of activities
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany<Activity, Account>
+     */
+    public function activities()
+    {
+        return $this->morphMany(\App\Models\Activity::class, 'activityable');
+    }
 }

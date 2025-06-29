@@ -42,7 +42,7 @@
                 <span
                   class="ml-auto bg-red-500 text-white text-xs rounded-full px-3 py-1"
                 >
-                  {{ $page.props.notifications.unread.length }}
+                  {{ $page.props.notifications?.unread?.length }}
                 </span>
               </Link>
             </li>

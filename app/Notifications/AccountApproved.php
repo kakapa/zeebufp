@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Helpers\Settings;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Emotality\Panacea\PanaceaMobileSms;
@@ -47,7 +48,7 @@ class AccountApproved extends Notification implements ShouldQueue
      */
     public function via(User $notifiable): array
     {
-       return ['database', PanaceaMobileSmsChannel::class];
+       return ['database', 'mail', PanaceaMobileSmsChannel::class];
     }
 
     /**
@@ -70,7 +71,13 @@ class AccountApproved extends Notification implements ShouldQueue
         return (new PanaceaMobileSms)
         ->toMany([$formattedNumber])
         ->message(
-            sprintf('Congratulations! Your new %s policy has been approved. Ref %s', config('app.name'), $this->account->slug)
+            sprintf(
+                '%s! Inqubomgomo yakho entsha ye-%s igunyaziwe. Ref: %s Uma udinga usizo, xhumana nathi ku-%s.',
+                \Str::upper($this->account->client->name),
+                config('app.name'),
+                $this->account->slug,
+                Settings::get('main_phone', '0320610097'),
+                )
         );
     }
 
@@ -82,11 +89,13 @@ class AccountApproved extends Notification implements ShouldQueue
         return [
             'short' => 'Account Approved',
             'long' => sprintf(
-                'You have successfully approved the account #%s for %s. You can track the status account from your dashboard.',
+                'You have successfully approved the account #%s for %s. You can track the account status from your dashboard.',
                 $this->account->slug,
                 $this->account->client->name,
             ),
             'url' => $this->url,
+            'icon' => 'CircleCheckBig',
+            'color' => '#228739',
             'account' => $this->account
         ];
     }

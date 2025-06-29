@@ -1,19 +1,26 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ClaimController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\MustVerifyMobileNumber;
+use App\Http\Controllers\NotificationController;
 use App\Http\Middleware\UpdateProfileOfNewlyRegisteredUser;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'showHome']);
+
+if (app()->environment('local', 'staging', 'production')) {
+    \Laravel\Horizon\Horizon::auth(function ($request) {
+        return $request->user() && $request->user()->canAccessPanel();
+    });
+}
 
 Route::middleware('guest')->group(function () {
     Route::post('/contact', [HomeController::class, 'submitContactForm']);
@@ -23,7 +30,9 @@ Route::middleware(['auth', MustVerifyMobileNumber::class, 'verified', UpdateProf
     ->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'showDashboard'])->name('dashboard');
 
-        Route::get('/notifications', [DashboardController::class, 'showNotifications'])->name('notifications');
+        Route::get('/notifications', [NotificationController::class, 'showNotifications'])->name('notifications');
+
+        Route::post('/notifications/{id}', [NotificationController::class, 'markAsRead'])->name('notifications.read');
     });
 
 Route::middleware('auth')->group(function () {

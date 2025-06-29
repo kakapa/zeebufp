@@ -53,6 +53,11 @@ class User extends Authenticatable implements FilamentUser
         ];
     }
 
+    /**
+     * Summary of canAccessPanel
+     * @param \Filament\Panel $panel
+     * @return bool
+     */
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->role_id === 4;

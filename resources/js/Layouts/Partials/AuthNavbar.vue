@@ -19,19 +19,6 @@
       </div>
 
       <!-- Center - Search -->
-      <div class="flex-1 max-w-xs sm:max-w-md mx-2 sm:mx-4 hidden sm:block">
-        <div class="relative">
-          <Search
-            class="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-3 w-3 sm:h-4 sm:w-4"
-          />
-          <input
-            type="search"
-            placeholder="Search clients..."
-            class="border border-gray-300 rounded-md pl-8 sm:pl-10 pr-2 sm:pr-4 py-1.5 sm:py-2 w-full text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
-          />
-        </div>
-      </div>
-
       <!-- Right side - Actions and user menu -->
       <div class="flex items-center gap-1 sm:gap-3">
         <!-- Quick Actions Dropdown Here - Hidden on small screens -->
@@ -44,10 +31,10 @@
           >
             <Bell class="h-6 w-6 sm:h-6 sm:w-6" />
             <span
-              v-if="unreadNotifications > 0"
+              v-if="$page.props.notifications?.unread?.length > 0"
               class="absolute -top-0.5 -right-0.5 h-4 w-4 sm:h-5 sm:w-5 rounded-full bg-red-500 text-white text-xs flex items-center justify-center"
             >
-              {{ $page.props.notifications.unread.length }}
+              {{ $page.props.notifications?.unread?.length }}
             </span>
           </button>
 
@@ -60,9 +47,7 @@
               <h3
                 class="px-4 py-2 text-sm font-medium border-b border-gray-200"
               >
-                Notifications ({{
-                  $page.props.notifications.unread.length
-                }}
+                Notifications ({{ $page.props.notifications?.unread?.length }}
                 unread)
               </h3>
               <div class="max-h-96 overflow-y-auto">
@@ -72,13 +57,23 @@
                   class="px-4 py-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
                 >
                   <p class="font-medium text-sm break-words">
-                    {{ notification.title }}
+                    {{ notification.data.short }}
                   </p>
                   <span class="text-xs text-gray-500">{{
-                    notification.time
+                    notification.created_at
+                      ? new Date(notification.created_at).toLocaleString(
+                          "en-ZA",
+                          {
+                            month: "short",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          }
+                        )
+                      : "Just now"
                   }}</span>
                   <span
-                    v-if="notification.unread"
+                    v-if="notification.read_at === null"
                     class="w-2 h-2 bg-primary-600 rounded-full ml-2 mt-1 flex-shrink-0"
                   ></span>
                 </div>
@@ -155,104 +150,37 @@
 
 <script setup>
 import { ref } from "vue";
-import {
-  Bell,
-  MessageCircle,
-  Search,
-  Settings,
-  User,
-  LogOut,
-  ChevronDown,
-  Menu,
-} from "lucide-vue-next";
+import { Bell, Settings, ChevronDown, Menu, LogOut } from "lucide-vue-next";
+import { usePage } from "@inertiajs/vue3";
 
 // Define emits for parent communication
 const emit = defineEmits(["toggleSidebar"]);
 
 // State for dropdown menus
-const showQuickActions = ref(false);
-const showMessages = ref(false);
 const showNotifications = ref(false);
 const showUserMenu = ref(false);
 
-// Toggle functions for dropdowns
-const toggleQuickActions = () => {
-  showQuickActions.value = !showQuickActions.value;
-  // Close other dropdowns
-  showMessages.value = false;
-  showNotifications.value = false;
-  showUserMenu.value = false;
-};
-
-const toggleMessages = () => {
-  showMessages.value = !showMessages.value;
-  // Close other dropdowns
-  showQuickActions.value = false;
-  showNotifications.value = false;
-  showUserMenu.value = false;
-};
-
 const toggleNotifications = () => {
   showNotifications.value = !showNotifications.value;
-  // Close other dropdowns
-  showQuickActions.value = false;
-  showMessages.value = false;
   showUserMenu.value = false;
 };
 
 const toggleUserMenu = () => {
   showUserMenu.value = !showUserMenu.value;
-  // Close other dropdowns
-  showQuickActions.value = false;
-  showMessages.value = false;
   showNotifications.value = false;
 };
 
 // Close dropdowns when clicking outside
 const handleClickOutside = (event) => {
   if (!event.target.closest(".relative")) {
-    showQuickActions.value = false;
-    showMessages.value = false;
     showNotifications.value = false;
     showUserMenu.value = false;
   }
 };
 
+// Unread notifications
+const notifications = ref(usePage().props.notifications.unread || []);
+
 // Add click outside listener
 document.addEventListener("click", handleClickOutside);
-
-// Sample data
-const notifications = ref([
-  { id: 1, title: "New claim submitted", time: "2 minutes ago", unread: true },
-  { id: 2, title: "Payment received", time: "1 hour ago", unread: true },
-  { id: 3, title: "Monthly report ready", time: "3 hours ago", unread: false },
-]);
-
-const messages = ref([
-  {
-    id: 1,
-    sender: "John Smith",
-    message: "Query about my policy",
-    time: "5 mins ago",
-    unread: true,
-  },
-  {
-    id: 2,
-    sender: "Maria Garcia",
-    message: "Thank you for the service",
-    time: "1 hour ago",
-    unread: true,
-  },
-  {
-    id: 3,
-    sender: "Robert Johnson",
-    message: "Payment confirmation needed",
-    time: "2 hours ago",
-    unread: false,
-  },
-]);
-
-// Computed unread counts
-const unreadNotifications = notifications.value.filter((n) => n.unread).length;
-//const unreadMessages = messages.value.filter((m) => m.unread).length;
 </script>

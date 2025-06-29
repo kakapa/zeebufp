@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Enums\AccountStatusEnums;
 use App\Http\Requests\StoreAccountRequest;
 use App\Http\Resources\AccountResource;
+use App\Models\Beneficiary;
 use App\Notifications\AccountApproved;
 
 class AccountController extends Controller
@@ -119,13 +120,12 @@ class AccountController extends Controller
 
     public function downloadTerms(Account $account)
     {
-        $beneficiaries = [
-            ['name' => 'Jane Doe', 'id' => '8001015009087', 'relationship' => 'Spouse', 'dob' => '1980-01-01', 'contact' => '0812345678'],
-            ['name' => 'John Doe Jr.', 'id' => '2005015009087', 'relationship' => 'Child', 'dob' => '2005-01-01', 'contact' => '0812345679'],
-        ];
-
         try {
-            $pdf = Pdf::loadView('pdf.accounts.terms', ['beneficiaries' => $beneficiaries]);
+            $pdf = Pdf::loadView('pdf.accounts.terms', [
+                'beneficiaries' => Beneficiary::where('account_id',$account->id)->get(),
+                'account' => $account
+                ])
+                ->setPaper('A4', 'portrait');
             return $pdf->download(sprintf('%s_%s_funeral-terms.pdf', $account->slug, date('ymdhs')));
         } catch (\Exception $e) {
             \Log::error('PDF generation failed: ' . $e->getMessage());

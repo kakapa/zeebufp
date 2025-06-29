@@ -15,7 +15,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg2 \
     zip \
     unzip \
-    supervisor \
     pkg-config \
     libzip-dev \
     libpng-dev \
@@ -93,11 +92,13 @@ RUN npm install --legacy-peer-deps \
 # Set correct permissions
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Copy Supervisor config
+# Install & Copy Supervisor config
+RUN apt-get update && apt-get install -y supervisor
 COPY .docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Run Laravel queue via supervisor
-CMD ["/usr/bin/supervisord"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+
 
 # Run Laravel dev server
 CMD php artisan serve --host=0.0.0.0 --port=8083

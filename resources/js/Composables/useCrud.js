@@ -84,14 +84,16 @@ export default function useCrud(
     }
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = (selectedItem) => {
     if (!confirm(`Are you sure you want to delete this ${singleResource}?`))
       return;
 
-    useForm({}).delete(route(`${resourceName}.destroy`, id), {
+    useForm({}).delete(route(`${resourceName}.destroy`, selectedItem.id), {
       preserveScroll: true,
       onSuccess: () => {
-        itemsRef.value = itemsRef.value.filter((item) => item.id !== id);
+        itemsRef.value = itemsRef.value.filter(
+          (item) => item.id !== selectedItem.id
+        );
         toast.success(`${singleResource} deleted successfully.`, {
           position: "top-right",
         });

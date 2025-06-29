@@ -58,6 +58,7 @@ $DOCKER_EXEC php artisan view:clear
 $DOCKER_EXEC php artisan config:cache
 $DOCKER_EXEC php artisan route:cache
 $DOCKER_EXEC php artisan view:cache
+$DOCKER_EXEC php artisan horizon:terminate
 
 # Save deployed commit hash
 NEW_COMMIT=$(git rev-parse HEAD)

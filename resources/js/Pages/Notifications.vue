@@ -24,31 +24,45 @@
             :key="notification.id"
             class="p-4 hover:bg-gray-50 flex items-start space-x-4"
             :class="{
-              'bg-secondary-50': !notification.read,
+              'bg-secondary-50': !notification.read_at,
             }"
           >
             <div
               class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-medium"
             >
-              {{ notification.initials }}
+              <component
+                :is="dynamicIcon(notification.data?.icon)"
+                class="h-6 w-6"
+                :style="{ color: notification.data?.color || '#4F46E5' }"
+              />
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex justify-between items-center">
                 <h3 class="text-sm font-semibold text-gray-900">
-                  {{ notification.title }}
+                  {{ notification.data.short }}
                 </h3>
                 <span class="text-xs text-gray-500">{{
-                  notification.time
+                  notification.created_at
+                    ? new Date(notification.created_at).toLocaleString(
+                        "en-ZA",
+                        {
+                          month: "short",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        }
+                      )
+                    : "Just now"
                 }}</span>
               </div>
               <p class="text-sm text-gray-600 mt-1">
-                {{ notification.message }}
+                {{ notification.data.long }}
               </p>
             </div>
             <button
               @click="markAsRead(notification.id)"
               class="text-xs text-primary-600 hover:underline"
-              v-if="!notification.read"
+              v-if="!notification.read_at"
             >
               Mark as read
             </button>
@@ -67,48 +81,35 @@
 
 <script setup>
 import { ref } from "vue";
+import { Head, router } from "@inertiajs/vue3";
+import * as lucideIcons from "lucide-vue-next";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { Head } from "@inertiajs/vue3";
 
-const notifications = ref([
-  {
-    id: 1,
-    title: "Claim Approved",
-    message: "Your funeral claim #2391 has been successfully approved.",
-    initials: "FA",
-    time: "2h ago",
-    read: false,
-  },
-  {
-    id: 2,
-    title: "New Message from Support",
-    message: "A support agent has replied to your recent query.",
-    initials: "SS",
-    time: "5h ago",
-    read: false,
-  },
-  {
-    id: 3,
-    title: "Payment Reminder",
-    message: "Your policy payment for June is due in 3 days.",
-    initials: "PM",
-    time: "Yesterday",
-    read: true,
-  },
-  {
-    id: 4,
-    title: "Plan Update",
-    message: "Premium Funeral Plan benefits have been updated.",
-    initials: "UP",
-    time: "2 days ago",
-    read: true,
-  },
-]);
+const props = defineProps({
+  allNotifications: Array,
+});
+
+const notifications = ref(props.allNotifications);
+
+const dynamicIcon = (iconName) => {
+  return lucideIcons[iconName] || lucideIcons.MessageCircle;
+};
 
 const markAsRead = (id) => {
   const notification = notifications.value.find((n) => n.id === id);
   if (notification) {
-    notification.read = true;
+    router.post(
+      route("notifications.read", id),
+      {},
+      {
+        onSuccess: () => {
+          notification.read_at = new Date().toISOString();
+        },
+        onError: (error) => {
+          console.error("Failed to mark notification as read:", error);
+        },
+      }
+    );
   }
 };
 </script>

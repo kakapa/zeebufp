@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Http\Requests\StoreClientRequest;
 use App\Http\Resources\ClientResource;
+use App\Notifications\ClientAdded;
 use Illuminate\Support\Facades\Cache;
 
 class ClientController extends Controller
@@ -39,6 +40,9 @@ class ClientController extends Controller
 
         // Clear the cache to ensure the new client is available
         Cache::forget('clients');
+
+        // Notify the user about the new client
+        auth()->user()->notify(new ClientAdded($client, route('clients.show', $client)));
 
         return redirect()->route('dashboard')
             ->with('success', 'Client created successfully.')
