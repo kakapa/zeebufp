@@ -64,6 +64,16 @@ class User extends Authenticatable implements FilamentUser
     }
 
     /**
+     * Check if the user is an admin.
+     *
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role_id === 4;
+    }
+
+    /**
      * Get User's name for dashboard
      * Combine initials + lastname
      */

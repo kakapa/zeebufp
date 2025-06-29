@@ -18,7 +18,7 @@ Route::get('/', [HomeController::class, 'showHome']);
 
 if (app()->environment('local', 'staging', 'production')) {
     \Laravel\Horizon\Horizon::auth(function ($request) {
-        return $request->user() && $request->user()->canAccessPanel();
+        return $request->user() && $request->user()->isAdmin();
     });
 }
 
