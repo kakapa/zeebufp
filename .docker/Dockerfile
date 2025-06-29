@@ -7,6 +7,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
 
 # Install system dependencies & Chrome dependencies
+RUN apt update && apt install -y nano
 RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-transport-https \
     wget \
