@@ -15,23 +15,23 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <StatsCard
         label="Total Packages"
-        icon="Clock"
-        color="green"
+        icon="Boxes"
+        color="indigo"
         :value="packages.length"
         description="Active packages"
       />
 
       <StatsCard
         label="Total Subscribers"
-        icon="Clock"
-        color="green"
+        icon="BookUser"
+        color="red"
         :value="totalSubscribers"
         description="Across all packages"
       />
 
       <StatsCard
         label="Monthly Revenue"
-        icon="Clock"
+        icon="ChartNoAxesCombined"
         color="green"
         :value="monthlyRevenue"
         description="Expected monthly"

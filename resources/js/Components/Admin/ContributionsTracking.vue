@@ -17,7 +17,7 @@
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
       <StatsCard
         label="Total Contributions"
-        icon="Clock"
+        icon="DollarSign"
         color="green"
         :value="totalContributions"
         description="All-time total"
@@ -25,24 +25,24 @@
 
       <StatsCard
         label="Pending"
-        icon="Clock"
-        color="green"
+        icon="ClockArrowUp"
+        color="red"
         :value="pendingContributionsCount"
         description="Awaiting payment"
       />
 
       <StatsCard
         label="This Month"
-        icon="Clock"
-        color="green"
+        icon="ChartArea"
+        color="blue"
         :value="monthlyContributions"
         description="Current month total"
       />
 
       <StatsCard
         label="Average"
-        icon="Clock"
-        color="green"
+        icon="ChartLine"
+        color="indigo"
         :value="averageContribution"
         description="Per contribution"
       />

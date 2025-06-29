@@ -17,16 +17,16 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <StatsCard
         label="Total Accounts"
-        icon="Clock"
-        color="green"
+        icon="FolderTree"
+        color="blue"
         :value="accounts.length"
         description="Registered accounts"
       />
 
       <StatsCard
         label="Active Accounts"
-        icon="Clock"
-        color="red"
+        icon="FileKey2"
+        color="indigo"
         :value="activeAccountsCount"
         description="Currently active"
       />
@@ -34,7 +34,7 @@
       <StatsCard
         label="Total Coverage"
         icon="DollarSign"
-        color="indigo"
+        color="green"
         :value="formatCurrency(totalCoverageAmount)"
         description="Across all accounts"
       />

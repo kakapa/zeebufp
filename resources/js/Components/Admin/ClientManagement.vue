@@ -15,15 +15,15 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <StatsCard
         label="Total Clients"
-        icon="Clock"
-        color="green"
+        icon="Users"
+        color="blue"
         :value="clients.length"
         description="Registered clients"
       />
 
       <StatsCard
         label="Active Clients"
-        icon="Clock"
+        icon="UserCheck"
         color="green"
         :value="activeClientsCount"
         description="Currently active"
@@ -31,8 +31,8 @@
 
       <StatsCard
         label="New This Month"
-        icon="Clock"
-        color="green"
+        icon="UserPlus"
+        color="indigo"
         :value="newClientsThisMonth"
         description="Recent signups"
       />

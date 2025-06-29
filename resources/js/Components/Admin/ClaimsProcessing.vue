@@ -15,7 +15,7 @@
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
       <StatsCard
         label="Total Claims"
-        icon="Clock"
+        icon="ArchiveRestore"
         color="green"
         :value="claims.length"
         description="All claims"
@@ -23,24 +23,24 @@
 
       <StatsCard
         label="Pending"
-        icon="Clock"
-        color="green"
+        icon="ClockArrowUp"
+        color="red"
         :value="pendingClaimsCount"
         description="Awaiting processing"
       />
 
       <StatsCard
         label="This Month"
-        icon="Clock"
-        color="green"
+        icon="Files"
+        color="blue"
         :value="monthlyClaimsCount"
         description="Current month"
       />
 
       <StatsCard
         label="Total Value"
-        icon="Clock"
-        color="green"
+        icon="DollarSign"
+        color="indigo"
         :value="totalClaimsValue"
         description="All claims amount"
       />
