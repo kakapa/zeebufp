@@ -31,7 +31,8 @@ fi
 cd "$BASE_DIR" # Go to folder where docker-compose.yml is
 
 if [ "$REBUILD_NEEDED" = true ]; then
-    echo "📦 Changes detected that require a rebuild..."
+    echo "🔁 Rebuilding and restarting $APP_NAME..."
+    docker-compose rm -fs "$APP_NAME" || true
     docker-compose build --no-cache "$APP_NAME"
     docker-compose up -d "$APP_NAME"
 else
