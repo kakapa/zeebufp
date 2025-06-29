@@ -94,10 +94,12 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 
 # Install & Copy Supervisor config
 RUN apt-get update && apt-get install -y supervisor
-COPY .docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY ./docker/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
+COPY ./docker/supervisor/conf.d/ /etc/supervisor/conf.d/
 
 # Run Laravel queue via supervisor
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+
 
 
 # Run Laravel dev server
