@@ -43,7 +43,7 @@ fi
 echo "🧬 Running Laravel tasks..."
 
 if [ -n "$CI" ]; then
-  DOCKER_EXEC="docker-compose exec -T $APP_NAME"
+  DOCKER_EXEC="docker-compose run --rm $APP_NAME"
 else
   DOCKER_EXEC="docker-compose exec $APP_NAME"
 fi
