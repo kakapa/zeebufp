@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Models\Activity;
 use App\Models\Package;
 
 class PackageObserver
@@ -32,7 +33,14 @@ class PackageObserver
      */
     public function created(Package $package): void
     {
-        //
+        // Store the activity
+        Activity::create([
+            'user_id' => auth()->id(),
+            'activityable_id' => $package->id,
+            'activityable_type' => $package::class,
+            'new_record' => json_encode($package->getAttributes()),
+            'type' => 'created',
+        ]);
     }
 
     /**
@@ -56,7 +64,18 @@ class PackageObserver
      */
     public function updated(Package $package): void
     {
-        //
+        // Store old & new data before saving
+        $oldRecord = $package->getOriginal();
+        $newRecord = $package->getDirty();
+
+        Activity::create([
+            'user_id' => auth()->id(),
+            'activityable_id' => $package->id,
+            'activityable_type' => $package::class,
+            'old_record' => json_encode($oldRecord),
+            'new_record' => json_encode($newRecord),
+            'type' => 'updated',
+        ]);
     }
 
     /**
@@ -115,7 +134,14 @@ class PackageObserver
      */
     public function deleted(Package $package): void
     {
-        //
+        // Store the activity
+        Activity::create([
+            'user_id' => auth()->id(),
+            'activityable_id' => $package->id,
+            'activityable_type' => $package::class,
+            'old_record' => json_encode($package->getAttributes()),
+            'type' => 'deleted',
+        ]);
     }
 
     /**

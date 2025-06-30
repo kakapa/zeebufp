@@ -27,5 +27,6 @@ class EventServiceProvider extends ServiceProvider
         \App\Models\Payment::observe(\App\Observers\PaymentObserver::class);
         \App\Models\Claim::observe(\App\Observers\ClaimObserver::class);
         \App\Models\Beneficiary::observe(\App\Observers\BeneficiaryObserver::class);
+        \App\Models\Document::observe(\App\Observers\DocumentObserver::class);
     }
 }

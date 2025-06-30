@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Models\Activity;
 use App\Models\Claim;
 
 class ClaimObserver
@@ -32,7 +33,14 @@ class ClaimObserver
      */
     public function created(Claim $claim): void
     {
-        //
+        // Store the activity
+        Activity::create([
+            'user_id' => auth()->id(),
+            'activityable_id' => $claim->id,
+            'activityable_type' => $claim::class,
+            'new_record' => json_encode($claim->getAttributes()),
+            'type' => 'created',
+        ]);
     }
 
     /**
@@ -56,7 +64,18 @@ class ClaimObserver
      */
     public function updated(Claim $claim): void
     {
-        //
+        // Store old & new data before saving
+        $oldRecord = $claim->getOriginal();
+        $newRecord = $claim->getDirty();
+
+        Activity::create([
+            'user_id' => auth()->id(),
+            'activityable_id' => $claim->id,
+            'activityable_type' => $claim::class,
+            'old_record' => json_encode($oldRecord),
+            'new_record' => json_encode($newRecord),
+            'type' => 'updated',
+        ]);
     }
 
     /**
@@ -115,7 +134,14 @@ class ClaimObserver
      */
     public function deleted(Claim $claim): void
     {
-        //
+        // Store the activity
+        Activity::create([
+            'user_id' => auth()->id(),
+            'activityable_id' => $claim->id,
+            'activityable_type' => $claim::class,
+            'old_record' => json_encode($claim->getAttributes()),
+            'type' => 'deleted',
+        ]);
     }
 
     /**

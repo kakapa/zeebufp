@@ -71,6 +71,7 @@ class DashboardController extends Controller
             'package' => session('package') ?? null,
             'client' => session('client') ?? null,
             'claim' => session('claim') ?? null,
+            'beneficiary' => session('beneficiary') ?? null,
 
             // Stats
             'activeAccountsCount' => Cache::rememberForever('activeAccountsCount', function () {

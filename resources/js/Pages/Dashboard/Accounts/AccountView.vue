@@ -81,7 +81,10 @@
                 />
               </svg>
             </button>
-            <div v-show="openAccordion === index" class="p-3 pt-0 border-t">
+            <div
+              v-show="openAccordion === index"
+              class="p-3 pt-0 mb-3 border-t"
+            >
               <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                 <div>
                   <p class="text-gray-500">Gender</p>
@@ -175,7 +178,7 @@ import InfoSlot from "@/Components/Ui/InfoSlot.vue";
 import { useToast } from "vue-toast-notification";
 import SecondaryButton from "@/Components/Ui/SecondaryButton.vue";
 
-defineProps({
+const props = defineProps({
   account: Object,
   showClose: {
     type: Boolean,
@@ -187,7 +190,6 @@ defineEmits(["close"]);
 
 const openAccordion = ref(null);
 const toast = useToast();
-
 const toggleAccordion = (index) => {
   openAccordion.value = openAccordion.value === index ? null : index;
 };
@@ -202,11 +204,13 @@ const statusClass = (status) => {
   );
 };
 
+// Download PDF Function
 const downloadPdf = (id) => {
   const url = route("accounts.pdf", id);
   window.open(url, "_blank");
 };
 
+// Delete Beneficiary Function
 const deleteBeneficiary = (beneficiaryId) => {
   if (
     !confirm(
@@ -221,21 +225,19 @@ const deleteBeneficiary = (beneficiaryId) => {
     onSuccess: () => {
       toast.success("Beneficiary deleted successfully", {
         position: "top-right",
-        duration: 3000,
       });
       // Remove the beneficiary from the account's beneficiaries list
-      const index = account.beneficiaries.findIndex(
+      const index = props.account.beneficiaries.findIndex(
         (b) => b.id === beneficiaryId
       );
       if (index !== -1) {
-        account.beneficiaries.splice(index, 1);
+        props.account.beneficiaries.splice(index, 1);
       }
     },
     onError: () => {
       // Optional: Show error message
       toast.error("Failed to delete beneficiary", {
         position: "top-right",
-        duration: 3000,
       });
     },
   });

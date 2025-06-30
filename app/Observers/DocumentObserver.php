@@ -3,14 +3,14 @@
 namespace App\Observers;
 
 use App\Models\Activity;
-use App\Models\User;
+use App\Models\Document;
 
-class UserObserver
+class DocumentObserver
 {
     /**
      * Handle the "retrieved" event.
      */
-    public function retrieved(User $user): void
+    public function retrieved(Document $document): void
     {
         //
     }
@@ -18,25 +18,22 @@ class UserObserver
     /**
      * Handle the "creating" event.
      */
-    public function creating(User $user): void
+    public function creating(Document $document): void
     {
-        // Random slug
-        do {
-            $user->slug = sprintf('C%s%s', date('dm'), strtoupper(\Str::random(5)));
-        } while (User::where('slug', $user->slug)->exists());
+        //
     }
 
     /**
      * Handle the "created" event.
      */
-    public function created(User $user): void
+    public function created(Document $document): void
     {
         // Store the activity
         Activity::create([
             'user_id' => auth()->id(),
-            'activityable_id' => $user->id,
-            'activityable_type' => $user::class,
-            'new_record' => json_encode($user->getAttributes()),
+            'activityable_id' => $document->id,
+            'activityable_type' => $document::class,
+            'new_record' => json_encode($document->getAttributes()),
             'type' => 'created',
         ]);
     }
@@ -44,7 +41,7 @@ class UserObserver
     /**
      * Handle the "replicating" event.
      */
-    public function replicating(User $user): void
+    public function replicating(Document $document): void
     {
         //
     }
@@ -52,7 +49,7 @@ class UserObserver
     /**
      * Handle the "updating" event.
      */
-    public function updating(User $user): void
+    public function updating(Document $document): void
     {
         //
     }
@@ -60,16 +57,16 @@ class UserObserver
     /**
      * Handle the "updated" event.
      */
-    public function updated(User $user): void
+    public function updated(Document $document): void
     {
         // Store old & new data before saving
-        $oldRecord = $user->getOriginal();
-        $newRecord = $user->getDirty();
+        $oldRecord = $document->getOriginal();
+        $newRecord = $document->getDirty();
 
         Activity::create([
             'user_id' => auth()->id(),
-            'activityable_id' => $user->id,
-            'activityable_type' => $user::class,
+            'activityable_id' => $document->id,
+            'activityable_type' => $document::class,
             'old_record' => json_encode($oldRecord),
             'new_record' => json_encode($newRecord),
             'type' => 'updated',
@@ -79,7 +76,7 @@ class UserObserver
     /**
      * Handle the "saving" event.
      */
-    public function saving(User $user): void
+    public function saving(Document $document): void
     {
         //
     }
@@ -87,7 +84,7 @@ class UserObserver
     /**
      * Handle the "saved" event.
      */
-    public function saved(User $user): void
+    public function saved(Document $document): void
     {
         //
     }
@@ -96,7 +93,7 @@ class UserObserver
      * Handle the "trashed" event.
      * Only when SoftDeletes trait is being used.
      */
-    public function trashed(User $user): void
+    public function trashed(Document $document): void
     {
         //
     }
@@ -105,7 +102,7 @@ class UserObserver
      * Handle the "restoring" event.
      * Only when SoftDeletes trait is being used.
      */
-    public function restoring(User $user): void
+    public function restoring(Document $document): void
     {
         //
     }
@@ -114,7 +111,7 @@ class UserObserver
      * Handle the "restored" event.
      * Only when SoftDeletes trait is being used.
      */
-    public function restored(User $user): void
+    public function restored(Document $document): void
     {
         //
     }
@@ -122,7 +119,7 @@ class UserObserver
     /**
      * Handle the "deleting" event.
      */
-    public function deleting(User $user): void
+    public function deleting(Document $document): void
     {
         //
     }
@@ -130,14 +127,14 @@ class UserObserver
     /**
      * Handle the "deleted" event.
      */
-    public function deleted(User $user): void
+    public function deleted(Document $document): void
     {
         // Store the activity
         Activity::create([
             'user_id' => auth()->id(),
-            'activityable_id' => $user->id,
-            'activityable_type' => $user::class,
-            'old_record' => json_encode($user->getAttributes()),
+            'activityable_id' => $document->id,
+            'activityable_type' => $document::class,
+            'old_record' => json_encode($document->getAttributes()),
             'type' => 'deleted',
         ]);
     }
@@ -146,7 +143,7 @@ class UserObserver
      * Handle the "force deleted" event.
      * Only when SoftDeletes trait is being used.
      */
-    public function forceDeleted(User $user): void
+    public function forceDeleted(Document $document): void
     {
         //
     }

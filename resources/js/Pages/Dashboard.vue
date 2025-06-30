@@ -49,6 +49,7 @@
             :clients="clients"
             :genders="genders"
             :relationships="relationships"
+            :beneficiary="beneficiary"
           />
         </div>
 
@@ -123,6 +124,10 @@ const props = defineProps({
   activeAccountsCount: Number,
   pendingClaimsCount: Number,
   monthlyContributionsSum: String,
+  beneficiary: {
+    type: Object,
+    default: () => ({}),
+  },
 });
 
 const activeTab = ref("dashboard");

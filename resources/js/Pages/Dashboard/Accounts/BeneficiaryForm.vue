@@ -45,7 +45,7 @@
       <InputError class="mt-2" :message="beneficiaryForm.errors.lastname" />
     </div>
     <div>
-      <InputLabel for="phone" value="Phone *" />
+      <InputLabel for="phone" value="Phone" />
       <TextInput
         id="phone"
         type="tel"

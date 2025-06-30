@@ -159,6 +159,10 @@ const props = defineProps({
     type: Number,
     default: 0,
   },
+  beneficiary: {
+    type: Object,
+    default: () => ({}),
+  },
 });
 
 const searchTerm = ref("");
@@ -242,22 +246,22 @@ const submitBeneficiary = () => {
     preserveScroll: true,
     onSuccess: () => {
       // Find the account in the accounts array and update it
-      console.log("Beneficiary Form Data:", beneficiaryForm.data);
-      console.log("Selected Account ID:", beneficiaryForm.account_id);
-      console.log("Accounts:", accounts.value);
-
       const accountIndex = accounts.value.findIndex(
         (acc) => acc.slug === beneficiaryForm.account_id
       );
       console.log("Account Index:", accountIndex);
       if (accountIndex !== -1) {
-        accounts.value[accountIndex].beneficiaries.push(beneficiaryForm.data);
+        accounts.value[accountIndex].beneficiaries.push(props.beneficiary);
       }
       resetBeneficiaryForm();
-      toast.success("Beneficiary added successfully");
+      toast.success("Beneficiary added successfully", {
+        position: "top-right",
+      });
     },
     onError: () => {
-      toast.error("Failed to add beneficiary");
+      toast.error("Failed to add beneficiary", {
+        position: "top-right",
+      });
     },
   });
 };

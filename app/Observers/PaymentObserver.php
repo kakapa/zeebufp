@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Models\Activity;
 use App\Models\Payment;
 
 class PaymentObserver
@@ -32,7 +33,14 @@ class PaymentObserver
      */
     public function created(Payment $payment): void
     {
-        //
+        // Store the activity
+        Activity::create([
+            'user_id' => auth()->id(),
+            'activityable_id' => $payment->id,
+            'activityable_type' => $payment::class,
+            'new_record' => json_encode($payment->getAttributes()),
+            'type' => 'created',
+        ]);
     }
 
     /**
@@ -56,7 +64,18 @@ class PaymentObserver
      */
     public function updated(Payment $payment): void
     {
-        //
+        // Store old & new data before saving
+        $oldRecord = $payment->getOriginal();
+        $newRecord = $payment->getDirty();
+
+        Activity::create([
+            'user_id' => auth()->id(),
+            'activityable_id' => $payment->id,
+            'activityable_type' => $payment::class,
+            'old_record' => json_encode($oldRecord),
+            'new_record' => json_encode($newRecord),
+            'type' => 'updated',
+        ]);
     }
 
     /**
@@ -115,7 +134,14 @@ class PaymentObserver
      */
     public function deleted(Payment $payment): void
     {
-        //
+        // Store the activity
+        Activity::create([
+            'user_id' => auth()->id(),
+            'activityable_id' => $payment->id,
+            'activityable_type' => $payment::class,
+            'old_record' => json_encode($payment->getAttributes()),
+            'type' => 'deleted',
+        ]);
     }
 
     /**
