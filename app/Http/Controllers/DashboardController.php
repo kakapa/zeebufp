@@ -63,6 +63,7 @@ class DashboardController extends Controller
             'genders' => \App\Enums\ClientGenderEnums::labels(),
             'sources' => \App\Enums\ClientSourceEnums::labels(),
             'titles' => \App\Enums\ClientTitleEnums::labels(),
+            'relationships' => \App\Enums\BeneficiaryRelationshipEnums::labels(),
 
             // Session data
             'payment' => session('payment') ?? null,

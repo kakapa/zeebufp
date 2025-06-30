@@ -144,13 +144,14 @@
         Beneficiaries: {{ count($beneficiaries) }} <br>
     </p>
 
-    @if(count($beneficiaries)<0)
+    @if(count($beneficiaries)>0)
         <h3>13. List of Beneficiaries</h3>
         <table>
             <thead>
                 <tr>
                     <th>Full Name</th>
                     <th>ID Number</th>
+                    <th>Gender</th>
                     <th>Relationship</th>
                     <th>Contact Number</th>
                 </tr>
@@ -160,7 +161,8 @@
                     <tr>
                         <td>{{ $beneficiary->name }}</td>
                         <td>{{ $beneficiary->id_number }}</td>
-                        <td>{{ $beneficiary->relationship }}</td>
+                        <td>{{ $beneficiary->gender->label()}}</td>
+                        <td>{{ $beneficiary->relationship->label() }}</td>
                         <td>{{ $beneficiary->phone }}</td>
                     </tr>
                 @endforeach

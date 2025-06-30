@@ -47,6 +47,8 @@
             :statuses="account_statuses"
             :packages="packages"
             :clients="clients"
+            :genders="genders"
+            :relationships="relationships"
           />
         </div>
 
@@ -117,6 +119,7 @@ const props = defineProps({
   sources: Object,
   genders: Object,
   titles: Object,
+  relationships: Object,
   activeAccountsCount: Number,
   pendingClaimsCount: Number,
   monthlyContributionsSum: String,

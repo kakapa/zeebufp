@@ -90,18 +90,41 @@
         />
       </template>
     </DialogModal>
+
+    <!-- Beneficiary Dialog -->
+    <DialogModal
+      :show="showBeneficiaryDialog"
+      title="Add Beneficiary"
+      description="Enter beneficiary details for this account"
+      submit-text="Add Beneficiary"
+      :processing="beneficiaryForm.processing"
+      @cancel="resetBeneficiaryForm"
+      @submit="submitBeneficiary"
+    >
+      <template #form>
+        <BeneficiaryForm
+          :beneficiary-form="beneficiaryForm"
+          :selected-account="selectedAccount"
+          :genders="genders"
+          :relationships="relationships"
+        />
+      </template>
+    </DialogModal>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import ResponsiveTable from "@/Pages/Dashboard/Accounts/ResponsiveTable.vue";
-import AccountForm from "@/Pages/Dashboard/Accounts/AccountForm.vue";
+import { useForm } from "@inertiajs/vue3";
 import SearchBox from "../Ui/SearchBox.vue";
 import AddButton from "../Ui/AddButton.vue";
 import DialogModal from "../Ui/DialogModal.vue";
 import useCrud from "@/Composables/useCrud";
 import StatsCard from "../Ui/StatsCard.vue";
+import { useToast } from "vue-toast-notification";
+import ResponsiveTable from "@/Pages/Dashboard/Accounts/ResponsiveTable.vue";
+import AccountForm from "@/Pages/Dashboard/Accounts/AccountForm.vue";
+import BeneficiaryForm from "@/Pages/Dashboard/Accounts/BeneficiaryForm.vue";
 
 const props = defineProps({
   initialAccounts: {
@@ -109,6 +132,14 @@ const props = defineProps({
     default: () => [],
   },
   statuses: {
+    type: Object,
+    required: true,
+  },
+  genders: {
+    type: Object,
+    required: true,
+  },
+  relationships: {
     type: Object,
     required: true,
   },
@@ -132,6 +163,21 @@ const props = defineProps({
 
 const searchTerm = ref("");
 const accounts = ref([...props.initialAccounts]);
+const showBeneficiaryDialog = ref(false);
+const selectedAccount = ref(null);
+const toast = useToast();
+
+// Initialize beneficiary form with useForm
+const beneficiaryForm = useForm({
+  account_id: null,
+  firstname: "",
+  middlename: "",
+  lastname: "",
+  relationship: "spouse",
+  gender: "female",
+  id_number: "",
+  phone: "",
+});
 
 const {
   form,
@@ -179,7 +225,41 @@ const formatCurrency = (value) => {
 };
 
 const handleCreateBeneficiary = (account) => {
-  console.log(account);
+  selectedAccount.value = account;
+  beneficiaryForm.reset();
+  beneficiaryForm.account_id = account.id;
+  showBeneficiaryDialog.value = true;
+};
+
+const resetBeneficiaryForm = () => {
+  showBeneficiaryDialog.value = false;
+  selectedAccount.value = null;
+  beneficiaryForm.reset();
+};
+
+const submitBeneficiary = () => {
+  beneficiaryForm.post(route("beneficiaries.store"), {
+    preserveScroll: true,
+    onSuccess: () => {
+      // Find the account in the accounts array and update it
+      console.log("Beneficiary Form Data:", beneficiaryForm.data);
+      console.log("Selected Account ID:", beneficiaryForm.account_id);
+      console.log("Accounts:", accounts.value);
+
+      const accountIndex = accounts.value.findIndex(
+        (acc) => acc.slug === beneficiaryForm.account_id
+      );
+      console.log("Account Index:", accountIndex);
+      if (accountIndex !== -1) {
+        accounts.value[accountIndex].beneficiaries.push(beneficiaryForm.data);
+      }
+      resetBeneficiaryForm();
+      toast.success("Beneficiary added successfully");
+    },
+    onError: () => {
+      toast.error("Failed to add beneficiary");
+    },
+  });
 };
 
 onMounted(() => {

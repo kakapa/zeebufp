@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\BeneficiaryRelationshipEnums;
 use App\Enums\GenderEnums;
 use App\Enums\UserStatusEnums;
+use App\Models\Beneficiary;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -35,27 +37,25 @@ class StoreBeneficiaryRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'account_id' => [
+                'required',
+                'exists:accounts,slug',
+            ],
             'firstname' => ['required', 'string', 'max:255'],
+            'middlename' => ['nullable', 'string', 'max:255'],
             'lastname' => ['required', 'string', 'max:255'],
-            'mobile_number' => [
+            'id_number' => [
                 'required',
-                'string',
-                'min:10',
-                'max:10',
+                'digits:13',
+                Rule::unique('beneficiaries', 'id_number')->ignore($this->route('beneficiary')),
+            ],
+            'phone' => [
+                'nullable',
+                'digits:10',
                 'regex:/(0)[0-9]{9}/',
-                Rule::unique(User::class, 'mobile_number')->ignore($this->user),
             ],
-            'email' => [
-                'required',
-                'email',
-                'max:255',
-                Rule::unique('users')->ignore($this->user),
-            ],
-            'gender' => ['required', new Enum(GenderEnums::class)],
-            'role' => ['nullable', 'exists:roles,slug'],
-            'country' => ['nullable', 'exists:countries,code'],
-            'status' => ['required', 'string', Rule::in(UserStatusEnums::values())],
-            'about' => ['nullable', 'min:1', 'max:1000'],
+            'gender' => ['required', 'string', new Enum(GenderEnums::class)],
+            'relationship' => ['required', 'string', new Enum(BeneficiaryRelationshipEnums::class)],
         ];
     }
 
@@ -67,21 +67,9 @@ class StoreBeneficiaryRequest extends FormRequest
         // Get the current validated data
         $validated = $this->validated();
 
-        // Handle password
-        if (!array_key_exists('password', $validated)) {
-            $validated['password'] = bcrypt('P@ssword123');
-        } else {
-            $validated['password'] = bcrypt($validated['password']);
-        }
-
         // Handle role
-        if (array_key_exists('role', $validated)) {
-            $validated['role_id'] = \App\Models\Role::where('slug', $validated['role'])->value('id');
-        }
-
-        // Handle country
-        if (array_key_exists('country', $validated)) {
-            $validated['country_id'] = \App\Models\Country::where('code', $validated['country'])->value('id');
+        if (array_key_exists('account_id', $validated)) {
+            $validated['account_id'] = \App\Models\Account::where('slug', $validated['account_id'])->value('id');
         }
 
         // Replace the validated data with our modified version

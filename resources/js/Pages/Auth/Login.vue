@@ -103,8 +103,8 @@ defineProps({
 });
 
 const form = useForm({
-  mobile_number: "0817825940",
-  password: "11111",
+  mobile_number: "",
+  password: "",
   remember: false,
 });
 

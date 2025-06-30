@@ -61,9 +61,9 @@
               class="flex items-center justify-between w-full p-3 text-left hover:bg-gray-50"
             >
               <div class="flex items-center space-x-3">
-                <span class="font-medium">{{ beneficiary.full_name }}</span>
+                <span class="font-medium">{{ beneficiary.fullName }}</span>
                 <span class="text-sm text-gray-500">{{
-                  beneficiary.relationship
+                  beneficiary.relationshipLabel
                 }}</span>
               </div>
               <svg
@@ -84,8 +84,8 @@
             <div v-show="openAccordion === index" class="p-3 pt-0 border-t">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                 <div>
-                  <p class="text-gray-500">Allocation</p>
-                  <p>{{ beneficiary.allocation }}%</p>
+                  <p class="text-gray-500">Gender</p>
+                  <p>{{ beneficiary.genderLabel }}</p>
                 </div>
                 <div>
                   <p class="text-gray-500">ID Number</p>
@@ -96,9 +96,29 @@
                   <p>{{ beneficiary.phone || "N/A" }}</p>
                 </div>
                 <div>
-                  <p class="text-gray-500">Email</p>
-                  <p>{{ beneficiary.email || "N/A" }}</p>
+                  <p class="text-gray-500">Added On</p>
+                  <p>{{ beneficiary.createdAt || "N/A" }}</p>
                 </div>
+              </div>
+              <div class="mt-3 flex justify-end">
+                <SecondaryButton
+                  @click.stop="deleteBeneficiary(beneficiary.id)"
+                  class="text-red-600 hover:text-red-800 text-sm font-medium flex items-center gap-1"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-4 w-4"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                  Delete Beneficiary
+                </SecondaryButton>
               </div>
             </div>
           </div>
@@ -148,8 +168,12 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
+import { router } from "@inertiajs/vue3";
 import InfoRow from "@/Components/Ui/InfoRow.vue";
 import InfoSlot from "@/Components/Ui/InfoSlot.vue";
+import { useToast } from "vue-toast-notification";
+import SecondaryButton from "@/Components/Ui/SecondaryButton.vue";
 
 defineProps({
   account: Object,
@@ -160,6 +184,13 @@ defineProps({
 });
 
 defineEmits(["close"]);
+
+const openAccordion = ref(null);
+const toast = useToast();
+
+const toggleAccordion = (index) => {
+  openAccordion.value = openAccordion.value === index ? null : index;
+};
 
 const statusClass = (status) => {
   return (
@@ -174,5 +205,39 @@ const statusClass = (status) => {
 const downloadPdf = (id) => {
   const url = route("accounts.pdf", id);
   window.open(url, "_blank");
+};
+
+const deleteBeneficiary = (beneficiaryId) => {
+  if (
+    !confirm(
+      "Are you sure you want to delete this beneficiary? This action cannot be undone."
+    )
+  ) {
+    return;
+  }
+
+  router.delete(route("beneficiaries.destroy", beneficiaryId), {
+    preserveScroll: true,
+    onSuccess: () => {
+      toast.success("Beneficiary deleted successfully", {
+        position: "top-right",
+        duration: 3000,
+      });
+      // Remove the beneficiary from the account's beneficiaries list
+      const index = account.beneficiaries.findIndex(
+        (b) => b.id === beneficiaryId
+      );
+      if (index !== -1) {
+        account.beneficiaries.splice(index, 1);
+      }
+    },
+    onError: () => {
+      // Optional: Show error message
+      toast.error("Failed to delete beneficiary", {
+        position: "top-right",
+        duration: 3000,
+      });
+    },
+  });
 };
 </script>

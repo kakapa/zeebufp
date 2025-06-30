@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\BeneficiaryRelationshipEnums;
 use App\Enums\BeneficiaryStatusEnums;
+use App\Enums\ClientGenderEnums;
 use App\Http\Requests\StoreBeneficiaryRequest;
 use App\Http\Requests\UpdateBeneficiaryRequest;
 use App\Models\Beneficiary;
@@ -28,12 +30,13 @@ class BeneficiaryController extends Controller
     public function index()
     {
         return inertia()->render('Beneficiarys/Index', [
-            'beneficiarys' => BeneficiaryResource::collection(
-                Cache::rememberForever('beneficiarys', function () {
+            'beneficiaries' => BeneficiaryResource::collection(
+                Cache::rememberForever('beneficiaries', function () {
                     return Beneficiary::all();
                 })
             ),
-            'statuses' => BeneficiaryStatusEnums::labels(),
+            'relationships' => BeneficiaryRelationshipEnums::labels(),
+            'genders' => ClientGenderEnums::labels(),
             'beneficiary' => session('beneficiary') ?? null,
             'success' => session('success') ?? null,
         ]);
@@ -50,7 +53,8 @@ class BeneficiaryController extends Controller
         $beneficiary = Beneficiary::create($request->validated());
 
         // Clear the cache to ensure the new beneficiary is available
-        Cache::forget('beneficiarys');
+        Cache::forget('beneficiaries');
+        Cache::forget('accounts');
 
         return redirect()->route('dashboard')
             ->with('success', 'Beneficiary created successfully.')
@@ -67,7 +71,8 @@ class BeneficiaryController extends Controller
     {
         return inertia()->render('Beneficiarys/Show', [
             'beneficiary' => new BeneficiaryResource($beneficiary),
-            'statuses' => BeneficiaryStatusEnums::labels(),
+            'relationships' => BeneficiaryRelationshipEnums::labels(),
+            'genders' => ClientGenderEnums::labels(),
         ]);
     }
 
@@ -83,7 +88,8 @@ class BeneficiaryController extends Controller
         $beneficiary->update($request->validated());
 
         // Clear the cache to ensure the new beneficiary is available
-        Cache::forget('beneficiarys');
+        Cache::forget('beneficiaries');
+        Cache::forget('accounts');
 
         return redirect()->route('dashboard')
             ->with('success', 'Beneficiary updated successfully.')
@@ -101,7 +107,8 @@ class BeneficiaryController extends Controller
         $beneficiary->delete();
 
         // Clear the cache to ensure the new beneficiary is available
-        Cache::forget('beneficiarys');
+        Cache::forget('beneficiaries');
+        Cache::forget('accounts');
 
         return redirect()->route('dashboard')
             ->with('success', 'Beneficiary deleted successfully.');

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\BeneficiaryRelationshipEnums;
 use App\Enums\ClientGenderEnums;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -38,7 +39,18 @@ class Beneficiary extends Model
      */
     public function getRouteKeyName()
     {
-        return 'slug';
+        return 'id';
+    }
+
+    /**
+     * Get User's name for dashboard
+     * Combine initials + lastname
+     */
+    public function name(): Attribute
+    {
+        return Attribute::make(function (): string {
+            return sprintf('%s %s %s', $this->firstname, $this->middlename , $this->lastname);
+        })->shouldCache();
     }
 
     /**

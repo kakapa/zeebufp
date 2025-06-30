@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\BeneficiaryController;
 use App\Http\Controllers\ClaimController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DashboardController;
@@ -45,6 +46,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('payments', PaymentController::class);
 
     Route::resource('claims', ClaimController::class);
+
+    Route::resource('beneficiaries', BeneficiaryController::class);
 
     Route::resource('accounts', AccountController::class);
     Route::get('/accounts/{account}/pdf', [AccountController::class, 'downloadTerms'])->name('accounts.pdf');
