@@ -122,8 +122,9 @@
               <Edit class="h-4 w-4" />
             </button>
             <button
+              v-if="shouldShowPackage(pkg)"
               class="flex-1 px-4 py-2 border border-red-300 rounded-md hover:bg-gray-50 flex items-center justify-center"
-              @click="handleDeletePackage(pkg.id)"
+              @click="handleDeletePackage(pkg)"
             >
               <Trash2 class="h-4 w-4" />
             </button>
@@ -216,4 +217,16 @@ onMounted(() => {
     status: "inactive",
   });
 });
+
+const shouldShowPackage = (pkg) => {
+  // Explicit checks for all falsey cases
+  const isNotMain =
+    pkg.main === false ||
+    pkg.main === 0 ||
+    pkg.main === "false" ||
+    pkg.main === null ||
+    pkg.main === undefined;
+
+  return isNotMain || pkg.subscribers === 0;
+};
 </script>
