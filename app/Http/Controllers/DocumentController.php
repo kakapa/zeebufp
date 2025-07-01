@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Document;
 use App\Enums\DocumentStatusEnums;
 use App\Enums\DocumentTypeEnums;
-use App\Http\Requests\StoreDocumentRequest;
-use App\Http\Requests\UpdateDocumentRequest;
-use App\Models\Document;
+use App\Http\Requests\StoreDocumentRequest;;
 use Illuminate\Support\Facades\Cache;
 use \App\Http\Resources\DocumentResource;
 
@@ -29,9 +28,9 @@ class DocumentController extends Controller
     public function index()
     {
         return inertia()->render('Documents/Index', [
-            'documents' => DocumentResource::collection(
+            'initialDocuments' => DocumentResource::collection(
                 Cache::rememberForever('documents', function () {
-                    return Document::all();
+                    return Document::with('documentable')->get();
                 })
             ),
             'accounts' => \App\Http\Resources\AccountResource::collection(

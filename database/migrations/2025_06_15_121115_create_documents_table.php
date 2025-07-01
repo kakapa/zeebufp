@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('documents', function (Blueprint $table) {
             $table->ulid('id')->primary();
             $table->string('name');
+            $table->ulidMorphs('documentable');
             $table->string('type'); // ENUM
             $table->string('status'); // ENUM
             $table->string('path');
@@ -21,13 +22,6 @@ return new class extends Migration
             $table->string('mime');
             $table->integer('views')->default(0);
             $table->timestamps();
-
-            // Polymorphic relationship columns
-            $table->ulid('documentable_id')->nullable();
-            $table->string('documentable_type')->nullable();
-
-            // Index for better performance
-            $table->index(['documentable_id', 'documentable_type']);
         });
     }
 

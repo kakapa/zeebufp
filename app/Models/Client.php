@@ -83,4 +83,13 @@ class Client extends Model
     {
         return $this->morphMany(\App\Models\Activity::class, 'activityable');
     }
+
+    /**
+     * Summary of documents
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany<Activity, Account>
+     */
+    public function documents()
+    {
+        return $this->morphMany(\App\Models\Document::class, 'documentable');
+    }
 }

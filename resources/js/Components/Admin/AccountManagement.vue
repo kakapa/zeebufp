@@ -63,6 +63,7 @@
             @delete="handleDeleteAccount"
             @edit="handleEditAccount"
             @create-beneficiary="handleCreateBeneficiary"
+            @add-additional-package="handleAddAdditionalPackage"
           />
         </div>
       </div>
@@ -110,6 +111,25 @@
         />
       </template>
     </DialogModal>
+
+    <!-- Add Package Dialog -->
+    <DialogModal
+      :show="showAddPackageDialog"
+      title="Add Additional Package"
+      description="Select additional packages to add to this account"
+      submit-text="Add Packages"
+      :processing="packageForm.processing"
+      @cancel="resetPackageForm"
+      @submit="submitAdditionalPackages"
+    >
+      <template #form>
+        <AdditionalPackagesForm
+          :selected-account-for-package="selectedAccountForPackage"
+          :package-form="packageForm"
+          :addtional-packages="addtionalPackages"
+        />
+      </template>
+    </DialogModal>
   </div>
 </template>
 
@@ -125,6 +145,7 @@ import { useToast } from "vue-toast-notification";
 import ResponsiveTable from "@/Pages/Dashboard/Accounts/ResponsiveTable.vue";
 import AccountForm from "@/Pages/Dashboard/Accounts/AccountForm.vue";
 import BeneficiaryForm from "@/Pages/Dashboard/Accounts/BeneficiaryForm.vue";
+import AdditionalPackagesForm from "@/Pages/Dashboard/Accounts/AdditionalPackagesForm.vue";
 
 const props = defineProps({
   initialAccounts: {
@@ -150,6 +171,10 @@ const props = defineProps({
   packages: {
     type: Array,
     required: true,
+  },
+  allAdditionalPackages: {
+    type: Array,
+    default: [],
   },
   activeAccountsCount: {
     type: Number,
@@ -264,6 +289,55 @@ const submitBeneficiary = () => {
       });
     },
   });
+};
+
+// Add these to your existing script setup
+const showAddPackageDialog = ref(false);
+const selectedAccountForPackage = ref(null);
+const addtionalPackages = ref([...props.allAdditionalPackages]); // Assuming packages are passed as prop
+
+const packageForm = useForm({
+  account_id: null,
+  selected_packages: [],
+});
+
+const handleAddAdditionalPackage = (account) => {
+  selectedAccountForPackage.value = account;
+  packageForm.reset();
+  packageForm.account_id = account.id;
+
+  // Filter out packages already associated with the account
+  addtionalPackages.value = props.allAdditionalPackages.filter(
+    (pkg) =>
+      !account.additionalPackages.some((accountPkg) => accountPkg.id === pkg.id)
+  );
+
+  showAddPackageDialog.value = true;
+};
+
+const resetPackageForm = () => {
+  showAddPackageDialog.value = false;
+  selectedAccountForPackage.value = null;
+  packageForm.reset();
+};
+
+const submitAdditionalPackages = () => {
+  packageForm.post(
+    route("accounts.packages.attach", {
+      account: packageForm.account_id,
+    }),
+    {
+      preserveScroll: true,
+      onSuccess: () => {
+        resetPackageForm();
+        // Refresh account data or show success notification
+        toast.success("Additional packages added successfully");
+      },
+      onError: () => {
+        toast.error("Failed to add packages");
+      },
+    }
+  );
 };
 
 onMounted(() => {

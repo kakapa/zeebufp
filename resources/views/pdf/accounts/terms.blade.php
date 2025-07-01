@@ -137,10 +137,10 @@
         $additionalPackages = $account->packages()->where('main', false);
     @endphp
     <p>
-        Package: {{ $mainPackage->name }} <br>
+        Package: {{ $mainPackage->name }} of {{ sprintf('%s%.2f', 'R', $mainPackage->contribution) }}<br>
         Reference: {{ $account->slug }} <br>
-        Monthly Contribution: {{ sprintf('%s%.2f', 'R', $mainPackage->contribution) }} <br>
-        Additional Packages: {{ $additionalPackages->count() }} / {{ sprintf('%s%.2f', 'R', $additionalPackages->sum('contribution')) }} <br>
+        Monthly Contribution Payable:  <b>{{ sprintf('%s%.2f', 'R', $account->total_contribution_amount) }}</b><br>
+        Additional Packages: {{ $additionalPackages->count() }} for {{ sprintf('%s%.2f', 'R', $additionalPackages->sum('contribution')) }} <br>
         Beneficiaries: {{ count($beneficiaries) }} <br>
     </p>
 

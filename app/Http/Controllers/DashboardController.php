@@ -30,6 +30,11 @@ class DashboardController extends Controller
                     return \App\Models\Package::all();
                 }),
             ),
+            'allAdditionalPackages' => PackageResource::collection(
+                Cache::rememberForever('allAdditionalPackages', function () {
+                    return \App\Models\Package::where('main', false)->where('status', 'active')->get();
+                }),
+            ),
             'accounts' => \App\Http\Resources\AccountResource::collection(
                 Cache::rememberForever('accounts', function () {
                     return \App\Models\Account::all();

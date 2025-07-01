@@ -2,17 +2,17 @@
   <BaseTable>
     <TableHeader>
       <TableHeaderCell>Document</TableHeaderCell>
-      <TableHeaderCell responsive-class="hidden md:table-cell"
-        >Client</TableHeaderCell
-      >
-      <TableHeaderCell responsive-class="hidden sm:table-cell"
-        >Type</TableHeaderCell
-      >
-      <TableHeaderCell responsive-class="hidden lg:table-cell"
-        >Uploaded</TableHeaderCell
-      >
-      <TableHeaderCell>Status</TableHeaderCell>
-      <TableHeaderCell responsive-class="text-right">Actions</TableHeaderCell>
+      <TableHeaderCell responsive-class="hidden md:table-cell">
+        Related
+      </TableHeaderCell>
+      <TableHeaderCell responsive-class="hidden sm:table-cell">
+        Type
+      </TableHeaderCell>
+      <TableHeaderCell responsive-class="hidden lg:table-cell">
+        Uploaded
+      </TableHeaderCell>
+      <TableHeaderCell> Status </TableHeaderCell>
+      <TableHeaderCell responsive-class="text-right"> Actions </TableHeaderCell>
     </TableHeader>
 
     <TableBody>
@@ -27,23 +27,25 @@
                 {{ document.name }}
               </div>
               <div class="text-sm text-gray-500">
-                {{ formatFileSize(document.size) }}
+                {{ document.sizeFormatted }} •
               </div>
               <div class="md:hidden mt-2 space-y-1">
                 <div v-if="document.client" class="text-sm">
-                  <span class="font-medium text-gray-500">Client:</span>
+                  <span class="font-medium text-gray-500">Related:</span>
                   <span class="text-gray-900 ml-1">{{
-                    document.client.name
+                    document.relatedLabel
                   }}</span>
                 </div>
                 <div class="text-sm">
                   <span class="font-medium text-gray-500">Type:</span>
-                  <span class="text-primary-800 ml-1">{{ document.type }}</span>
+                  <span class="text-primary-800 ml-1">{{
+                    document.typeLabel
+                  }}</span>
                 </div>
                 <div class="text-sm">
                   <span class="font-medium text-gray-500">Uploaded:</span>
                   <span class="text-gray-500 ml-1">{{
-                    formatDate(document.uploaded_at)
+                    document.createdAt
                   }}</span>
                 </div>
               </div>
@@ -52,25 +54,23 @@
         </TableCell>
 
         <TableCell responsive-class="hidden md:table-cell">
-          <div v-if="document.client" class="text-sm text-gray-900">
-            {{ document.client.name }}
+          <div class="text-sm text-gray-900">
+            {{ document.relatedLabel }}
           </div>
-          <div v-else class="text-sm text-gray-500">Template</div>
         </TableCell>
 
         <TableCell responsive-class="hidden sm:table-cell">
           <span
             class="px-2 py-1 text-xs rounded-full bg-primary-100 text-primary-800"
           >
-            {{ document.type }}
+            {{ document.typeLabel }}
           </span>
         </TableCell>
 
         <TableCell responsive-class="hidden lg:table-cell">
           <div class="text-sm text-gray-500">
-            {{ formatDate(document.uploaded_at) }}
+            {{ document.createdAt }}
           </div>
-          <div class="text-xs text-gray-400">by {{ document.uploaded_by }}</div>
         </TableCell>
 
         <TableCell>
@@ -78,7 +78,7 @@
             class="px-2 py-1 text-xs rounded-full"
             :class="statusClass(document.status)"
           >
-            {{ document.status }}
+            {{ document.statusLabel }}
           </span>
         </TableCell>
 
@@ -126,14 +126,6 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["preview", "download", "delete"]);
-
-const formatDate = (dateString) => {
-  // Your date formatting logic
-};
-
-const formatFileSize = (bytes) => {
-  // Your file size formatting logic
-};
 
 const statusClass = (status) => {
   return (

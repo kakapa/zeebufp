@@ -8,7 +8,9 @@
         <h2 class="text-2xl font-bold">Package Management</h2>
         <p class="text-gray-600">Manage funeral packages and pricing</p>
       </div>
-      <AddButton @click="showDialog = true"> Add Package </AddButton>
+      <AddButton v-if="authUser.isAdmin" @click="showDialog = true">
+        Add Package
+      </AddButton>
     </div>
 
     <!-- Package Statistics -->
@@ -112,7 +114,7 @@
           </div>
 
           <!-- Actions -->
-          <div class="flex gap-2 pt-4">
+          <div class="flex gap-2 pt-4" v-if="authUser.isAdmin">
             <button
               class="flex-1 px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 flex items-center justify-center"
               @click="handleEditPackage(pkg)"
@@ -158,6 +160,7 @@ import DialogModal from "../Ui/DialogModal.vue";
 import PackageForm from "@/Pages/Dashboard/Packages/PackageForm.vue";
 import useCrud from "@/Composables/useCrud";
 import StatsCard from "../Ui/StatsCard.vue";
+import { usePage } from "@inertiajs/vue3";
 
 const props = defineProps({
   packages: {
@@ -179,6 +182,7 @@ const props = defineProps({
 });
 
 const packages = ref([...props.packages]);
+const authUser = usePage().props.auth.user;
 
 const {
   form,

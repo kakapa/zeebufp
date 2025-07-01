@@ -66,8 +66,13 @@
             />
             <TableAction
               icon="UserPlus"
-              color="blue"
+              color="warning"
               @click="$emit('createBeneficiary', account)"
+            />
+            <TableAction
+              icon="PackagePlus"
+              color="indigo"
+              @click="$emit('addAdditionalPackage', account)"
             />
             <TableAction
               icon="Trash2"
@@ -104,7 +109,7 @@ import {
   TableCell,
   TableAction,
 } from "@/Components/Table";
-import { FileText } from "lucide-vue-next";
+
 import DialogModal from "@/Components/Ui/DialogModal.vue";
 import AccountView from "./AccountView.vue";
 
@@ -119,7 +124,13 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["view", "edit", "delete", "createBeneficiary"]);
+const emit = defineEmits([
+  "view",
+  "edit",
+  "delete",
+  "createBeneficiary",
+  "addAdditionalPackage",
+]);
 const selectedAccount = ref({});
 const showAccountModal = ref(false);
 

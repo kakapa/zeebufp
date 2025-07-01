@@ -23,7 +23,10 @@ class Document extends Model
         'type',
         'size',
         'status',
-        'path'
+        'path',
+        'documentable_id',
+        'documentable_type',
+        'views',
     ];
 
     /**

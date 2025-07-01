@@ -54,6 +54,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/accounts/{account}/approve', [AccountController::class, 'approve'])->name('accounts.approve');
 
+    Route::post('/accounts/{account}/packages/attach', [AccountController::class, 'attach'])->name('accounts.packages.attach');
+
+    Route::delete('/accounts/{account}/packages/dettach', [AccountController::class, 'detach'])->name('accounts.packages.detach');
+
     Route::post('/settings/update', [ProfileController::class, 'updateSettings'])->name('settings.update');
     Route::get('/settings', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

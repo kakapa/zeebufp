@@ -95,7 +95,7 @@
         </div>
         <div class="p-6">
           <div class="overflow-x-auto">
-            <DocumentsTable
+            <ResponsiveTable
               :documents="filteredDocuments"
               @delete="handleDeleteDocument"
               @edit="handleEditDocument"
@@ -144,7 +144,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import DocumentsTable from "@/Pages/Documents/Partials/ResponsiveTable.vue";
+import ResponsiveTable from "@/Pages/Documents/Partials/ResponsiveTable.vue";
 import DocumentForm from "@/Pages/Documents/Partials/DocumentForm.vue";
 import SearchBox from "@/Components/Ui/SearchBox.vue";
 import AddButton from "@/Components/Ui/AddButton.vue";

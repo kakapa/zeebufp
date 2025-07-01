@@ -4,9 +4,8 @@ namespace App\Http\Requests;
 
 use App\Enums\DocumentStatusEnums;
 use App\Enums\DocumentTypeEnums;
-use App\Enums\GenderEnums;
-use App\Enums\UserStatusEnums;
-use App\Models\User;
+use App\Rules\ValidDocumentableId;
+use App\Services\S3Service;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -14,6 +13,14 @@ use Illuminate\Validation\Rules\Enum;
 
 class StoreDocumentRequest extends FormRequest
 {
+    private $s3;
+
+    public function __construct(S3Service $s3)
+    {
+        parent::__construct();
+        $this->s3 = $s3;
+    }
+
     /**
      * 1. Prepare the data for validation.
      */
@@ -41,6 +48,17 @@ class StoreDocumentRequest extends FormRequest
             'file' => ['required', 'file'],
             'type' => ['required', 'string', new Enum(DocumentTypeEnums::class)],
             'status' => ['required', 'string', new Enum(DocumentStatusEnums::class)],
+            'documentable_id' => ['required'/* ,  new ValidDocumentableId() */],
+            'documentable_type' => [
+                'required',
+                'string',
+                Rule::in([
+                    'Client',
+                    'Account',
+                    'Payment',
+                    'Claim',
+                ]),
+            ],
         ];
     }
 
@@ -66,9 +84,15 @@ class StoreDocumentRequest extends FormRequest
         $validated['mime'] = $file->getMimeType();
         $validated['size'] = $file->getSize();
 
+        // Get correct model id for documentable_id
+        if ($validated['documentable_id'] && $validated['documentable_type']) {
+            $validated['documentable_type'] = sprintf('\App\Models\%s', $validated['documentable_type']);
+            $validated['documentable_id'] = $validated['documentable_type']::where('slug', $validated['documentable_id'])->firstOrFail()->id;
+        }
+
         // Store file
-        $path = $file->storeAs('documents', $filename, 'public');
-        $validated['path'] = Storage::disk('public')->url($path);
+        $folder = 'zeebundelwa/documents/'.$validated['type'];
+        $validated['path'] = $this->s3->storeFile($folder, $file, $filename);
 
         // Replace the validated data with our modified version
         $this->replace($validated);

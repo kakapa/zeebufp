@@ -10,6 +10,7 @@ use App\Http\Requests\StoreAccountRequest;
 use App\Http\Resources\AccountResource;
 use App\Models\Beneficiary;
 use App\Notifications\AccountApproved;
+use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
@@ -149,5 +150,62 @@ class AccountController extends Controller
 
         return redirect()->back()
             ->with('success', 'Account approved successfully');
+    }
+
+    public function attach(Request $request, Account $account)
+    {
+        // Validate the request
+        $request->validate([
+            'selected_packages' => 'required|array',
+            'selected_packages.*' => 'exists:packages,slug',
+        ]);
+
+        // Get packages of $request->selected_packages slugs
+        $selectedPackages = \App\Models\Package::whereIn('slug', $request->selected_packages)->get();
+        $account->packages()->attach($selectedPackages);
+
+        // Update the account's total coverage and contribution amounts
+        $account->refresh(); // Refresh the account to get the latest data
+        $account->total_coverage_amount = $account->packages()->sum('coverage');
+        $account->total_contribution_amount = $account->packages()->sum('contribution');
+        $account->save();
+
+        // Clear the cache to ensure the new account is available
+        Cache::forget('accounts');
+        Cache::forget('activeAccountsCount');
+        Cache::forget('monthlyContributionsSum');
+
+        return redirect()->back()
+            ->with('success', 'Package attached successfully.')
+            ->with('account', new AccountResource($account));
+    }
+
+    public function detach(Request $request, Account $account)
+    {
+        // Validate the request
+        $request->validate([
+            'package_id' => 'required|exists:packages,slug',
+        ]);
+
+        // Find the package by slug
+        $package = \App\Models\Package::where('slug', $request->package_id)->firstOrFail();
+
+        // Detach the package from the account
+        $account->packages()->detach($package);
+
+        // Update the account's total coverage and contribution amounts
+        $account->refresh(); // Refresh the account to get the latest data
+        $account->total_coverage_amount = $account->packages()->sum('coverage');
+        $account->total_contribution_amount = $account->packages()->sum('contribution');
+        $account->save();
+
+        // Clear the cache to ensure the new account is available
+        Cache::forget('accounts');
+        Cache::forget('activeAccountsCount');
+        Cache::forget('monthlyContributionsSum');
+
+        return redirect()->back()
+            ->with('success', 'Package deleted successfully.')
+            ->with('account', new AccountResource($account));
     }
 }

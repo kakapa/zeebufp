@@ -46,6 +46,7 @@
             :initial-accounts="accounts"
             :statuses="account_statuses"
             :packages="packages"
+            :all-additional-packages="allAdditionalPackages"
             :clients="clients"
             :genders="genders"
             :relationships="relationships"
@@ -104,6 +105,7 @@ import {
 
 const props = defineProps({
   packages: Array,
+  allAdditionalPackages: Array,
   clients: Array,
   accounts: Array,
   contributions: Array,
