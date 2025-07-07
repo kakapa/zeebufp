@@ -73,7 +73,7 @@
     <table>
         <tbody>
             <tr>
-                <td width="33.3%"><strong>Effective Date:</strong><br> {{ date('d M Y') }}</td>
+                <td width="33.3%"><strong>Effective Date:</strong><br> </td>
                 <td width="33.3%"><strong>Company:</strong><br> {{ setting('registered_name') }}</td>
                 <td width="33.3%"><strong>Registration No:</strong><br> {{ setting('registration_number') }}</td>
             </tr>
