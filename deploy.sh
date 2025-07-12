@@ -39,6 +39,14 @@ ln -sf "$SHARED_DIR/.env" "$NEW_RELEASE_DIR/.env"
 ln -snf "$SHARED_DIR/storage" "$NEW_RELEASE_DIR/storage"
 ln -snf "$SHARED_DIR/bootstrap/cache" "$NEW_RELEASE_DIR/bootstrap/cache"
 
+# Defensive cleanup before build
+log "🧨 Cleaning up old/broken container state for all apps"
+for APP_NAME in zeebufp lifet; do
+  log "🧨 Cleaning up for $APP_NAME..."
+  docker rm -f "apps_${APP_NAME}_1" 2>/dev/null || true
+  docker volume ls --format '{{.Name}}' | grep "$APP_NAME" | xargs -r docker volume rm || true
+done
+
 # Build Docker containers
 log "🐳 Building Docker containers..."
 cd "$DEPLOY_BASE"
