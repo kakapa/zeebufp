@@ -1,49 +1,36 @@
 # syntax=docker/dockerfile:1
-FROM php:8.3-cli
+FROM php:8.3-fpm
 
-# Non-interactive setup
 ENV DEBIAN_FRONTEND=noninteractive \
     PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
 
-# Install system dependencies & Chrome dependencies
-RUN apt update && apt install -y nano
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    apt-transport-https \
-    wget \
-    git \
-    curl \
-    gnupg2 \
+# Install system packages and PHP extensions
+RUN apt-get update && apt-get install -y \
+    git curl wget unzip zip nano redis-tools iputils-ping \
+    gnupg2 ca-certificates supervisor \
+    libzip-dev libpng-dev libonig-dev libxml2-dev libicu-dev \
+    libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 \
+    libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 \
+    libgbm1 libasound2 apt-transport-https \
+    && docker-php-ext-install \
+    pdo_mysql \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath \
+    gd \
+    intl \
     zip \
-    unzip \
-    pkg-config \
-    libzip-dev \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    libicu-dev \
-    # Chrome dependencies
-    libnss3 \
-    libnspr4 \
-    libatk1.0-0 \
-    libatk-bridge2.0-0 \
-    libcups2 \
-    libdrm2 \
-    libxkbcommon0 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxfixes3 \
-    libxrandr2 \
-    libgbm1 \
-    libasound2 \
-    ca-certificates \
-    # Node.js (Latest LTS from official source)
-    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && pecl install redis && docker-php-ext-enable redis
+
+# Install Node.js (v20 LTS) and latest NPM
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
-    # Install latest stable NPM manually
-    && npm install -g npm@latest \
-    # Install Google Chrome
-    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub \
+    && npm install -g npm@latest
+
+# Install Google Chrome for Puppeteer
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub \
     | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg \
     && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" \
     > /etc/apt/sources.list.d/google-chrome.list \
@@ -52,56 +39,33 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions
-RUN docker-php-ext-install \
-    pdo_mysql \
-    mbstring \
-    exif \
-    pcntl \
-    bcmath \
-    gd \
-    intl \
-    zip
-
-# Install Redis extensions
-RUN pecl install redis && docker-php-ext-enable redis
-RUN apt-get update && apt-get install -y \
-    iputils-ping \
-    redis-tools
-
 # Set working directory
 WORKDIR /var/www/html
 
-# Trust the working directory for git
-RUN git config --global --add safe.directory /var/www/html
-
-# Copy the rest of your application
+# Copy application code
 COPY . .
+
+# Mark this directory safe for Git (fixes issues in CI/CD)
+RUN git config --global --add safe.directory /var/www/html
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer \
     | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Run full install with scripts
+# Install PHP dependencies (Laravel)
 RUN composer install --no-dev --optimize-autoloader
 
-# Install Node dependencies & build frontend
+# Build frontend assets
 RUN npm install --legacy-peer-deps \
-    && npm run build || echo "⚠️ Build failed or skipped due to missing index.html, continuing..." \
+    && npm run build || echo "⚠️ npm build failed — continuing..." \
     && npm cache clean --force
 
-# Set correct permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Set correct permissions for Laravel
+RUN chown -R www-data:www-data storage bootstrap/cache
 
-# Install & Copy Supervisor config
-RUN apt-get update && apt-get install -y supervisor
+# Configure Supervisor to run Laravel queue/horizon
 COPY .docker/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
 COPY .docker/supervisor/conf.d/ /etc/supervisor/conf.d/
 
-# Run Laravel queue via supervisor
+# Start Supervisor (process manager for queue workers, Horizon, etc.)
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
-
-
-
-# Run Laravel dev server
-CMD php artisan serve --host=0.0.0.0 --port=8083
