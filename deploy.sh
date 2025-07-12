@@ -49,12 +49,18 @@ docker-compose -f "$DOCKER_COMPOSE_FILE" build --no-cache zeebufp
 log "📦 Starting containers..."
 docker-compose -f "$DOCKER_COMPOSE_FILE" up -d zeebufp reverse-proxy
 
+# Fix permissions first (before composer)
+log "🔧 Ensuring cache paths exist before Composer runs..."
+docker-compose -f "$DOCKER_COMPOSE_FILE" exec -T zeebufp bash -c "
+  mkdir -p bootstrap/cache &&
+  mkdir -p storage/framework/{views,cache,sessions} &&
+  chown -R www-data:www-data bootstrap storage &&
+  chmod -R 775 bootstrap storage
+"
+
 # Laravel setup inside container
 log "⚙️ Running Laravel setup in container..."
 docker-compose -f "$DOCKER_COMPOSE_FILE" exec -T zeebufp bash -c "
-  mkdir -p bootstrap/cache storage/framework/{views,cache,sessions} &&
-  chown -R www-data:www-data storage bootstrap &&
-  chmod -R 775 storage bootstrap &&
   composer install --no-dev --optimize-autoloader &&
   php artisan migrate --force &&
   php artisan storage:link || true &&
@@ -66,6 +72,9 @@ docker-compose -f "$DOCKER_COMPOSE_FILE" exec -T zeebufp bash -c "
   php artisan view:cache &&
   php artisan horizon:terminate || true &&
   if [ -S /var/run/supervisor.sock ]; then
+    php artisan horizon:terminate || true
+    supervisorctl -c /etc/supervisor/supervisord.conf reread || true
+    supervisorctl -c /etc/supervisor/supervisord.conf update || true
     supervisorctl -c /etc/supervisor/supervisord.conf restart horizon || true
   else
     echo '⚠️ Supervisor not ready — skipping Horizon restart'
