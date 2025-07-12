@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  zeebufp:
+    build:
+      context: ${RELEASE_PATH}
+      dockerfile: .docker/Dockerfile
+    container_name: zeebufp
+    volumes:
+      - ${RELEASE_PATH}:/var/www/html
+      - /home/ubuntu/apps/zeebufp/shared/.env:/var/www/html/.env
+      - /home/ubuntu/apps/zeebufp/shared/storage:/var/www/html/storage
+    environment:
+      APP_ENV: production
+    ports:
+      - "8083:8083"
+    expose:
+      - "8083"
+    restart: unless-stopped
+    networks:
+      - app-net
+
+  zeebufp-reverse-proxy:
+    image: nginx:latest
+    container_name: zeebufp-reverse-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - zeebufp
+    networks:
+      - app-net
+
+networks:
+  app-net:
+    driver: bridge

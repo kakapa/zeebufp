@@ -1,6 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
+# === CONFIGURATION ===
 APP_NAME="zeebufp"
 DEPLOY_BASE="/home/ubuntu/apps"
 APP_DIR="$DEPLOY_BASE/$APP_NAME"
@@ -10,19 +11,22 @@ SHARED_DIR="$APP_DIR/shared"
 TIMESTAMP=$(date +"%Y%m%d%H%M%S")
 NEW_RELEASE_DIR="$RELEASES_DIR/$TIMESTAMP"
 LOG_FILE="$APP_DIR/deploy.log"
+DOCKER_COMPOSE_FILE="$APP_DIR/docker-compose.prod.yml"
 
-# Compute container name and release tag
-CONTAINER_NAME="${APP_NAME}_${TIMESTAMP}"
-export ZEEBUF_RELEASE_PATH=$(readlink -f "$NEW_RELEASE_DIR")
-
-# Logging
+# === LOGGING ===
 log() {
   echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG_FILE"
 }
 
-log "🚀 Starting blue-green deployment of $APP_NAME..."
+log "🚀 Starting clean deployment of $APP_NAME..."
 
-# Prepare directories
+# === CLEANUP BEFORE DEPLOY ===
+log "🧹 Cleaning previous Docker resources..."
+docker-compose -f "$DOCKER_COMPOSE_FILE" down -v || true
+docker system prune -af || true
+
+# === PREPARE DIRECTORIES ===
+log "📁 Creating necessary directories..."
 mkdir -p \
   "$RELEASES_DIR" \
   "$SHARED_DIR/storage/framework/{cache,views,sessions}" \
@@ -30,34 +34,30 @@ mkdir -p \
 
 chown -R www-data:www-data "$SHARED_DIR"
 
-# Clone fresh code
+# === CLONE NEW RELEASE ===
 log "📥 Cloning repository..."
 git clone --depth=1 "$REPO_URL" "$NEW_RELEASE_DIR"
 
-# Link shared
+# === LINK SHARED FILES ===
 log "🔗 Linking shared files..."
 ln -sf "$SHARED_DIR/.env" "$NEW_RELEASE_DIR/.env"
 ln -snf "$SHARED_DIR/storage" "$NEW_RELEASE_DIR/storage"
 ln -snf "$SHARED_DIR/bootstrap/cache" "$NEW_RELEASE_DIR/bootstrap/cache"
 
-# Stop old container if any
-log "🧼 Stopping and removing old $APP_NAME containers..."
-old_container=$(docker ps -a --filter "name=${APP_NAME}_" --format '{{.Names}}')
-if [ -n "$old_container" ]; then
-  docker stop $old_container || true
-  docker rm -f $old_container || true
-fi
+# === EXPORT PATH FOR BUILD ===
+export RELEASE_PATH=$(readlink -f "$NEW_RELEASE_DIR")
 
-# Build and run new container
-log "🐳 Building new release container..."
-docker-compose -f "$DEPLOY_BASE/docker-compose.yml" build "$CONTAINER_NAME"
+# === BUILD AND DEPLOY ===
+log "🐳 Building Docker container..."
+cd "$APP_DIR"
+docker-compose -f "$DOCKER_COMPOSE_FILE" build
 
-log "🚀 Starting new container..."
-docker-compose -f "$DEPLOY_BASE/docker-compose.yml" up -d "$CONTAINER_NAME" reverse-proxy
+log "🚀 Starting containers..."
+docker-compose -f "$DOCKER_COMPOSE_FILE" up -d
 
-# Laravel post-setup
+# === POST-DEPLOY LARAVEL TASKS ===
 log "⚙️ Running Laravel setup inside container..."
-docker-compose -f "$DEPLOY_BASE/docker-compose.yml" exec -T "$CONTAINER_NAME" bash -c "
+docker-compose -f "$DOCKER_COMPOSE_FILE" exec -T $APP_NAME bash -c "
   mkdir -p bootstrap/cache storage/framework/{views,cache,sessions} &&
   chown -R www-data:www-data bootstrap storage &&
   chmod -R 775 bootstrap storage &&
@@ -72,16 +72,16 @@ docker-compose -f "$DEPLOY_BASE/docker-compose.yml" exec -T "$CONTAINER_NAME" ba
   php artisan view:cache &&
   php artisan horizon:terminate || true &&
   if [ -S /var/run/supervisor.sock ]; then
-    supervisorctl -c /etc/supervisor/supervisord.conf reread || true
-    supervisorctl -c /etc/supervisor/supervisord.conf update || true
-    supervisorctl -c /etc/supervisor/supervisord.conf restart horizon || true
+    supervisorctl reread || true
+    supervisorctl update || true
+    supervisorctl restart horizon || true
   else
     echo '⚠️ Supervisor not ready — skipping Horizon restart'
   fi
 "
 
-# Clean old releases (keep 5)
-log "🧹 Cleaning old releases..."
+# === CLEAN OLD RELEASES ===
+log "🧹 Cleaning up old releases (keep latest 5)..."
 cd "$RELEASES_DIR"
 ls -1t | tail -n +6 | xargs -d '\n' rm -rf -- || true
 
