@@ -1,69 +1,70 @@
 #!/bin/bash
-
-set -e
+set -euo pipefail
 
 APP_NAME="zeebufp"
-BASE_DIR="/home/ubuntu/apps"
-APP_DIR="$BASE_DIR/$APP_NAME"
-COMMIT_FILE="$APP_DIR/.last-deploy-commit"
+DEPLOY_BASE="/home/ubuntu/apps"
+APP_DIR="$DEPLOY_BASE/$APP_NAME"
+REPO_URL="git@github.com:kakapa/$APP_NAME.git"
+RELEASES_DIR="$APP_DIR/releases"
+SHARED_DIR="$APP_DIR/shared"
+TIMESTAMP=$(date +"%Y%m%d%H%M%S")
+NEW_RELEASE_DIR="$RELEASES_DIR/$TIMESTAMP"
+LOG_FILE="$APP_DIR/deploy.log"
+DOCKER_COMPOSE_FILE="$DEPLOY_BASE/docker-compose.yml"
 
-cd "$APP_DIR" || exit
+# Initialize logging
+log() {
+  echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG_FILE"
+}
 
-echo "🔍 Checking for updates..."
-git fetch origin main
-LOCAL_COMMIT=$(git rev-parse HEAD)
-REMOTE_COMMIT=$(git rev-parse origin/main)
+log "🚀 Starting deployment of $APP_NAME..."
 
-if [ "$LOCAL_COMMIT" = "$REMOTE_COMMIT" ]; then
-    echo "✅ Already up to date. No deployment needed."
-    exit 0
-fi
+# Create directory structure
+mkdir -p "$RELEASES_DIR" "$SHARED_DIR/storage"
 
-echo "🚀 Pulling latest code..."
-git pull origin main
+# Clone new release
+log "📥 Cloning repository..."
+git clone --depth 1 "$REPO_URL" "$NEW_RELEASE_DIR"
 
-# Check for rebuild trigger
-REBUILD_NEEDED=false
-if git diff --name-only "$LOCAL_COMMIT" "$REMOTE_COMMIT" | grep -E "Dockerfile|docker-compose.yml|composer.json|package.json|vite.config|\.env"; then
-    REBUILD_NEEDED=true
-fi
+# Link shared files
+log "🔗 Linking shared files..."
+ln -sf "$SHARED_DIR/.env" "$NEW_RELEASE_DIR/.env"
+ln -sf "$SHARED_DIR/storage" "$NEW_RELEASE_DIR/storage"
 
-cd "$BASE_DIR" # Go to folder where docker-compose.yml is
+# Build with explicit path
+log "💪 Building Docker container..."
+cd "$DEPLOY_BASE"
+ZEEBUF_RELEASE_PATH="$NEW_RELEASE_DIR" \
+docker-compose -f "$DOCKER_COMPOSE_FILE" build --no-cache zeebufp
 
-if [ "$REBUILD_NEEDED" = true ]; then
-    echo "🔁 Rebuilding and restarting $APP_NAME..."
-    docker-compose rm -fs "$APP_NAME" || true
-    docker-compose build --no-cache "$APP_NAME"
-    docker-compose up -d "$APP_NAME"
-else
-    echo "♻️ No rebuild needed. Just restarting container..."
-    docker-compose restart "$APP_NAME"
-fi
+# Start containers
+log "📦 Starting containers..."
+docker-compose -f "$DOCKER_COMPOSE_FILE" up -d zeebufp reverse-proxy
 
-echo "🧬 Running Laravel tasks..."
+# Run setup commands
+log "🧬 Running Laravel setup..."
+docker-compose -f "$DOCKER_COMPOSE_FILE" exec -T zeebufp bash -c "
+  chown -R www-data:www-data storage bootstrap/cache &&
+  composer install --no-dev --optimize-autoloader &&
+  php artisan migrate --force &&
+  php artisan storage:link || true &&
+  php artisan config:clear &&
+  php artisan route:clear &&
+  php artisan view:clear &&
+  php artisan config:cache &&
+  php artisan route:cache &&
+  php artisan view:cache &&
+  php artisan horizon:terminate || true &&
+  supervisorctl restart horizon
+"
 
-if [ -n "$CI" ]; then
-  DOCKER_EXEC="docker-compose run --rm $APP_NAME"
-else
-  DOCKER_EXEC="docker-compose exec $APP_NAME"
-fi
+# Update current symlink (after everything succeeds)
+log "🔀 Updating current symlink..."
+ln -sfn "$NEW_RELEASE_DIR" "$APP_DIR/current"
 
-$DOCKER_EXEC composer install --no-dev --optimize-autoloader
-$DOCKER_EXEC npm install
-$DOCKER_EXEC npm run build
-$DOCKER_EXEC php artisan migrate --force
-$DOCKER_EXEC php artisan storage:link
-$DOCKER_EXEC php artisan config:clear
-$DOCKER_EXEC php artisan route:clear
-$DOCKER_EXEC php artisan view:clear
-$DOCKER_EXEC php artisan config:cache
-$DOCKER_EXEC php artisan route:cache
-$DOCKER_EXEC php artisan view:cache
-$DOCKER_EXEC php artisan horizon:terminate
+# Cleanup
+log "🧹 Cleaning up old releases (keeping last 5)..."
+cd "$RELEASES_DIR"
+ls -1t | tail -n +6 | xargs -d '\n' rm -rf -- || true
 
-# Save deployed commit hash
-NEW_COMMIT=$(git rev-parse HEAD)
-echo "$NEW_COMMIT" > "$COMMIT_FILE"
-echo "📌 Deployed commit: $NEW_COMMIT"
-
-echo "✅ Deployment completed!"
+log "✅ Deployment complete! New release: $TIMESTAMP"

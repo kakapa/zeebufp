@@ -39,6 +39,13 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Add nginx
+RUN apt-get update && apt-get install -y nginx
+
+# Copy nginx config
+COPY .docker/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY .docker/nginx/site.conf /etc/nginx/sites-enabled/default
+
 # Set working directory
 WORKDIR /var/www/html
 
