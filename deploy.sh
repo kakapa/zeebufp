@@ -25,15 +25,6 @@ log "🧹 Cleaning previous Docker resources..."
 docker-compose -f "$DOCKER_COMPOSE_FILE" down -v || true
 docker system prune -af || true
 
-# === PREPARE DIRECTORIES ===
-log "📁 Creating necessary directories..."
-mkdir -p \
-  "$RELEASES_DIR" \
-  "$SHARED_DIR/storage/framework/{cache,views,sessions}" \
-  "$SHARED_DIR/bootstrap/cache"
-
-chown -R www-data:www-data "$SHARED_DIR"
-
 # === CLONE NEW RELEASE ===
 log "📥 Cloning repository..."
 git clone --depth=1 "$REPO_URL" "$NEW_RELEASE_DIR"
