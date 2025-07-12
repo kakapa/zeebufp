@@ -19,19 +19,21 @@ log() {
 
 log "🚀 Starting deployment of $APP_NAME..."
 
-# Create directory structure
-mkdir -p "$RELEASES_DIR" "$SHARED_DIR/storage"
+# Create necessary directory structure
+mkdir -p "$RELEASES_DIR" "$SHARED_DIR/storage/framework/{views,cache,sessions}" "$SHARED_DIR/bootstrap/cache"
+chown -R www-data:www-data "$SHARED_DIR"
 
-# Clone new release
+# Clone the repository
 log "📥 Cloning repository..."
 git clone --depth 1 "$REPO_URL" "$NEW_RELEASE_DIR"
 
-# Link shared files
+# Link shared files and directories
 log "🔗 Linking shared files..."
 ln -sf "$SHARED_DIR/.env" "$NEW_RELEASE_DIR/.env"
-ln -sf "$SHARED_DIR/storage" "$NEW_RELEASE_DIR/storage"
+ln -snf "$SHARED_DIR/storage" "$NEW_RELEASE_DIR/storage"
+ln -snf "$SHARED_DIR/bootstrap/cache" "$NEW_RELEASE_DIR/bootstrap/cache"
 
-# Build with explicit path
+# Build Docker containers
 log "💪 Building Docker container..."
 cd "$DEPLOY_BASE"
 ZEEBUF_RELEASE_PATH="$NEW_RELEASE_DIR" \
@@ -41,7 +43,7 @@ docker-compose -f "$DOCKER_COMPOSE_FILE" build --no-cache zeebufp
 log "📦 Starting containers..."
 docker-compose -f "$DOCKER_COMPOSE_FILE" up -d zeebufp reverse-proxy
 
-# Run setup commands
+# Run Laravel setup
 log "🧬 Running Laravel setup..."
 docker-compose -f "$DOCKER_COMPOSE_FILE" exec -T zeebufp bash -c "
   chown -R www-data:www-data storage bootstrap/cache &&
@@ -55,14 +57,14 @@ docker-compose -f "$DOCKER_COMPOSE_FILE" exec -T zeebufp bash -c "
   php artisan route:cache &&
   php artisan view:cache &&
   php artisan horizon:terminate || true &&
-  supervisorctl restart horizon
+  supervisorctl -s unix:///var/run/supervisor.sock restart horizon || true
 "
 
-# Update current symlink (after everything succeeds)
+# Update current symlink
 log "🔀 Updating current symlink..."
 ln -sfn "$NEW_RELEASE_DIR" "$APP_DIR/current"
 
-# Cleanup
+# Cleanup old releases (keep last 5)
 log "🧹 Cleaning up old releases (keeping last 5)..."
 cd "$RELEASES_DIR"
 ls -1t | tail -n +6 | xargs -d '\n' rm -rf -- || true
