@@ -67,8 +67,9 @@ RUN npm install --legacy-peer-deps \
     && npm run build || echo "⚠️ npm build failed — continuing..." \
     && npm cache clean --force
 
-# Set correct permissions for Laravel
-RUN chown -R www-data:www-data storage bootstrap/cache
+# Set correct ownership & permissions inside container
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Configure Supervisor to run Laravel queue/horizon
 COPY .docker/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
