@@ -47,6 +47,12 @@ for APP_NAME in zeebufp lifet; do
   docker volume ls --format '{{.Name}}' | grep "$APP_NAME" | xargs -r docker volume rm || true
 done
 
+if docker ps -a --format '{{.Names}}' | grep -q "apps_${APP_NAME}_1"; then
+  log "🧼 Detected existing container, stopping and removing it..."
+  docker-compose -f "$DOCKER_COMPOSE_FILE" stop "$APP_NAME"
+  docker-compose -f "$DOCKER_COMPOSE_FILE" rm -f "$APP_NAME"
+fi
+
 # Build Docker containers
 log "🐳 Building Docker containers..."
 cd "$DEPLOY_BASE"
