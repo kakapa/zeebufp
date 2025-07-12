@@ -57,7 +57,7 @@ docker-compose -f "$DOCKER_COMPOSE_FILE" exec -T zeebufp bash -c "
   php artisan route:cache &&
   php artisan view:cache &&
   php artisan horizon:terminate || true &&
-  supervisorctl -s unix:///var/run/supervisor.sock restart horizon || true
+  supervisorctl -c /etc/supervisor/supervisord.conf restart horizon || true
 "
 
 # Update current symlink
