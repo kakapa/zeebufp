@@ -10,69 +10,57 @@ SHARED_DIR="$APP_DIR/shared"
 TIMESTAMP=$(date +"%Y%m%d%H%M%S")
 NEW_RELEASE_DIR="$RELEASES_DIR/$TIMESTAMP"
 LOG_FILE="$APP_DIR/deploy.log"
-DOCKER_COMPOSE_FILE="$DEPLOY_BASE/docker-compose.yml"
 
-# Logging function
+# Compute container name and release tag
+CONTAINER_NAME="${APP_NAME}_${TIMESTAMP}"
+export ZEEBUF_RELEASE_PATH=$(readlink -f "$NEW_RELEASE_DIR")
+
+# Logging
 log() {
   echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG_FILE"
 }
 
-log "🚀 Starting deployment of $APP_NAME..."
+log "🚀 Starting blue-green deployment of $APP_NAME..."
 
-# Ensure shared directories exist
-log "📁 Preparing shared directories..."
+# Prepare directories
 mkdir -p \
-  "$SHARED_DIR/storage/framework/cache" \
-  "$SHARED_DIR/storage/framework/views" \
-  "$SHARED_DIR/storage/framework/sessions" \
+  "$RELEASES_DIR" \
+  "$SHARED_DIR/storage/framework/{cache,views,sessions}" \
   "$SHARED_DIR/bootstrap/cache"
 
 chown -R www-data:www-data "$SHARED_DIR"
 
-# Clone fresh copy of the repo
+# Clone fresh code
 log "📥 Cloning repository..."
 git clone --depth=1 "$REPO_URL" "$NEW_RELEASE_DIR"
 
-# Link shared files into new release
+# Link shared
 log "🔗 Linking shared files..."
 ln -sf "$SHARED_DIR/.env" "$NEW_RELEASE_DIR/.env"
 ln -snf "$SHARED_DIR/storage" "$NEW_RELEASE_DIR/storage"
 ln -snf "$SHARED_DIR/bootstrap/cache" "$NEW_RELEASE_DIR/bootstrap/cache"
 
-# Defensive cleanup before build
-log "🧨 Cleaning up old/broken container state for all apps"
-for app in zeebufp lifet; do
-  log "🧨 Cleaning up for $app..."
-  docker rm -f "apps_${app}_1" 2>/dev/null || true
-  docker volume ls --format '{{.Name}}' | grep "$app" | xargs -r docker volume rm || true
-done
+# Stop old container if any
+log "🧼 Stopping and removing old $APP_NAME containers..."
+old_container=$(docker ps -a --filter "name=${APP_NAME}_" --format '{{.Names}}')
+if [ -n "$old_container" ]; then
+  docker stop $old_container || true
+  docker rm -f $old_container || true
+fi
 
-log "🛑 Forcefully removing any existing container for $APP_NAME..."
-docker-compose -f "$DOCKER_COMPOSE_FILE" stop "$APP_NAME" || true
-docker-compose -f "$DOCKER_COMPOSE_FILE" rm -f -v "$APP_NAME" || true
+# Build and run new container
+log "🐳 Building new release container..."
+docker-compose -f "$DEPLOY_BASE/docker-compose.yml" build "$CONTAINER_NAME"
 
-# Build Docker containers
-log "🐳 Building Docker containers..."
-cd "$DEPLOY_BASE"
-ZEEBUF_RELEASE_PATH="$NEW_RELEASE_DIR" \
-docker-compose -f "$DOCKER_COMPOSE_FILE" build --no-cache zeebufp
+log "🚀 Starting new container..."
+docker-compose -f "$DEPLOY_BASE/docker-compose.yml" up -d "$CONTAINER_NAME" reverse-proxy
 
-# Start Laravel app and reverse proxy
-log "📦 Starting containers..."
-docker-compose -f "$DOCKER_COMPOSE_FILE" up -d zeebufp reverse-proxy
-
-# Fix permissions first (before composer)
-log "🔧 Ensuring cache paths exist before Composer runs..."
-docker-compose -f "$DOCKER_COMPOSE_FILE" exec -T zeebufp bash -c "
-  mkdir -p bootstrap/cache &&
-  mkdir -p storage/framework/{views,cache,sessions} &&
+# Laravel post-setup
+log "⚙️ Running Laravel setup inside container..."
+docker-compose -f "$DEPLOY_BASE/docker-compose.yml" exec -T "$CONTAINER_NAME" bash -c "
+  mkdir -p bootstrap/cache storage/framework/{views,cache,sessions} &&
   chown -R www-data:www-data bootstrap storage &&
-  chmod -R 775 bootstrap storage
-"
-
-# Laravel setup inside container
-log "⚙️ Running Laravel setup in container..."
-docker-compose -f "$DOCKER_COMPOSE_FILE" exec -T zeebufp bash -c "
+  chmod -R 775 bootstrap storage &&
   composer install --no-dev --optimize-autoloader &&
   php artisan migrate --force &&
   php artisan storage:link || true &&
@@ -84,7 +72,6 @@ docker-compose -f "$DOCKER_COMPOSE_FILE" exec -T zeebufp bash -c "
   php artisan view:cache &&
   php artisan horizon:terminate || true &&
   if [ -S /var/run/supervisor.sock ]; then
-    php artisan horizon:terminate || true
     supervisorctl -c /etc/supervisor/supervisord.conf reread || true
     supervisorctl -c /etc/supervisor/supervisord.conf update || true
     supervisorctl -c /etc/supervisor/supervisord.conf restart horizon || true
@@ -93,13 +80,9 @@ docker-compose -f "$DOCKER_COMPOSE_FILE" exec -T zeebufp bash -c "
   fi
 "
 
-# Point "current" symlink to new release
-log "🔀 Updating current release symlink..."
-ln -sfn "$NEW_RELEASE_DIR" "$APP_DIR/current"
-
-# Clean up old releases (keep 5)
-log "🧹 Cleaning up old releases..."
+# Clean old releases (keep 5)
+log "🧹 Cleaning old releases..."
 cd "$RELEASES_DIR"
 ls -1t | tail -n +6 | xargs -d '\n' rm -rf -- || true
 
-log "✅ Deployment complete! New release: $TIMESTAMP"
+log "✅ Deployment complete for release: $TIMESTAMP"
