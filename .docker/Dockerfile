@@ -68,6 +68,7 @@ RUN npm install --legacy-peer-deps \
     && npm cache clean --force
 
 # Set correct ownership & permissions inside container
+RUN usermod -u 1000 www-data
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
