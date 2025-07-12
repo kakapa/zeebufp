@@ -41,17 +41,15 @@ ln -snf "$SHARED_DIR/bootstrap/cache" "$NEW_RELEASE_DIR/bootstrap/cache"
 
 # Defensive cleanup before build
 log "🧨 Cleaning up old/broken container state for all apps"
-for APP_NAME in zeebufp lifet; do
-  log "🧨 Cleaning up for $APP_NAME..."
-  docker rm -f "apps_${APP_NAME}_1" 2>/dev/null || true
-  docker volume ls --format '{{.Name}}' | grep "$APP_NAME" | xargs -r docker volume rm || true
+for app in zeebufp lifet; do
+  log "🧨 Cleaning up for $app..."
+  docker rm -f "apps_${app}_1" 2>/dev/null || true
+  docker volume ls --format '{{.Name}}' | grep "$app" | xargs -r docker volume rm || true
 done
 
-if docker ps -a --format '{{.Names}}' | grep -q "apps_${APP_NAME}_1"; then
-  log "🧼 Detected existing container, stopping and removing it..."
-  docker-compose -f "$DOCKER_COMPOSE_FILE" stop "$APP_NAME"
-  docker-compose -f "$DOCKER_COMPOSE_FILE" rm -f "$APP_NAME"
-fi
+log "🛑 Forcefully removing any existing container for $APP_NAME..."
+docker-compose -f "$DOCKER_COMPOSE_FILE" stop "$APP_NAME" || true
+docker-compose -f "$DOCKER_COMPOSE_FILE" rm -f -v "$APP_NAME" || true
 
 # Build Docker containers
 log "🐳 Building Docker containers..."
