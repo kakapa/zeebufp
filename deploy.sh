@@ -39,6 +39,10 @@ ln -snf "$SHARED_DIR/bootstrap/cache" "$NEW_RELEASE_DIR/bootstrap/cache"
 export RELEASE_PATH=$(readlink -f "$NEW_RELEASE_DIR")
 
 # === BUILD AND DEPLOY ===
+if ! docker network ls --filter name=^app-net$ --format '{{.Name}}' | grep -wq app-net; then
+  docker network create app-net
+fi
+
 log "🐳 Building Docker container..."
 cd "$APP_DIR"
 docker-compose -f "$DOCKER_COMPOSE_FILE" build
