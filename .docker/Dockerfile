@@ -46,6 +46,9 @@ RUN apt-get update && apt-get install -y nginx
 COPY .docker/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY .docker/nginx/site.conf /etc/nginx/sites-enabled/default
 
+# Ensure correct user ID for www-data to match host (if needed)
+RUN usermod -u 1000 www-data
+
 # Set working directory
 WORKDIR /var/www/html
 
@@ -67,10 +70,12 @@ RUN npm install --legacy-peer-deps \
     && npm run build || echo "⚠️ npm build failed — continuing..." \
     && npm cache clean --force
 
-# Set correct ownership & permissions inside container
-RUN usermod -u 1000 www-data
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+# Create Laravel required directories with correct permissions
+RUN mkdir -p \
+    bootstrap/cache \
+    storage/framework/{views,cache,sessions} \
+    && chown -R www-data:www-data bootstrap storage \
+    && chmod -R 775 bootstrap storage
 
 # Configure Supervisor to run Laravel queue/horizon
 COPY .docker/supervisor/supervisord.conf /etc/supervisor/supervisord.conf

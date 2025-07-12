@@ -58,7 +58,6 @@ docker-compose -f "$DOCKER_COMPOSE_FILE" up -d
 # === POST-DEPLOY LARAVEL TASKS ===
 log "⚙️ Running Laravel setup inside container..."
 docker-compose -f "$DOCKER_COMPOSE_FILE" exec -T $APP_NAME bash -c "
-  mkdir -p bootstrap/cache storage/framework/{views,cache,sessions} &&
   composer install --no-dev --optimize-autoloader &&
   php artisan migrate --force &&
   php artisan storage:link || true &&
