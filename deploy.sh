@@ -46,7 +46,9 @@ docker-compose -f "$DOCKER_COMPOSE_FILE" up -d zeebufp reverse-proxy
 # Run Laravel setup
 log "🧬 Running Laravel setup..."
 docker-compose -f "$DOCKER_COMPOSE_FILE" exec -T zeebufp bash -c "
+  mkdir -p bootstrap/cache storage/framework/{views,cache,sessions} &&
   chown -R www-data:www-data storage bootstrap/cache &&
+  chmod -R 775 storage bootstrap/cache &&
   composer install --no-dev --optimize-autoloader &&
   php artisan migrate --force &&
   php artisan storage:link || true &&
@@ -57,7 +59,11 @@ docker-compose -f "$DOCKER_COMPOSE_FILE" exec -T zeebufp bash -c "
   php artisan route:cache &&
   php artisan view:cache &&
   php artisan horizon:terminate || true &&
-  supervisorctl -c /etc/supervisor/supervisord.conf restart horizon || true
+  if [ -S /var/run/supervisor.sock ]; then
+    supervisorctl -c /etc/supervisor/supervisord.conf restart horizon
+  else
+    echo '⚠️ Supervisor not ready — skipping Horizon restart'
+  fi
 "
 
 # Update current symlink
