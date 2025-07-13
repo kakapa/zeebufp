@@ -11,9 +11,22 @@ log() {
   echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG_FILE"
 }
 
-log "🚀 Starting deployment of $APP_NAME to $APP_DIR..."
+# Initialize directory structure
+prepare_directories() {
+  mkdir -p "$APP_DIR"/{storage,nginx/ssl,bootstrap/cache}
+  mkdir -p "$APP_DIR"/storage/framework/{cache/data,sessions,views}
+  mkdir -p "$APP_DIR"/storage/logs
+}
 
-# === CLONE OR PULL LATEST CODE ===
+log "🚀 Starting deployment of $APP_NAME..."
+
+# Prepare host directories
+prepare_directories
+
+# Set temporary permissions for git operations
+sudo chown -R ubuntu:ubuntu "$APP_DIR"
+
+# === GIT OPERATIONS ===
 if [ -d "$APP_DIR/.git" ]; then
   log "📥 Pulling latest changes..."
   cd "$APP_DIR"
@@ -21,55 +34,33 @@ if [ -d "$APP_DIR/.git" ]; then
   git pull origin main
 else
   log "📥 Cloning repository..."
-  rm -rf "$APP_DIR"
   git clone "$REPO_URL" "$APP_DIR"
+  cd "$APP_DIR"
 fi
 
-cd "$APP_DIR"
+# Set proper permissions for Docker
+sudo chown -R ubuntu:www-data "$APP_DIR"
+sudo chmod -R 775 "$APP_DIR"/storage "$APP_DIR"/bootstrap/cache
 
-# === DOCKER CLEANUP ===
-log "🧼 Removing Docker containers for $APP_NAME..."
-docker ps -a --filter "name=${APP_NAME}" --format "{{.ID}}" | xargs -r docker rm -f || true
+# === DOCKER OPERATIONS ===
+log "🧹 Cleaning up old containers..."
+docker-compose -f "$DOCKER_COMPOSE_FILE" down --remove-orphans || true
 
-log "🧹 Removing Docker images for $APP_NAME..."
-docker images --filter "reference=*${APP_NAME}*" --format "{{.ID}}" | xargs -r docker rmi -f || true
-
-log "🧽 Removing dangling volumes..."
-docker volume prune -f || true
-
-log "🌐 Removing networks named ${APP_NAME}_*..."
-docker network ls --filter "name=${APP_NAME}_" --format "{{.Name}}" | xargs -r docker network rm || true
-
-# === BUILD AND DEPLOY ===
-if ! docker network ls --filter name=^app-net$ --format '{{.Name}}' | grep -wq app-net; then
-  docker network create app-net
-fi
-
-# === BUILD AND START ===
-log "🐳 Building Docker containers..."
+log "🐳 Building containers..."
 docker-compose -f "$DOCKER_COMPOSE_FILE" build
 
-log "🚀 Starting containers..."
+log "🚀 Starting services..."
 docker-compose -f "$DOCKER_COMPOSE_FILE" up -d
 
-# === LARAVEL SETUP ===
+# === APPLICATION SETUP ===
 log "⚙️ Configuring Laravel..."
 docker-compose -f "$DOCKER_COMPOSE_FILE" exec -T $APP_NAME bash -c "
   set -e
   git config --global --add safe.directory /var/www/html
-  composer update --lock
   composer install --no-dev --optimize-autoloader
   php artisan migrate --force
-  php artisan storage:link || true
-  php artisan optimize:clear
-  php artisan config:cache
-  php artisan route:cache
-  php artisan view:cache
-  if [ -e /var/run/supervisor.sock ]; then
-    supervisorctl reread
-    supervisorctl update
-    supervisorctl restart horizon
-  fi
+  php artisan storage:link
+  php artisan optimize
 "
 
-log "✅ Deployment complete!"
+log "✅ Deployment completed successfully!"

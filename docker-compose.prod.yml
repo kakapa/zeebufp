@@ -8,19 +8,32 @@ services:
     container_name: zeebufp
     volumes:
       - .:/var/www/html
-      - ./storage:/var/www/html/storage
-      - ./bootstrap/cache:/var/www/html/bootstrap/cache
+      - zeebufp_storage:/var/www/html/storage
+      - zeebufp_cache:/var/www/html/bootstrap/cache
       - ./nginx/ssl:/etc/nginx/ssl:ro
     user: "www-data:www-data"
     environment:
       APP_ENV: production
+      APP_DEBUG: "false"
     ports:
       - "8083:8083"
-    expose:
-      - "8083"
-    restart: unless-stopped
     networks:
       - app-net
+    restart: unless-stopped
+
+volumes:
+  zeebufp_storage:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/storage
+  zeebufp_cache:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/bootstrap/cache
 
 networks:
   app-net:

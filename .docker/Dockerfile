@@ -1,53 +1,36 @@
 # syntax=docker/dockerfile:1
 FROM php:8.3-fpm
 
-# Set working directory
-WORKDIR /var/www/html
-
-# Install system packages and PHP extensions
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    nginx supervisor git unzip zip curl nano \
-    libzip-dev libpng-dev libonig-dev libxml2-dev wget \
-    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd \
+    nginx supervisor git unzip zip curl \
+    libzip-dev libpng-dev libonig-dev libxml2-dev libicu-dev \
+    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd intl \
     && pecl install redis && docker-php-ext-enable redis
 
-RUN apt-get update && apt-get install -y \
-    libicu-dev \
-    && docker-php-ext-install intl \
-    && docker-php-ext-enable intl
-
-# Install Composer globally
+# Install Composer
 RUN curl -sS https://getcomposer.org/installer | php \
-    && mv composer.phar /usr/local/bin/composer
+    && mv composer.phar /usr/local/bin/composer \
+    && chmod +x /usr/local/bin/composer
 
-# Copy Laravel app source code
-COPY . .
-
-# Ensure required directories exist with correct permissions
-RUN set -xe; \
-    mkdir -p \
-    /var/www/html/storage/framework/cache/data \
-    /var/www/html/storage/framework/views \
-    /var/www/html/storage/framework/sessions \
+# Create directory structure with correct permissions
+RUN mkdir -p /var/www/html/storage/framework/{cache/data,sessions,views} \
     /var/www/html/storage/logs \
-    /var/www/html/bootstrap/cache; \
-    chown -R www-data:www-data \
-    /var/www/html/storage \
-    /var/www/html/bootstrap/cache; \
-    chmod -R 775 \
-    /var/www/html/storage \
-    /var/www/html/bootstrap/cache
+    /var/www/html/bootstrap/cache \
+    && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Copy Nginx config
+WORKDIR /var/www/html
+
+# Copy application files with correct ownership
+COPY --chown=www-data:www-data . .
+
+# Copy configurations
 COPY .docker/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY .docker/nginx/site.conf /etc/nginx/sites-enabled/default
-
-# Copy Supervisor config
 COPY .docker/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
 COPY .docker/supervisor/conf.d/ /etc/supervisor/conf.d/
 
-# Expose HTTP port
 EXPOSE 8083
 
-# Start Supervisor (manages php-fpm, nginx, queue/horizon)
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
