@@ -13,9 +13,17 @@ log() {
 
 log "🚀 Starting deployment of $APP_NAME to $APP_DIR..."
 
-log "📦 Cloning latest code..."
-rm -rf "$APP_DIR"/*
-git clone --depth=1 "$REPO_URL" "$APP_DIR"
+# === CLONE OR PULL LATEST ===
+if [ -d "$APP_DIR/.git" ]; then
+  log "📥 Pulling latest changes..."
+  cd "$APP_DIR"
+  git reset --hard
+  git pull origin main
+else
+  log "📥 Cloning repository..."
+  rm -rf "$APP_DIR"
+  git clone "$REPO_URL" "$APP_DIR"
+fi
 
 # === BUILD AND DEPLOY ===
 if ! docker network ls --filter name=^app-net$ --format '{{.Name}}' | grep -wq app-net; then
