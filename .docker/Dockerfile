@@ -43,6 +43,12 @@ RUN groupmod -g ${GROUP_ID} www-data \
 RUN mkdir -p /var/lib/nginx/body \
     && chown -R www-data:www-data /var/lib/nginx
 
+# Fix NGINX log permissions
+RUN mkdir -p /var/log/nginx \
+    && touch /var/log/nginx/access.log /var/log/nginx/error.log \
+    && chown -R www-data:www-data /var/log/nginx \
+    && chmod -R 755 /var/log/nginx
+
 # Supervisor setup
 RUN mkdir -p /var/log/supervisor \
     && touch /var/log/supervisord.log \
