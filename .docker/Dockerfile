@@ -8,7 +8,6 @@ ARG GROUP_ID=82
 # Install dependencies
 RUN apt-get update && apt-get install -y \
     nginx \
-    php8.3-fpm \
     supervisor \
     git \
     unzip \
