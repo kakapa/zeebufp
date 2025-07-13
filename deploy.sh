@@ -13,7 +13,7 @@ log() {
 
 log "🚀 Starting deployment of $APP_NAME to $APP_DIR..."
 
-# === CLONE OR PULL LATEST ===
+# === CLONE OR PULL LATEST CODE ===
 if [ -d "$APP_DIR/.git" ]; then
   log "📥 Pulling latest changes..."
   cd "$APP_DIR"
@@ -32,13 +32,23 @@ fi
 
 cd "$APP_DIR"
 
+# === DOCKER CLEANUP (PREVENT 'ContainerConfig' ERROR) ===
+log "🧼 Cleaning up Docker state..."
+docker-compose -f "$DOCKER_COMPOSE_FILE" down -v --remove-orphans || true
+docker container prune -f || true
+docker image prune -af || true
+docker volume prune -f || true
+docker network prune -f || true
+
+# === BUILD AND START ===
 log "🐳 Building Docker containers..."
 docker-compose -f "$DOCKER_COMPOSE_FILE" build
 
 log "🚀 Starting containers..."
 docker-compose -f "$DOCKER_COMPOSE_FILE" up -d
 
-log "⚙️ Running Laravel setup..."
+# === LARAVEL TASKS ===
+log "⚙️ Running Laravel setup inside container..."
 docker-compose -f "$DOCKER_COMPOSE_FILE" exec -T $APP_NAME bash -c "
   composer install --no-dev --optimize-autoloader
   php artisan migrate --force
@@ -59,4 +69,4 @@ docker-compose -f "$DOCKER_COMPOSE_FILE" exec -T $APP_NAME bash -c "
   fi
 "
 
-log "✅ Deployment finished!"
+log "✅ Deployment complete!"
