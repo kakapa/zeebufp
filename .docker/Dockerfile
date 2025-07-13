@@ -36,6 +36,11 @@ RUN apt-get update && apt-get install -y \
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && chmod +x /usr/local/bin/composer
 
+# Install Node.js (change version if needed)
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g npm
+
 # Configure system user
 RUN groupmod -g ${GROUP_ID} www-data \
     && usermod -u ${USER_ID} -g www-data www-data

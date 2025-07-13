@@ -91,6 +91,8 @@ deploy() {
   docker-compose -f "$DOCKER_COMPOSE_FILE" exec -T "$APP_NAME" bash -c "
     git config --global --add safe.directory /var/www/html
     composer install --no-dev --optimize-autoloader --no-interaction
+    npm install
+    npm run build
     php artisan migrate --force
     php artisan storage:link
     php artisan optimize:clear
