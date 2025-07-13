@@ -39,7 +39,7 @@ ln -snf "$SHARED_DIR/bootstrap/cache" "$NEW_RELEASE_DIR/bootstrap/cache"
 log "📁 Ensuring shared log directories exist..."
 mkdir -p "$SHARED_DIR/storage/logs"
 touch "$SHARED_DIR/storage/logs/horizon.log"
-chown -R ubuntu:ubuntu "$SHARED_DIR/storage"
+touch "$SHARED_DIR/storage/logs/laravel.log"
 
 # === EXPORT PATH FOR BUILD ===
 export RELEASE_PATH=$(readlink -f "$NEW_RELEASE_DIR")
