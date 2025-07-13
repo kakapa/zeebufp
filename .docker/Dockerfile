@@ -49,6 +49,13 @@ RUN mkdir -p /var/log/supervisor /var/run/supervisor \
     && touch /var/log/supervisord.log \
     && chown -R www-data:www-data /var/log/supervisor /var/run/supervisor
 
+# Laravel storage/cache structure
+RUN mkdir -p /var/www/html/storage/framework/{cache/data,sessions,views} \
+    /var/www/html/storage/logs \
+    /var/www/html/bootstrap/cache \
+    && chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
 # Create directory structure with correct permissions
 RUN mkdir -p /var/www/html/storage/framework/{cache/data,sessions,views} \
     /var/www/html/storage/logs \
