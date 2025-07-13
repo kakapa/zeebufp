@@ -27,18 +27,18 @@ fi
 
 cd "$APP_DIR"
 
-# === TARGETED CLEANUP TO AVOID 'ContainerConfig' ERROR ===
+# === DOCKER CLEANUP ===
 log "🧼 Removing Docker containers for $APP_NAME..."
-docker ps -a --filter "name=${APP_NAME}" --format "{{.ID}}" | xargs -r docker rm -f
+docker ps -a --filter "name=${APP_NAME}" --format "{{.ID}}" | xargs -r docker rm -f || true
 
-log "🧹 Removing Docker image for $APP_NAME..."
-docker images "${IMAGE_NAME}" --format "{{.ID}}" | xargs -r docker rmi -f
+log "🧹 Removing Docker images for $APP_NAME..."
+docker images --filter "reference=*${APP_NAME}*" --format "{{.ID}}" | xargs -r docker rmi -f || true
 
-log "🧽 Removing dangling volumes for $APP_NAME..."
-docker volume ls --filter "dangling=true" --format "{{.Name}}" | grep "$APP_NAME" | xargs -r docker volume rm
+log "🧽 Removing dangling volumes..."
+docker volume prune -f || true
 
-log "🌐 Removing networks named ${APP_NAME}_* (if any)..."
-docker network ls --filter "name=${APP_NAME}_" --format "{{.Name}}" | xargs -r docker network rm
+log "🌐 Removing networks named ${APP_NAME}_*..."
+docker network ls --filter "name=${APP_NAME}_" --format "{{.Name}}" | xargs -r docker network rm || true
 
 # === BUILD AND DEPLOY ===
 if ! docker network ls --filter name=^app-net$ --format '{{.Name}}' | grep -wq app-net; then
@@ -52,25 +52,23 @@ docker-compose -f "$DOCKER_COMPOSE_FILE" build
 log "🚀 Starting containers..."
 docker-compose -f "$DOCKER_COMPOSE_FILE" up -d
 
-# === LARAVEL TASKS ===
-log "⚙️ Running Laravel setup inside container..."
+# === LARAVEL SETUP ===
+log "⚙️ Configuring Laravel..."
 docker-compose -f "$DOCKER_COMPOSE_FILE" exec -T $APP_NAME bash -c "
+  set -e
+  git config --global --add safe.directory /var/www/html
+  composer update --lock
   composer install --no-dev --optimize-autoloader
   php artisan migrate --force
   php artisan storage:link || true
-  php artisan config:clear || true
-  php artisan route:clear || true
-  php artisan view:clear || true
+  php artisan optimize:clear
   php artisan config:cache
   php artisan route:cache
   php artisan view:cache
-  php artisan horizon:terminate || true
   if [ -e /var/run/supervisor.sock ]; then
-    supervisorctl reread || true
-    supervisorctl update || true
-    supervisorctl restart horizon || true
-  else
-    echo '⚠️ Supervisor socket not found — skipping Horizon restart'
+    supervisorctl reread
+    supervisorctl update
+    supervisorctl restart horizon
   fi
 "
 
