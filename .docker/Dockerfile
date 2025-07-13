@@ -41,8 +41,9 @@ RUN groupmod -g ${GROUP_ID} www-data \
 
 # Supervisor setup
 RUN mkdir -p /var/log/supervisor \
-    && chown -R www-data:www-data /var/log/supervisor \
-    && chmod -R 755 /var/log/supervisor \
+    && touch /var/log/supervisord.log \
+    && chown -R www-data:www-data /var/log/supervisor /var/log/supervisord.log \
+    && chmod -R 755 /var/log/supervisor /var/log/supervisord.log \
     && mkdir -p /var/run/supervisor \
     && chown -R www-data:www-data /var/run/supervisor
 
