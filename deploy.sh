@@ -28,15 +28,27 @@ update_code() {
 
 # Clean containers/images related to this app only
 clean_docker() {
-  log "🧹 Stopping old containers..."
-  docker-compose -f "$DOCKER_COMPOSE_FILE" down --remove-orphans --timeout 30 || true
+  # === DOCKER CLEANUP ===
+  log "🧼 Removing Docker containers for $APP_NAME..."
+  docker ps -a --filter "name=${APP_NAME}" --format "{{.ID}}" | xargs -r docker rm -f || true
 
-  log "🧹 Removing dangling images (only if unused)..."
-  docker image prune -f
+  log "🧹 Removing Docker images for $APP_NAME..."
+  docker images --filter "reference=*${APP_NAME}*" --format "{{.ID}}" | xargs -r docker rmi -f || true
+
+  log "🧽 Removing dangling volumes..."
+  docker volume prune -f || true
+
+  log "🌐 Removing networks named ${APP_NAME}_*..."
+  docker network ls --filter "name=${APP_NAME}_" --format "{{.Name}}" | xargs -r docker network rm || true
 }
 
 deploy() {
   log "🚀 Starting deployment..."
+
+  # === BUILD AND DEPLOY ===
+  if ! docker network ls --filter name=^app-net$ --format '{{.Name}}' | grep -wq app-net; then
+   docker network create app-net
+  fi
 
   update_code
   cd "$APP_DIR"
