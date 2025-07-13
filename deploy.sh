@@ -8,10 +8,6 @@ REPO_URL="git@github.com:kakapa/$APP_NAME.git"
 DOCKER_COMPOSE_FILE="$APP_DIR/docker-compose.prod.yml"
 LOG_FILE="$APP_DIR/deploy.log"
 
-# Set default user/group IDs (matches Dockerfile www-data user)
-WEB_USER_ID=82
-WEB_GROUP_ID=82
-
 # Logging function
 log() {
   echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG_FILE"
@@ -83,8 +79,8 @@ deploy() {
   log "⚙️ Configuring Laravel..."
   docker-compose -f "$DOCKER_COMPOSE_FILE" exec -T $APP_NAME bash -c "
     set -e
-    # Fix git permissions
-    sudo chown -R www-data:www-data /var/www/.gitconfig
+    # Fix git permissions (no sudo in container)
+    chown -R www-data:www-data /var/www/.gitconfig
 
     # Install dependencies
     composer install --no-dev --optimize-autoloader --no-interaction
