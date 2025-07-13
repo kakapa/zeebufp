@@ -4,7 +4,7 @@ services:
   zeebufp:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: .docker/Dockerfile
       args:
         USER_ID: ${USER_ID:-82}
         GROUP_ID: ${GROUP_ID:-82}
@@ -18,7 +18,9 @@ services:
       APP_ENV: production
       APP_DEBUG: "false"
     ports:
-      - "8083:8080"
+      - "8083:8083"
+    expose:
+      - "8083"
     networks:
       - app-net
     restart: unless-stopped
