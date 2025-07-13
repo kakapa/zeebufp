@@ -8,21 +8,27 @@ REPO_URL="git@github.com:kakapa/$APP_NAME.git"
 DOCKER_COMPOSE_FILE="$APP_DIR/docker-compose.prod.yml"
 LOG_FILE="$APP_DIR/deploy.log"
 
+# Set default user/group IDs (matches Dockerfile www-data user)
+WEB_USER_ID=82
+WEB_GROUP_ID=82
+
 # Logging function
 log() {
   echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG_FILE"
 }
 
-log "🧼 Cleaning up leftovers (nginx/ssl)..."
-sudo chown -R ubuntu:ubuntu "$APP_DIR"
-sudo rm -rf "$APP_DIR/nginx/ssl" || true
-
-# Initialize directory structure
+# Initialize directory structure with correct permissions
 init_directories() {
   log "📂 Initializing directory structure..."
   sudo mkdir -p "$APP_DIR"/{storage,nginx/ssl,bootstrap/cache}
   sudo mkdir -p "$APP_DIR"/storage/framework/{cache/data,sessions,views}
   sudo mkdir -p "$APP_DIR"/storage/logs
+
+  log "🔒 Setting permissions..."
+  sudo chown -R ubuntu:www-data "$APP_DIR"
+  sudo chmod -R 775 "$APP_DIR"/storage
+  sudo chmod -R 775 "$APP_DIR"/bootstrap/cache
+  sudo chown -R ubuntu:ubuntu "$APP_DIR"/.git
 }
 
 # Clean up old Docker artifacts
@@ -59,6 +65,11 @@ deploy() {
   # Get latest code
   git_operations
 
+  # Re-set permissions after git operations
+  sudo chown -R ubuntu:www-data "$APP_DIR"
+  sudo chmod -R 775 "$APP_DIR"/storage
+  sudo chmod -R 775 "$APP_DIR"/bootstrap/cache
+
   # Docker operations
   clean_docker
 
@@ -68,23 +79,31 @@ deploy() {
   log "🚀 Starting services..."
   docker-compose -f "$DOCKER_COMPOSE_FILE" up -d
 
-  # Wait for services to initialize
-  sleep 15
-
   # Laravel setup inside container
   log "⚙️ Configuring Laravel..."
   docker-compose -f "$DOCKER_COMPOSE_FILE" exec -T $APP_NAME bash -c "
     set -e
+    # Fix git permissions
+    sudo chown -R www-data:www-data /var/www/.gitconfig
+
+    # Install dependencies
     composer install --no-dev --optimize-autoloader --no-interaction
+
+    # Laravel setup
     php artisan migrate --force
     php artisan storage:link
-    php artisan optimize
+    php artisan optimize:clear
+    php artisan config:cache
+    php artisan route:cache
+    php artisan view:cache
+
+    # Queue setup
     if [ -e /var/run/supervisor.sock ]; then
-        supervisorctl reread
-        supervisorctl update
-        supervisorctl restart all
+      supervisorctl reread
+      supervisorctl update
+      supervisorctl restart horizon
     fi
-    "
+  "
 
   log "✅ Deployment completed successfully!"
   exit 0
