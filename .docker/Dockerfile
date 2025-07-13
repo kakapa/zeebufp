@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     zip \
     curl \
+    nano \
     libzip-dev \
     libpng-dev \
     libonig-dev \
@@ -81,6 +82,8 @@ COPY --chown=www-data:www-data .docker/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY --chown=www-data:www-data .docker/nginx/site.conf /etc/nginx/sites-enabled/default
 COPY --chown=www-data:www-data .docker/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
 COPY --chown=www-data:www-data .docker/supervisor/conf.d/ /etc/supervisor/conf.d/
+
+RUN sed -i 's|^listen = .*|listen = 127.0.0.1:9000|' /usr/local/etc/php-fpm.d/www.conf
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s \
