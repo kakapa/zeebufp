@@ -19,12 +19,6 @@ init_directories() {
   sudo mkdir -p "$APP_DIR"/{storage,nginx/ssl,bootstrap/cache}
   sudo mkdir -p "$APP_DIR"/storage/framework/{cache/data,sessions,views}
   sudo mkdir -p "$APP_DIR"/storage/logs
-
-  log "🔒 Setting permissions..."
-  sudo chown -R ubuntu:www-data "$APP_DIR"
-  sudo chmod -R 775 "$APP_DIR"/storage
-  sudo chmod -R 775 "$APP_DIR"/bootstrap/cache
-  sudo chown -R ubuntu:ubuntu "$APP_DIR"/.git
 }
 
 # Clean up old Docker artifacts
@@ -61,11 +55,6 @@ deploy() {
   # Get latest code
   git_operations
 
-  # Re-set permissions after git operations
-  sudo chown -R ubuntu:www-data "$APP_DIR"
-  sudo chmod -R 775 "$APP_DIR"/storage
-  sudo chmod -R 775 "$APP_DIR"/bootstrap/cache
-
   # Docker operations
   clean_docker
 
@@ -82,24 +71,16 @@ deploy() {
   log "⚙️ Configuring Laravel..."
   docker-compose -f "$DOCKER_COMPOSE_FILE" exec -T $APP_NAME bash -c "
     set -e
-    # Fix permissions
-    chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-
-    # Install dependencies
     composer install --no-dev --optimize-autoloader --no-interaction
-
-    # Laravel setup
     php artisan migrate --force
     php artisan storage:link
     php artisan optimize
-
-    # Restart services
     if [ -e /var/run/supervisor.sock ]; then
-      supervisorctl reread
-      supervisorctl update
-      supervisorctl restart all
+        supervisorctl reread
+        supervisorctl update
+        supervisorctl restart all
     fi
-  "
+    "
 
   log "✅ Deployment completed successfully!"
   exit 0
