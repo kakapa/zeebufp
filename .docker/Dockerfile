@@ -78,9 +78,9 @@ COPY --chown=www-data:www-data .docker/supervisor/conf.d/ /etc/supervisor/conf.d
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s \
-    CMD curl -f http://localhost:8080/health || exit 1
+    CMD curl -f http://localhost:8083/health || exit 1
 
-EXPOSE 8080
+EXPOSE 8083
 
 USER root
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
