@@ -44,18 +44,6 @@ RUN groupmod -g ${GROUP_ID} www-data \
 RUN mkdir -p /var/lib/nginx/body \
     && chown -R www-data:www-data /var/lib/nginx
 
-# Supervisor setup
-RUN mkdir -p /var/log/supervisor /var/run/supervisor \
-    && touch /var/log/supervisord.log \
-    && chown -R www-data:www-data /var/log/supervisor /var/run/supervisor
-
-# Laravel storage/cache structure
-RUN mkdir -p /var/www/html/storage/framework/{cache/data,sessions,views} \
-    /var/www/html/storage/logs \
-    /var/www/html/bootstrap/cache \
-    && chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-
 # Create directory structure with correct permissions
 RUN mkdir -p /var/www/html/storage/framework/{cache/data,sessions,views} \
     /var/www/html/storage/logs \
@@ -65,6 +53,11 @@ RUN mkdir -p /var/www/html/storage/framework/{cache/data,sessions,views} \
     && find /var/www/html -type f -exec chmod 664 {} \; \
     && chmod -R 777 /var/www/html/storage \
     && chmod -R 777 /var/www/html/bootstrap/cache
+
+# Supervisor setup
+RUN mkdir -p /var/log/supervisor /var/run/supervisor \
+    && touch /var/log/supervisord.log \
+    && chown -R www-data:www-data /var/log/supervisor /var/run/supervisor
 
 # Workdir
 WORKDIR /var/www/html

@@ -29,7 +29,7 @@ update_code() {
 # Clean containers/images related to this app only
 clean_docker() {
   log "🧹 Stopping old containers..."
-  docker compose -f "$DOCKER_COMPOSE_FILE" down --remove-orphans --timeout 30 || true
+  docker-compose -f "$DOCKER_COMPOSE_FILE" down --remove-orphans --timeout 30 || true
 
   log "🧹 Removing dangling images (only if unused)..."
   docker image prune -f
@@ -44,13 +44,13 @@ deploy() {
   clean_docker
 
   log "🐳 Building app container..."
-  docker compose -f "$DOCKER_COMPOSE_FILE" build
+  docker-compose -f "$DOCKER_COMPOSE_FILE" build
 
   log "🚀 Starting services..."
-  docker compose -f "$DOCKER_COMPOSE_FILE" up -d
+  docker-compose -f "$DOCKER_COMPOSE_FILE" up -d
 
   log "⚙️ Running Laravel setup..."
-  docker compose -f "$DOCKER_COMPOSE_FILE" exec -T "$APP_NAME" bash -c "
+  docker-compose -f "$DOCKER_COMPOSE_FILE" exec -T "$APP_NAME" bash -c "
     git config --global --add safe.directory /var/www/html
     composer install --no-dev --optimize-autoloader --no-interaction
     php artisan migrate --force
