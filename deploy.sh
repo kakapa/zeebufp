@@ -17,6 +17,11 @@ log "📦 Cloning latest code..."
 rm -rf "$APP_DIR"/*
 git clone --depth=1 "$REPO_URL" "$APP_DIR"
 
+# === BUILD AND DEPLOY ===
+if ! docker network ls --filter name=^app-net$ --format '{{.Name}}' | grep -wq app-net; then
+  docker network create app-net
+fi
+
 cd "$APP_DIR"
 
 log "🐳 Building Docker containers..."
