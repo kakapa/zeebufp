@@ -4,22 +4,29 @@ services:
   zeebufp:
     build:
       context: .
-      dockerfile: .docker/Dockerfile
+      dockerfile: Dockerfile
+      args:
+        USER_ID: ${USER_ID:-82}
+        GROUP_ID: ${GROUP_ID:-82}
     container_name: zeebufp
     volumes:
       - .:/var/www/html
       - zeebufp_storage:/var/www/html/storage
       - zeebufp_cache:/var/www/html/bootstrap/cache
       - ./nginx/ssl:/etc/nginx/ssl:ro
-    user: "www-data:www-data"
     environment:
       APP_ENV: production
       APP_DEBUG: "false"
     ports:
-      - "8083:8083"
+      - "8083:8080"
     networks:
       - app-net
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 volumes:
   zeebufp_storage:
@@ -37,4 +44,4 @@ volumes:
 
 networks:
   app-net:
-    external: true
+    driver: bridge

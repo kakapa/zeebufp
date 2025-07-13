@@ -13,7 +13,7 @@ log() {
   echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG_FILE"
 }
 
-# Initialize directory structure with correct permissions
+# Initialize directory structure
 init_directories() {
   log "📂 Initializing directory structure..."
   sudo mkdir -p "$APP_DIR"/{storage,nginx/ssl,bootstrap/cache}
@@ -75,12 +75,15 @@ deploy() {
   log "🚀 Starting services..."
   docker-compose -f "$DOCKER_COMPOSE_FILE" up -d
 
+  # Wait for services to initialize
+  sleep 15
+
   # Laravel setup inside container
   log "⚙️ Configuring Laravel..."
   docker-compose -f "$DOCKER_COMPOSE_FILE" exec -T $APP_NAME bash -c "
     set -e
-    # Fix git permissions (no sudo in container)
-    chown -R www-data:www-data /var/www/.gitconfig
+    # Fix permissions
+    chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
     # Install dependencies
     composer install --no-dev --optimize-autoloader --no-interaction
@@ -88,16 +91,13 @@ deploy() {
     # Laravel setup
     php artisan migrate --force
     php artisan storage:link
-    php artisan optimize:clear
-    php artisan config:cache
-    php artisan route:cache
-    php artisan view:cache
+    php artisan optimize
 
-    # Queue setup
+    # Restart services
     if [ -e /var/run/supervisor.sock ]; then
       supervisorctl reread
       supervisorctl update
-      supervisorctl restart horizon
+      supervisorctl restart all
     fi
   "
 

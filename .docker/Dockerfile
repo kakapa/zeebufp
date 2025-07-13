@@ -1,11 +1,11 @@
 # syntax=docker/dockerfile:1
 FROM php:8.3-fpm
 
-# Set default user/group IDs for www-data (82 is the standard www-data user in Debian)
+# Set user/group IDs for www-data
 ARG USER_ID=82
 ARG GROUP_ID=82
 
-# Install system dependencies and PHP extensions
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     nginx \
     supervisor \
@@ -39,14 +39,18 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN groupmod -g ${GROUP_ID} www-data \
     && usermod -u ${USER_ID} -g www-data www-data
 
-# Create directory structure
-RUN mkdir -p /var/www/html \
-    && mkdir -p /var/www/html/storage/framework/{cache/data,sessions,views} \
-    && mkdir -p /var/www/html/storage/logs \
-    && mkdir -p /var/www/html/bootstrap/cache
+# Supervisor setup
+RUN mkdir -p /var/log/supervisor \
+    && chown -R www-data:www-data /var/log/supervisor \
+    && chmod -R 755 /var/log/supervisor \
+    && mkdir -p /var/run/supervisor \
+    && chown -R www-data:www-data /var/run/supervisor
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html \
+# Create Laravel directory structure
+RUN mkdir -p /var/www/html/storage/framework/{cache/data,sessions,views} \
+    /var/www/html/storage/logs \
+    /var/www/html/bootstrap/cache \
+    && chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage \
     && chmod -R 775 /var/www/html/bootstrap/cache
 
