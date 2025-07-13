@@ -14,6 +14,7 @@ log() {
 }
 
 log "🧼 Cleaning up leftovers (nginx/ssl)..."
+sudo chown -R ubuntu:ubuntu "$APP_DIR"
 sudo rm -rf "$APP_DIR/nginx/ssl" || true
 
 # Initialize directory structure
