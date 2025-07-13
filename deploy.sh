@@ -27,13 +27,18 @@ fi
 
 cd "$APP_DIR"
 
-# === DOCKER CLEANUP ===
-log "🧼 Cleaning up Docker state..."
-docker-compose -f "$DOCKER_COMPOSE_FILE" down -v --remove-orphans || true
-docker container prune -f || true
-docker image prune -af || true
-docker volume prune -f || true
-#docker network prune -f || true
+# === TARGETED CLEANUP TO AVOID 'ContainerConfig' ERROR ===
+log "🧼 Removing Docker containers for $APP_NAME..."
+docker ps -a --filter "name=${APP_NAME}" --format "{{.ID}}" | xargs -r docker rm -f
+
+log "🧹 Removing Docker image for $APP_NAME..."
+docker images "${IMAGE_NAME}" --format "{{.ID}}" | xargs -r docker rmi -f
+
+log "🧽 Removing dangling volumes for $APP_NAME..."
+docker volume ls --filter "dangling=true" --format "{{.Name}}" | grep "$APP_NAME" | xargs -r docker volume rm
+
+log "🌐 Removing networks named ${APP_NAME}_* (if any)..."
+docker network ls --filter "name=${APP_NAME}_" --format "{{.Name}}" | xargs -r docker network rm
 
 # === BUILD AND DEPLOY ===
 if ! docker network ls --filter name=^app-net$ --format '{{.Name}}' | grep -wq app-net; then
