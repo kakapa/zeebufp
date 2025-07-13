@@ -41,26 +41,25 @@ RUN groupmod -g ${GROUP_ID} www-data \
     && usermod -u ${USER_ID} -g www-data www-data
 
 # Nginx setup
-RUN mkdir -p /var/lib/nginx/body /var/log/nginx \
-    && chown -R www-data:www-data /var/lib/nginx /var/log/nginx \
-    && touch /var/log/nginx/access.log /var/log/nginx/error.log
+RUN mkdir -p /var/lib/nginx/body \
+    && chown -R www-data:www-data /var/lib/nginx
 
 # Supervisor setup
 RUN mkdir -p /var/log/supervisor /var/run/supervisor \
     && touch /var/log/supervisord.log \
     && chown -R www-data:www-data /var/log/supervisor /var/run/supervisor
 
-# Laravel required dirs
+# Laravel storage/cache structure
 RUN mkdir -p /var/www/html/storage/framework/{cache/data,sessions,views} \
     /var/www/html/storage/logs \
     /var/www/html/bootstrap/cache \
-    && touch /var/www/html/storage/logs/laravel.log \
     && chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
+# Workdir
 WORKDIR /var/www/html
 
-# Copy application files
+# Copy application
 COPY --chown=www-data:www-data . .
 
 # Copy configuration files
@@ -69,14 +68,14 @@ COPY --chown=www-data:www-data .docker/nginx/site.conf /etc/nginx/sites-enabled/
 COPY --chown=www-data:www-data .docker/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
 COPY --chown=www-data:www-data .docker/supervisor/conf.d/ /etc/supervisor/conf.d/
 
-# PHP-FPM socket fix
+# Update php-fpm to use TCP instead of socket
 RUN sed -i 's|^listen = .*|listen = 127.0.0.1:9000|' /usr/local/etc/php-fpm.d/www.conf
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s \
-    CMD curl -f http://localhost:8083/health || exit 1
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=3s CMD curl -f http://localhost:8083/health || exit 1
 
+# Expose port
 EXPOSE 8083
 
-USER root
+# Default command
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
