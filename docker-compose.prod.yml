@@ -10,6 +10,7 @@ services:
       - ${RELEASE_PATH}:/var/www/html
       - /home/ubuntu/apps/zeebufp/shared/.env:/var/www/html/.env
       - /home/ubuntu/apps/zeebufp/shared/storage:/var/www/html/storage
+      - /home/ubuntu/apps/zeebufp/shared/bootstrap/cache:/var/www/html/bootstrap/cache
     environment:
       APP_ENV: production
     ports:
