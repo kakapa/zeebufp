@@ -17,6 +17,10 @@ log() {
   echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG_FILE"
 }
 
+log "🧼 Cleaning up leftovers (nginx/ssl)..."
+sudo chown -R ubuntu:ubuntu "$APP_DIR"
+sudo rm -rf "$APP_DIR/nginx/ssl" || true
+
 # Initialize directory structure with correct permissions
 init_directories() {
   log "📂 Initializing directory structure..."
