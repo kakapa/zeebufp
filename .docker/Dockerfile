@@ -75,9 +75,9 @@ RUN mkdir -p \
     /var/www/html/storage/logs \
     /var/www/html/storage/framework/{cache,views,sessions} \
     /var/www/html/bootstrap/cache && \
+    touch /var/www/html/storage/logs/horizon.log && \
     chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap && \
     chmod -R 775 /var/www/html/storage /var/www/html/bootstrap
-
 
 # Configure Supervisor to run Laravel queue/horizon
 COPY .docker/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
