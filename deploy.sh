@@ -13,6 +13,9 @@ log() {
   echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG_FILE"
 }
 
+log "🧼 Cleaning up leftovers (nginx/ssl)..."
+sudo rm -rf "$APP_DIR/nginx/ssl" || true
+
 # Initialize directory structure
 init_directories() {
   log "📂 Initializing directory structure..."
