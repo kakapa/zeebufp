@@ -21,6 +21,9 @@ log "🧼 Cleaning up old app state..."
 mkdir -p "$APP_DIR"
 touch "$LOG_FILE"
 
+# Fix repo ownership so git can write
+sudo chown -R ubuntu:ubuntu "$APP_DIR"
+
 # Clone or update repo
 update_code() {
   if [ -d "$APP_DIR/.git" ]; then
@@ -69,6 +72,8 @@ deploy() {
    docker network create app-net
   fi
 
+  # Fix repo ownership so git can write
+  sudo chown -R ubuntu:ubuntu "$APP_DIR"
   update_code
   cd "$APP_DIR"
 
