@@ -78,6 +78,5 @@ HEALTHCHECK --interval=30s --timeout=3s \
 
 EXPOSE 8080
 
-USER www-data
-
+USER root
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
