@@ -39,6 +39,10 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN groupmod -g ${GROUP_ID} www-data \
     && usermod -u ${USER_ID} -g www-data www-data
 
+# Nginx setup
+RUN mkdir -p /var/lib/nginx/body \
+    && chown -R www-data:www-data /var/lib/nginx
+
 # Supervisor setup
 RUN mkdir -p /var/log/supervisor \
     && touch /var/log/supervisord.log \
