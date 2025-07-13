@@ -25,20 +25,20 @@ else
   git clone "$REPO_URL" "$APP_DIR"
 fi
 
-# === BUILD AND DEPLOY ===
-if ! docker network ls --filter name=^app-net$ --format '{{.Name}}' | grep -wq app-net; then
-  docker network create app-net
-fi
-
 cd "$APP_DIR"
 
-# === DOCKER CLEANUP (PREVENT 'ContainerConfig' ERROR) ===
+# === DOCKER CLEANUP ===
 log "🧼 Cleaning up Docker state..."
 docker-compose -f "$DOCKER_COMPOSE_FILE" down -v --remove-orphans || true
 docker container prune -f || true
 docker image prune -af || true
 docker volume prune -f || true
-docker network prune -f || true
+#docker network prune -f || true
+
+# === BUILD AND DEPLOY ===
+if ! docker network ls --filter name=^app-net$ --format '{{.Name}}' | grep -wq app-net; then
+  docker network create app-net
+fi
 
 # === BUILD AND START ===
 log "🐳 Building Docker containers..."
