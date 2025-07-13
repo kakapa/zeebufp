@@ -11,6 +11,16 @@ log() {
   echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG_FILE"
 }
 
+# Ensure script is not run as root
+if [[ "$(id -u)" -eq 0 ]]; then
+  echo "❌ Do not run this script as root"
+  exit 1
+fi
+
+log "🧼 Cleaning up old app state..."
+mkdir -p "$APP_DIR"
+touch "$LOG_FILE"
+
 # Clone or update repo
 update_code() {
   if [ -d "$APP_DIR/.git" ]; then
@@ -23,6 +33,7 @@ update_code() {
     log "📥 Cloning repository..."
     rm -rf "$APP_DIR"
     git clone "$REPO_URL" "$APP_DIR"
+    cd "$APP_DIR"
   fi
 }
 
@@ -42,6 +53,14 @@ clean_docker() {
   docker network ls --filter "name=${APP_NAME}_" --format "{{.Name}}" | xargs -r docker network rm || true
 }
 
+# Permissions setup
+fix_permissions() {
+  log "🔐 Fixing permissions for Laravel..."
+  mkdir -p "$APP_DIR/storage/logs" "$APP_DIR/bootstrap/cache"
+  sudo chown -R ubuntu:www-data "$APP_DIR/storage" "$APP_DIR/bootstrap/cache"
+  sudo chmod -R 775 "$APP_DIR/storage" "$APP_DIR/bootstrap/cache"
+}
+
 deploy() {
   log "🚀 Starting deployment..."
 
@@ -52,6 +71,8 @@ deploy() {
 
   update_code
   cd "$APP_DIR"
+
+  fix_permissions
 
   clean_docker
 
