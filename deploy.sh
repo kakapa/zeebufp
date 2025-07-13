@@ -35,12 +35,6 @@ ln -sf "$SHARED_DIR/.env" "$NEW_RELEASE_DIR/.env"
 ln -snf "$SHARED_DIR/storage" "$NEW_RELEASE_DIR/storage"
 ln -snf "$SHARED_DIR/bootstrap/cache" "$NEW_RELEASE_DIR/bootstrap/cache"
 
-# === ENSURE LOG FILE EXISTS ===
-log "📁 Ensuring shared log directories exist..."
-mkdir -p "$SHARED_DIR/storage/logs"
-touch "$SHARED_DIR/storage/logs/horizon.log"
-touch "$SHARED_DIR/storage/logs/laravel.log"
-
 # === EXPORT PATH FOR BUILD ===
 export RELEASE_PATH=$(readlink -f "$NEW_RELEASE_DIR")
 
