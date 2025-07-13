@@ -1,15 +1,14 @@
 #!/bin/bash
 set -euo pipefail
 
+# Configuration
 APP_NAME="zeebufp"
 APP_DIR="/home/ubuntu/apps/$APP_NAME"
 REPO_URL="git@github.com:kakapa/$APP_NAME.git"
 DOCKER_COMPOSE_FILE="$APP_DIR/docker-compose.prod.yml"
 LOG_FILE="$APP_DIR/deploy.log"
 
-WEB_USER_ID=82
-WEB_GROUP_ID=82
-
+# Logging function
 log() {
   echo "[$(date +'%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG_FILE"
 }
@@ -18,24 +17,19 @@ log "🧼 Cleaning up leftovers (nginx/ssl)..."
 sudo chown -R ubuntu:ubuntu "$APP_DIR"
 sudo rm -rf "$APP_DIR/nginx/ssl" || true
 
+# Directory setup
 init_directories() {
-  log "📂 Initializing directory structure..."
-  sudo mkdir -p "$APP_DIR"/{storage,nginx/ssl,bootstrap/cache}
+  log "📂 Creating Laravel dirs with correct permissions..."
+  sudo mkdir -p "$APP_DIR"/{storage,bootstrap/cache}
   sudo mkdir -p "$APP_DIR"/storage/framework/{cache/data,sessions,views}
   sudo mkdir -p "$APP_DIR"/storage/logs
+  sudo touch "$APP_DIR"/storage/logs/laravel.log
 
-  log "🔒 Setting permissions..."
   sudo chown -R ubuntu:www-data "$APP_DIR"
-  sudo chmod -R 775 "$APP_DIR"/storage
-  sudo chmod -R 775 "$APP_DIR"/bootstrap/cache
-  sudo chown -R ubuntu:ubuntu "$APP_DIR"/.git || true
+  sudo chmod -R 775 "$APP_DIR"/storage "$APP_DIR"/bootstrap/cache
 }
 
-clean_docker() {
-  log "🧹 Cleaning up old Docker artifacts..."
-  docker-compose -f "$DOCKER_COMPOSE_FILE" down --remove-orphans --volumes --timeout 30 || true
-}
-
+# Git pull or clone
 git_operations() {
   if [ -d "$APP_DIR/.git" ]; then
     log "🔄 Pulling latest changes..."
@@ -51,38 +45,38 @@ git_operations() {
   fi
 }
 
+# Docker cleanup
+clean_docker() {
+  log "🧹 Cleaning Docker..."
+  docker-compose -f "$DOCKER_COMPOSE_FILE" down --remove-orphans --volumes --timeout 30 || true
+  docker system prune -af || true
+}
+
+# Deploy
 deploy() {
-  log "🚀 Starting deployment of $APP_NAME..."
+  log "🚀 Deploying $APP_NAME..."
 
   init_directories
-  cd "$APP_DIR"
-
   git_operations
 
-  # Re-apply permissions post-git
   sudo chown -R ubuntu:www-data "$APP_DIR"
-  sudo chmod -R 775 "$APP_DIR"/storage
-  sudo chmod -R 775 "$APP_DIR"/bootstrap/cache
+  sudo chmod -R 775 "$APP_DIR"/storage "$APP_DIR"/bootstrap/cache
 
   clean_docker
 
   log "🐳 Building containers..."
   docker-compose -f "$DOCKER_COMPOSE_FILE" build
 
-  log "🚀 Starting services..."
+  log "🔌 Starting containers..."
   docker-compose -f "$DOCKER_COMPOSE_FILE" up -d
 
-  # Optional: wait for container to start up
-  sleep 5
-
-  log "⚙️ Configuring Laravel..."
+  log "⚙️ Configuring Laravel in container..."
   docker-compose -f "$DOCKER_COMPOSE_FILE" exec -T $APP_NAME bash -c "
     set -e
+    chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+    touch /var/www/html/storage/logs/laravel.log
+    chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-    # Permissions (no sudo)
-    chown -R www-data:www-data /var/www/.gitconfig || true
-
-    # Laravel setup
     composer install --no-dev --optimize-autoloader --no-interaction
 
     php artisan migrate --force
@@ -91,10 +85,15 @@ deploy() {
     php artisan config:cache
     php artisan route:cache
     php artisan view:cache
+
+    if [ -e /var/run/supervisor.sock ]; then
+      supervisorctl reread
+      supervisorctl update
+      supervisorctl restart horizon || true
+    fi
   "
 
   log "✅ Deployment completed successfully!"
-  exit 0
 }
 
 trap 'log "❌ Deployment failed with exit code $?"' ERR
