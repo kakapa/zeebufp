@@ -134,6 +134,11 @@ class AccountController extends Controller
         }
     }
 
+    /**
+     * Summary of approve
+     * @param \App\Models\Account $account
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function approve(Account $account)
     {
         $account->update(['status' => 'active']);
@@ -141,8 +146,6 @@ class AccountController extends Controller
         // Send notifications (sms to client, database to user)
         $user = auth()->user();
         $user->notify(new AccountApproved($account));
-
-        // TODO: Create admin activity
 
         Cache::forget('accounts');
         Cache::forget('activeAccountsCount');
@@ -152,6 +155,12 @@ class AccountController extends Controller
             ->with('success', 'Account approved successfully');
     }
 
+    /**
+     * Summary of attach
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Account $account
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function attach(Request $request, Account $account)
     {
         // Validate the request
@@ -180,6 +189,12 @@ class AccountController extends Controller
             ->with('account', new AccountResource($account));
     }
 
+    /**
+     * Summary of detach
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Account $account
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function detach(Request $request, Account $account)
     {
         // Validate the request

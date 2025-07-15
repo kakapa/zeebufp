@@ -66,7 +66,7 @@
             />
             <TableAction
               icon="UserPlus"
-              color="warning"
+              color="yellow"
               @click="$emit('createBeneficiary', account)"
             />
             <TableAction

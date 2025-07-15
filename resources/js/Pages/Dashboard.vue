@@ -123,8 +123,8 @@ const props = defineProps({
   genders: Object,
   titles: Object,
   relationships: Object,
-  activeAccountsCount: Number,
-  pendingClaimsCount: Number,
+  activeAccountsCount: String,
+  pendingClaimsCount: String,
   monthlyContributionsSum: String,
   beneficiary: {
     type: Object,

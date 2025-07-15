@@ -24,7 +24,7 @@ class PaymentPolicy
      */
     public function view(AuthedUser $authed_user, Payment $payment): bool|Response
     {
-        return $authed_user->id === $payment->user_id;
+        return $authed_user->id === $payment->user_id || $authed_user->isAdmin();
     }
 
     /**
@@ -40,7 +40,7 @@ class PaymentPolicy
      */
     public function update(AuthedUser $authed_user, Payment $payment): bool|Response
     {
-        return $authed_user->id === $payment->user_id;
+        return $authed_user->id === $payment->user_id || $authed_user->isAdmin();
     }
 
     /**
@@ -48,7 +48,7 @@ class PaymentPolicy
      */
     public function delete(AuthedUser $authed_user, Payment $payment): bool|Response
     {
-        return $authed_user->id === $payment->user_id;
+        return $authed_user->id === $payment->user_id || $authed_user->isAdmin();
     }
 
     /**
@@ -56,7 +56,7 @@ class PaymentPolicy
      */
     public function restore(AuthedUser $authed_user, Payment $payment): bool|Response
     {
-        return $authed_user->id === $payment->user_id;
+        return $authed_user->isAdmin();
     }
 
     /**
@@ -64,6 +64,6 @@ class PaymentPolicy
      */
     public function forceDelete(AuthedUser $authed_user, Payment $payment): bool|Response
     {
-        return $authed_user->id === $payment->user_id;
+        return $authed_user->isAdmin();
     }
 }

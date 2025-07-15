@@ -23,12 +23,14 @@ class PaymentResource extends JsonResource
             'reference' => $this->reference,
             'notes' => $this->notes,
             'paid_at' => $this->paid_at,
-            'pay_at' => $this->pay_at,
+            'approved_at' => $this->approved_at,
+            'created_at' => $this->created_at,
 
             // Computed properties
             'id' => $this->slug,
             'paidAt' => $this->paid_at ? $this->paid_at->format('Y-m-d H:i:s') : null,
-            'payAt' => $this->pay_at ? $this->pay_at->format('d/m/Y') : null,
+            'createdAt' => $this->created_at->format('Y-m-d'),
+            'approvedAt' => $this->approved_at ? $this->approved_at->format('Y-m-d H:i:s') : null,
             'accountId' => $this->account ? $this->account->slug : null,
             'clientName' => $this->account ? ($this->account->client ? $this->account->client->name : null) : null,
             'claimId' => $this->claim ? $this->claim->slug : null,

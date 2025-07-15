@@ -45,6 +45,8 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('payments', PaymentController::class);
 
+    Route::get('/payments/{payment}/approve', [PaymentController::class, 'approve'])->name('payments.approve');
+
     Route::resource('claims', ClaimController::class);
 
     Route::resource('beneficiaries', BeneficiaryController::class);

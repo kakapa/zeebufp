@@ -55,7 +55,7 @@
 
         <TableCell responsive-class="hidden md:table-cell">
           <span class="text-sm text-gray-600">
-            {{ contribution.payAt }}
+            {{ contribution.createdAt }}
           </span>
         </TableCell>
 
@@ -102,7 +102,6 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["view", "edit", "delete"]);
-
 const statusClass = (status) => {
   return (
     {

@@ -29,7 +29,7 @@ class Payment extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'paid_at' => 'datetime',
-        'pay_at' => 'date',
+        'approved_at' => 'datetime',
         'status' => PaymentStatusEnums::class,
         'type' => PaymentTypeEnums::class,
         'method' => PaymentMethodEnums::class

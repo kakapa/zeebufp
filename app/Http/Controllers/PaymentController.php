@@ -7,6 +7,7 @@ use App\Http\Requests\StorePaymentRequest;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Cache;
 use \App\Http\Resources\PaymentResource;
+use App\Notifications\PaymentApproved;
 
 class PaymentController extends Controller
 {
@@ -107,5 +108,29 @@ class PaymentController extends Controller
 
         return redirect()->route('dashboard')
             ->with('success', 'Payment deleted successfully.');
+    }
+
+    /**
+     * Summary of approve
+     * @param \App\Models\Payment $payment
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function approve(Payment $payment)
+    {
+        $payment->update([
+            'status' => PaymentStatusEnums::PAID,
+            'approved_at' => now()
+        ]);
+
+        // Send notifications (sms to client, database to user)
+        $user = auth()->user();
+        $user->notify(new PaymentApproved($payment));
+
+        Cache::forget('payments');
+        //Cache::forget('activeAccountsCount');
+        //Cache::forget('monthlyContributionsSum');
+
+        return redirect()->back()
+            ->with('success', 'Payment processed successfully');
     }
 }

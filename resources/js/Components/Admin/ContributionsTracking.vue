@@ -210,7 +210,6 @@ const {
   account_id: null,
   claim_id: null,
   amount: 0,
-  pay_at: new Date().toISOString().split("T")[0],
   status: "pending",
   type: "contribution",
   method: "eft",
@@ -269,7 +268,7 @@ const filteredContributions = computed(() => {
         startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
         const endDate = new Date(now.getFullYear(), now.getMonth(), 0);
         results = results.filter((c) => {
-          const payDate = new Date(c.pay_at);
+          const payDate = new Date(c.created_at);
           return payDate >= startDate && payDate <= endDate;
         });
         break;
@@ -282,7 +281,7 @@ const filteredContributions = computed(() => {
     }
 
     if (dateRange !== "last_month" && dateRange !== "all") {
-      results = results.filter((c) => new Date(c.pay_at) >= startDate);
+      results = results.filter((c) => new Date(c.created_at) >= startDate);
     }
   }
 
@@ -340,7 +339,6 @@ onMounted(() => {
     account_id: null,
     claim_id: null,
     amount: 0,
-    pay_at: new Date().toISOString().split("T")[0],
     status: "pending",
     type: "contribution",
     method: "eft",

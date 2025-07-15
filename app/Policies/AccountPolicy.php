@@ -24,7 +24,7 @@ class AccountPolicy
      */
     public function view(AuthedUser $authed_user, Account $account): bool|Response
     {
-        return true;
+        return $authed_user->id === $account->user_id || $authed_user->isAdmin();
     }
 
     /**
@@ -40,7 +40,7 @@ class AccountPolicy
      */
     public function update(AuthedUser $authed_user, Account $account): bool|Response
     {
-        return true;
+        return $authed_user->id === $account->user_id || $authed_user->isAdmin();
     }
 
     /**
@@ -48,7 +48,7 @@ class AccountPolicy
      */
     public function delete(AuthedUser $authed_user, Account $account): bool|Response
     {
-        return $authed_user->id === $account->user_id;
+        return $authed_user->isAdmin();
     }
 
     /**
@@ -56,7 +56,7 @@ class AccountPolicy
      */
     public function restore(AuthedUser $authed_user, Account $account): bool|Response
     {
-        return $authed_user->id === $account->user_id;
+        return $authed_user->isAdmin();
     }
 
     /**
@@ -64,6 +64,6 @@ class AccountPolicy
      */
     public function forceDelete(AuthedUser $authed_user, Account $account): bool|Response
     {
-        return $authed_user->id === $account->user_id;
+        return $authed_user->isAdmin();
     }
 }

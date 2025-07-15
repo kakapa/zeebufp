@@ -52,7 +52,7 @@ class CreateNewMonthlyContributionPayments extends Command
             Payment::create([
                 'account_id' => $account->account_id,
                 'amount' => $account->contribution,
-                'pay_at' => $account->next_payment_at
+                'created_at' => $account->next_payment_at
                     ? $account->next_payment_at
                     : now()->addMonth()->day($account->payday),
             ]);

@@ -45,9 +45,13 @@ class AccountResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('slug')
+                    ->label('Ref')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('client.firstname')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('total_coverage_amount')
+                Tables\Columns\TextColumn::make('total_contribution_amount')
+                    ->label('Premium')
                     ->money('ZAR')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('payday')
@@ -55,7 +59,7 @@ class AccountResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
-                    ->formatStateUsing(fn (AccountStatusEnums $state): string => $state->value)
+                    ->formatStateUsing(fn (AccountStatusEnums $state): string => $state->label())
                     ->color(fn (AccountStatusEnums $state): string => match ($state) {
                         AccountStatusEnums::PENDING => 'warning',
                         AccountStatusEnums::ACTIVE => 'success',
