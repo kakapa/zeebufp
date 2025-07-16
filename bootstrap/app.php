@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // Add web middleware
         $middleware->web(append: [
+            \App\Http\Middleware\TrustProxies::class,
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class,
