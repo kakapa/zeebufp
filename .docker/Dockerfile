@@ -64,9 +64,9 @@ RUN mkdir -p /var/www/html/storage/framework/{cache/data,sessions,views} \
     && chmod -R ug+rwX /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Supervisor setup
-RUN mkdir -p /var/log/supervisor /var/run/supervisor \
+RUN mkdir -p /var/log/supervisor /var/run/supervisor /var/www/storage/logs \
     && touch /var/log/supervisord.log \
-    && chown -R www-data:www-data /var/log/supervisor /var/run/supervisor
+    && chown -R www-data:www-data /var/log/supervisor /var/run/supervisor /var/www/storage/logs
 
 # Workdir
 WORKDIR /var/www/html
