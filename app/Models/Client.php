@@ -10,10 +10,11 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class Client extends Model
 {
-    use HasFactory, HasUlids;
+    use HasFactory, HasUlids, Notifiable;
 
     /**
      * The attributes that are guarded from mass assignable.
@@ -77,6 +78,7 @@ class Client extends Model
 
     /**
      * Summary of activities
+     *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany<Activity, Account>
      */
     public function activities()
@@ -86,6 +88,7 @@ class Client extends Model
 
     /**
      * Summary of documents
+     *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany<Activity, Account>
      */
     public function documents()

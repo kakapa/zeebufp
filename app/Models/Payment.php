@@ -28,11 +28,12 @@ class Payment extends Model
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'due_at' => 'datetime',
         'paid_at' => 'datetime',
         'approved_at' => 'datetime',
         'status' => PaymentStatusEnums::class,
         'type' => PaymentTypeEnums::class,
-        'method' => PaymentMethodEnums::class
+        'method' => PaymentMethodEnums::class,
     ];
 
     /**

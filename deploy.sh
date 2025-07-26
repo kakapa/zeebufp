@@ -62,6 +62,7 @@ fix_permissions() {
   mkdir -p "$APP_DIR/storage/logs" "$APP_DIR/bootstrap/cache"
   sudo chown -R ubuntu:www-data "$APP_DIR/storage" "$APP_DIR/bootstrap/cache"
   sudo chmod -R 775 "$APP_DIR/storage" "$APP_DIR/bootstrap/cache"
+  echo "🔐 Fixing permissions inside container..."
 }
 
 deploy() {
@@ -91,6 +92,8 @@ deploy() {
   docker-compose -f "$DOCKER_COMPOSE_FILE" exec -T "$APP_NAME" bash -c "
     git config --global --add safe.directory /var/www/html
     composer install --no-dev --optimize-autoloader --no-interaction
+    chown -R www-data:www-data storage bootstrap/cache
+    chmod -R ug+rwx storage bootstrap/cache
     npm install
     npm run build
     php artisan migrate --force

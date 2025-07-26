@@ -55,7 +55,7 @@
 
         <TableCell responsive-class="hidden md:table-cell">
           <span class="text-sm text-gray-600">
-            {{ contribution.createdAt }}
+            {{ contribution.dueAt ?? contribution.createdAt }}
           </span>
         </TableCell>
 

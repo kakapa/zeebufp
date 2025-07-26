@@ -36,6 +36,11 @@ RUN apt-get update && apt-get install -y \
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && chmod +x /usr/local/bin/composer
 
+RUN apt-get update && apt-get install -y \
+    libmagickwand-dev --no-install-recommends && \
+    pecl install imagick && \
+    docker-php-ext-enable imagick
+
 # Install Node.js (change version if needed)
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y nodejs && \
@@ -56,8 +61,7 @@ RUN mkdir -p /var/www/html/storage/framework/{cache/data,sessions,views} \
     && chown -R www-data:www-data /var/www/html \
     && find /var/www/html -type d -exec chmod 775 {} \; \
     && find /var/www/html -type f -exec chmod 664 {} \; \
-    && chmod -R 777 /var/www/html/storage \
-    && chmod -R 777 /var/www/html/bootstrap/cache
+    && chmod -R ug+rwX /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Supervisor setup
 RUN mkdir -p /var/log/supervisor /var/run/supervisor \
@@ -75,6 +79,7 @@ COPY --chown=www-data:www-data .docker/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY --chown=www-data:www-data .docker/nginx/site.conf /etc/nginx/sites-enabled/default
 COPY --chown=www-data:www-data .docker/supervisor/supervisord.conf /etc/supervisor/supervisord.conf
 COPY --chown=www-data:www-data .docker/supervisor/conf.d/ /etc/supervisor/conf.d/
+
 
 # Update php-fpm to use TCP instead of socket
 RUN sed -i 's|^listen = .*|listen = 127.0.0.1:9000|' /usr/local/etc/php-fpm.d/www.conf

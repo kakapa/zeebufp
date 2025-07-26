@@ -107,7 +107,7 @@
     </p>
 
     <h3>5. Waiting Periods & Claims Procedure<</h3>
-    <p>Benefits apply after a waiting period (e.g. 6 months). Accidental death may be exempt.
+    <p>Benefits apply after a waiting period (e.g. 3 months). Accidental death may be exempt.
         Claims must be submitted within 3 months of death with ID, death certificate, BI 1663 notice of death and proof of relationship.
     </p>
 

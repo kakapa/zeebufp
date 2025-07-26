@@ -33,14 +33,16 @@ class AccountObserver
      */
     public function created(Account $account): void
     {
-        // Store the activity
-        Activity::create([
-            'user_id' => auth()->id(),
-            'activityable_id' => $account->id,
-            'activityable_type' => $account::class,
-            'new_record' => json_encode($account->getAttributes()),
-            'type' => 'created',
-        ]);
+        if (auth()->check()) {
+            // Store the activity
+            Activity::create([
+                'user_id' => auth()->id(),
+                'activityable_id' => $account->id,
+                'activityable_type' => $account::class,
+                'new_record' => json_encode($account->getAttributes()),
+                'type' => 'created',
+            ]);
+        }
     }
 
     /**
@@ -68,14 +70,16 @@ class AccountObserver
         $oldRecord = $account->getOriginal();
         $newRecord = $account->getDirty();
 
-        Activity::create([
-            'user_id' => auth()->id(),
-            'activityable_id' => $account->id,
-            'activityable_type' => $account::class,
-            'old_record' => json_encode($oldRecord),
-            'new_record' => json_encode($newRecord),
-            'type' => 'updated',
-        ]);
+        if (auth()->check()) {
+            Activity::create([
+                'user_id' => auth()->id(),
+                'activityable_id' => $account->id,
+                'activityable_type' => $account::class,
+                'old_record' => json_encode($oldRecord),
+                'new_record' => json_encode($newRecord),
+                'type' => 'updated',
+            ]);
+        }
     }
 
     /**
@@ -134,14 +138,16 @@ class AccountObserver
      */
     public function deleted(Account $account): void
     {
-        // Store the activity
-        Activity::create([
-            'user_id' => auth()->id(),
-            'activityable_id' => $account->id,
-            'activityable_type' => $account::class,
-            'old_record' => json_encode($account->getAttributes()),
-            'type' => 'deleted',
-        ]);
+        if (auth()->check()) {
+            // Store the activity
+            Activity::create([
+                'user_id' => auth()->id(),
+                'activityable_id' => $account->id,
+                'activityable_type' => $account::class,
+                'old_record' => json_encode($account->getAttributes()),
+                'type' => 'deleted',
+            ]);
+        }
     }
 
     /**

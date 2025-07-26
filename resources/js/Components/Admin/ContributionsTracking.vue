@@ -50,7 +50,7 @@
 
     <!-- Filters -->
     <div
-      class="bg-white rounded-lg shadow p-6 grid grid-cols-1 md:grid-cols-3 gap-4"
+      class="bg-white rounded-lg shadow p-4 grid grid-cols-1 md:grid-cols-4 gap-4"
     >
       <div>
         <InputLabel for="status-filter" value="Status" />

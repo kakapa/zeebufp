@@ -28,6 +28,7 @@ class Beneficiary extends Model
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'main' => 'boolean',
         'gender' => ClientGenderEnums::class,
         'relationship' => BeneficiaryRelationshipEnums::class,
     ];
@@ -49,7 +50,7 @@ class Beneficiary extends Model
     public function name(): Attribute
     {
         return Attribute::make(function (): string {
-            return sprintf('%s %s %s', $this->firstname, $this->middlename , $this->lastname);
+            return sprintf('%s %s %s', $this->firstname, $this->middlename, $this->lastname);
         })->shouldCache();
     }
 

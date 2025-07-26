@@ -29,6 +29,7 @@ class PaymentResource extends JsonResource
             // Computed properties
             'id' => $this->slug,
             'paidAt' => $this->paid_at ? $this->paid_at->format('Y-m-d H:i:s') : null,
+            'dueAt' => $this->due_at ? $this->due_at->format('Y-m-d') : null,
             'createdAt' => $this->created_at->format('Y-m-d'),
             'approvedAt' => $this->approved_at ? $this->approved_at->format('Y-m-d H:i:s') : null,
             'accountId' => $this->account ? $this->account->slug : null,

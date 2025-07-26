@@ -22,9 +22,10 @@ class Account extends Model
         'status',
         'total_contribution_amount',
         'total_coverage_amount',
+        'activated_at',
         'last_payment_at',
         'next_payment_at',
-        'notes'
+        'notes',
     ];
 
     /**
@@ -33,11 +34,12 @@ class Account extends Model
      * @var array<string, string>
      */
     protected $casts = [
+        'activated_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'status' => AccountStatusEnums::class,
         'last_payment_at' => 'date',
-        'next_payment_at' => 'date'
+        'next_payment_at' => 'date',
     ];
 
     /**
@@ -72,6 +74,7 @@ class Account extends Model
 
     /**
      * Summary of activities
+     *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany<Activity, Account>
      */
     public function activities()
