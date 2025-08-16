@@ -14,6 +14,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     curl \
     nano \
+    redis-server \
     libzip-dev \
     libpng-dev \
     libonig-dev \
